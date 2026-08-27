@@ -1,0 +1,14 @@
+.DS_Store
+node_modules/
+
+# Raw Twitter archive export (~747 MB, mostly media the pipeline never reads).
+# Only data/tweets.js and data/note-tweet.js are needed, and those are committed.
+twitter-*.zip
+
+# Pipeline intermediates — all regenerable via `npm run build`.
+pipeline/tweets.json
+pipeline/threads.json
+pipeline/thread-links.json
+pipeline/concept-index.json
+pipeline/garden-data.json
+pipeline/tags.json

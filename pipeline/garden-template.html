@@ -1,0 +1,799 @@
+<title>pee_zombie — conceptual garden (prototype)</title>
+<style>
+:root {
+  --bg: #0b0d0b; --surface: #141715; --surface2: #1a1e1b; --line: #262b27; --line2: #333a34;
+  --text: #c9d0c9; --muted: #7d877e; --faint: #4b544c;
+  --acc: #93b990; --acc-dim: #5f7f5e; --acc-glow: #b8e0b4; --amber: #c9a86a; --amber-dim: #8a744a;
+  --serif: "Iowan Old Style", Palatino, "Palatino Linotype", Georgia, serif;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: light) {
+  :root { --bg:#f1f3ef; --surface:#fafbf8; --surface2:#e7ece6; --line:#d4dad2; --line2:#c2cabf;
+    --text:#28302a; --muted:#5c675d; --faint:#98a399; --acc:#3d6f3f; --acc-dim:#69906b; --acc-glow:#2c5a2e; --amber:#8a6c33; --amber-dim:#ab9367; }
+}
+:root[data-theme="dark"] { --bg:#0b0d0b; --surface:#141715; --surface2:#1a1e1b; --line:#262b27; --line2:#333a34;
+  --text:#c9d0c9; --muted:#7d877e; --faint:#4b544c; --acc:#93b990; --acc-dim:#5f7f5e; --acc-glow:#b8e0b4; --amber:#c9a86a; --amber-dim:#8a744a; }
+:root[data-theme="light"] { --bg:#f1f3ef; --surface:#fafbf8; --surface2:#e7ece6; --line:#d4dad2; --line2:#c2cabf;
+  --text:#28302a; --muted:#5c675d; --faint:#98a399; --acc:#3d6f3f; --acc-dim:#69906b; --acc-glow:#2c5a2e; --amber:#8a6c33; --amber-dim:#ab9367; }
+
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--mono); font-size: 13px; overflow: hidden; }
+canvas.fp { image-rendering: pixelated; flex: 0 0 auto; }
+
+#top { display: flex; align-items: center; gap: 16px; padding: 0 16px; height: 52px; border-bottom: 1px solid var(--line); background: var(--surface); position: relative; z-index: 6; }
+#eca { position: absolute; left: 0; top: 0; width: 100%; height: 100%; opacity: .22; pointer-events: none; }
+#top h1 { font-size: 13px; font-weight: 500; margin: 0; letter-spacing: .08em; z-index: 1; }
+#top h1 .pz { color: var(--acc); }
+#top .sub { color: var(--muted); font-size: 11px; z-index: 1; }
+nav { display: flex; gap: 2px; z-index: 1; margin-left: auto; }
+nav button { font: inherit; background: none; border: 1px solid transparent; color: var(--muted); padding: 5px 12px; cursor: pointer; letter-spacing: .06em; }
+nav button:hover { color: var(--text); }
+nav button.on { color: var(--acc); border-color: var(--line); background: var(--bg); }
+nav button:focus-visible, a:focus-visible, .qcard:focus-visible, .chip:focus-visible { outline: 1px solid var(--acc); outline-offset: 2px; }
+#search { z-index: 1; background: var(--bg); border: 1px solid var(--line); color: var(--text); font: inherit; padding: 5px 10px; width: 210px; }
+#search::placeholder { color: var(--faint); }
+
+#views { position: absolute; top: 52px; bottom: 0; left: 0; right: 0; }
+.view { position: absolute; inset: 0; display: none; }
+.view.on { display: block; }
+.bgeca { position: absolute; inset: 0; opacity: .055; pointer-events: none; }
+
+/* ---------- shared bits ---------- */
+h2.sect { font-size: 11px; font-weight: 500; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); border-bottom: 1px solid var(--line); padding-bottom: 8px; margin: 40px 0 16px; }
+.chip { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); background: var(--surface); padding: 5px 10px; cursor: pointer; color: var(--text); font: inherit; font-size: 12px; }
+.chip:hover { border-color: var(--acc-dim); color: var(--acc); }
+.chip.on { border-color: var(--acc); color: var(--acc); background: var(--surface2); }
+.chip .n { color: var(--faint); }
+
+/* ---------- trailheads ---------- */
+#vIndex { overflow-y: auto; }
+#vIndex .wrap { position: relative; max-width: 1100px; margin: 0 auto; padding: 36px 24px 90px; }
+.intro { font-family: var(--serif); font-size: 17px; line-height: 1.65; max-width: 60ch; }
+.intro em { color: var(--acc); font-style: normal; }
+.statline { color: var(--muted); margin: 16px 0 30px; font-size: 12px; letter-spacing: .04em; }
+.statline b { color: var(--text); font-weight: 500; }
+#themes { display: flex; flex-wrap: wrap; gap: 8px; }
+.tlist { display: flex; flex-direction: column; }
+.trow { display: flex; gap: 12px; align-items: center; padding: 10px 4px; border-bottom: 1px solid var(--line); cursor: pointer; }
+.trow:hover { background: color-mix(in srgb, var(--surface) 60%, transparent); }
+.trow .stage { flex: 0 0 12px; color: var(--acc); }
+.trow .stage.ever { color: var(--amber); }
+.trow .t { font-family: var(--serif); font-size: 15.5px; line-height: 1.4; flex: 1; }
+.trow .t .tags { color: var(--acc-dim); font-size: 11px; font-family: var(--mono); }
+.trow .meta { flex: 0 0 auto; color: var(--faint); font-size: 11px; white-space: nowrap; }
+
+/* ---------- weave ---------- */
+#vWeave { overflow-y: auto; }
+#vWeave .wrap { position: relative; max-width: 1100px; margin: 0 auto; padding: 36px 24px 90px; }
+#chips { display: flex; flex-wrap: wrap; gap: 7px; }
+#wmeta { color: var(--muted); margin: 22px 0 4px; font-size: 12px; }
+#wmeta b { color: var(--acc); font-weight: 500; }
+#related { margin: 6px 0 10px; color: var(--faint); font-size: 11.5px; }
+#related button { font: inherit; font-size: 11.5px; background: none; border: none; color: var(--acc-dim); cursor: pointer; padding: 0 2px; }
+#related button:hover { color: var(--acc); }
+.yhead { font-size: 11px; letter-spacing: .16em; color: var(--faint); margin: 26px 0 4px; }
+.wtw { padding: 12px 4px 12px 14px; border-left: 1px solid var(--line); margin-left: 4px; }
+.wtw:hover { border-left-color: var(--acc-dim); }
+.wtw .x { font-family: var(--serif); font-size: 15.5px; line-height: 1.58; white-space: pre-wrap; }
+.wtw .d { color: var(--faint); font-size: 10.5px; margin-top: 6px; display: flex; gap: 10px; flex-wrap: wrap; align-items: baseline; }
+.wtw .d .f { color: var(--acc-dim); }
+.wtw .d .cs { color: var(--faint); }
+.wtw .d .thlink { color: var(--acc-dim); cursor: pointer; border-bottom: 1px dotted var(--acc-dim); }
+.wtw .d .thlink:hover { color: var(--acc); }
+
+/* ---------- reader (stacked panes) ---------- */
+#vReader { overflow-x: auto; overflow-y: hidden; }
+#vReader.on { display: flex; }
+#panes { display: flex; height: 100%; position: relative; }
+#threadlines { position: absolute; inset: 0; pointer-events: none; z-index: 4; }
+.pane { flex: 0 0 640px; max-width: 92vw; height: 100%; overflow-y: auto; border-right: 1px solid var(--line); background: var(--bg); position: relative; }
+.pane:nth-child(even of .pane) { background: color-mix(in srgb, var(--bg) 96.5%, var(--acc) 3.5%); }
+.pane .inner { padding: 28px 36px 90px; }
+.pane .crumb { color: var(--faint); font-size: 11px; letter-spacing: .05em; display: flex; align-items: baseline; gap: 10px; min-height: 18px; }
+.pane .crumb .via { color: var(--acc-dim); cursor: pointer; border: none; background: none; font: inherit; padding: 0; letter-spacing: inherit; }
+.pane .crumb .via:hover { color: var(--acc); }
+.pane .crumb .close { margin-left: auto; background: none; border: none; color: var(--faint); font: inherit; cursor: pointer; }
+.pane .crumb .close:hover { color: var(--text); }
+.pane .head { display: flex; gap: 14px; align-items: flex-start; margin: 16px 0 8px; }
+.pane h3 { font-family: var(--serif); font-weight: 500; font-size: 26px; line-height: 1.25; margin: 0; text-wrap: balance; flex: 1; }
+.pane .meta { color: var(--muted); font-size: 11px; letter-spacing: .05em; margin-bottom: 6px; }
+.pane .meta .stage { color: var(--acc); } .pane .meta .stage.ever { color: var(--amber); }
+.pane .tagrow { margin: 4px 0 22px; display: flex; flex-wrap: wrap; gap: 6px; }
+.pane .tagrow button { font: inherit; font-size: 11px; color: var(--acc-dim); background: none; border: 1px solid var(--line); padding: 2px 8px; cursor: pointer; }
+.pane .tagrow button:hover { color: var(--acc); border-color: var(--acc-dim); }
+.tw { margin: 0 0 20px; }
+.tw .x { font-family: var(--serif); font-size: 17px; line-height: 1.62; white-space: pre-wrap; }
+.tw .d { color: var(--faint); font-size: 10.5px; margin-top: 5px; letter-spacing: .05em; }
+.tw .d .f { color: var(--acc-dim); }
+.tw .d .mm { color: var(--faint); border: 1px solid var(--line); padding: 0 5px; margin-left: 6px; }
+.tw a.ext { color: var(--muted); text-decoration: none; border-bottom: 1px dashed var(--faint); }
+.tw a.ext:hover { color: var(--acc); }
+.qcard { display: flex; gap: 12px; align-items: flex-start; border: 1px solid var(--line); border-left: 2px solid var(--acc-dim); background: var(--surface); padding: 12px 14px; margin: 10px 0 6px; cursor: pointer; transition: border-color .15s; }
+.qcard:hover { border-left-color: var(--acc); background: var(--surface2); }
+.qcard .qbody { flex: 1; }
+.qcard .qx { font-family: var(--serif); font-size: 14px; line-height: 1.5; color: var(--muted); }
+.qcard .qd { color: var(--faint); font-size: 10.5px; margin-top: 6px; }
+.qcard .qd .go { color: var(--acc-dim); }
+.qcard.dead { cursor: default; border-left-color: var(--line); }
+.qcard.onpath { border-left: 2px solid var(--acc); background: var(--surface2); box-shadow: inset 0 0 0 1px var(--line2); }
+.qcard.onpath .qd .go { color: var(--acc); }
+.qcard.flash { animation: flashcard 1.4s ease-out; }
+@keyframes flashcard { 0% { background: color-mix(in srgb, var(--acc) 28%, var(--surface)); } 100% { background: var(--surface2); } }
+.backs { margin-top: 44px; border-top: 1px solid var(--line); padding-top: 14px; }
+.backs h4 { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); font-weight: 500; margin: 0 0 10px; }
+.backs .qcard { border-left-color: var(--amber-dim); }
+.backs .qcard:hover, .backs .qcard.onpath { border-left-color: var(--amber); }
+
+/* ---------- web ---------- */
+#cnv { position: absolute; left: 0; top: 0; width: 100%; height: 100%; cursor: grab; }
+#webinfo { position: absolute; left: 14px; bottom: 14px; max-width: 400px; background: var(--surface); border: 1px solid var(--line); padding: 12px 14px; display: none; align-items: flex-start; gap: 12px; }
+#webinfo .t { font-family: var(--serif); font-size: 14.5px; line-height: 1.45; }
+#webinfo .m { color: var(--muted); font-size: 11px; margin-top: 6px; }
+#weblegend { position: absolute; right: 14px; top: 12px; color: var(--muted); font-size: 11px; text-align: right; line-height: 1.8; pointer-events: none; }
+#weblegend .k { color: var(--faint); }
+
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+@media (max-width: 700px) {
+  #search { width: 110px; } #top { gap: 8px; padding: 0 10px; } #top .sub { display: none; }
+  .pane { flex-basis: 100vw; }
+}
+</style>
+
+<header id="top">
+  <canvas id="eca"></canvas>
+  <h1><span class="pz">pee_zombie</span> / conceptual garden</h1>
+  <span class="sub">2020–2025 · prototype</span>
+  <nav>
+    <button id="bIndex" class="on">trailheads</button>
+    <button id="bWeave">weave</button>
+    <button id="bReader">reader</button>
+    <button id="bWeb">web</button>
+  </nav>
+  <input id="search" type="search" placeholder="search the corpus…" aria-label="search">
+</header>
+
+<div id="views">
+  <section id="vIndex" class="view on">
+    <canvas class="bgeca"></canvas>
+    <div class="wrap">
+      <p class="intro">Five years of thinking in public — <em>22,549 tweets</em> — replanted as a garden.
+      Threads are read as <em>essays</em>; quote-tweets are read as <em>hyperlinks</em>; every mention of a concept,
+      down to single tweets, is gathered in the <em>weave</em>. Follow a trailhead, read in the reader,
+      step sideways through the web — the same way it was written.</p>
+      <div class="statline" id="stats"></div>
+      <h2 class="sect">trailheads — by theme</h2>
+      <div id="themes"></div>
+      <h2 class="sect" id="listhead">most developed</h2>
+      <div class="tlist" id="tlist"></div>
+    </div>
+  </section>
+
+  <section id="vWeave" class="view">
+    <canvas class="bgeca"></canvas>
+    <div class="wrap">
+      <p class="intro">Every time a concept comes up, anywhere in the corpus — megathread, riff, or single stray tweet.
+      Select several to intersect: <em>cybernetics ∩ autism</em> is a real question here.</p>
+      <h2 class="sect">concepts</h2>
+      <div id="chips"></div>
+      <div id="wmeta"></div>
+      <div id="related"></div>
+      <div id="wresults"></div>
+    </div>
+  </section>
+
+  <section id="vReader" class="view">
+    <div id="panes"><svg id="threadlines"></svg></div>
+  </section>
+
+  <section id="vWeb" class="view">
+    <canvas id="cnv"></canvas>
+    <div id="weblegend">node = thread · size = volume<br><span class="k">edges = self-quote links · click to read</span></div>
+    <div id="webinfo"></div>
+  </section>
+</div>
+
+<script type="application/json" id="data">/*__DATA__*/</script>
+<script>
+const DATA = JSON.parse(document.getElementById('data').textContent);
+const nodes = DATA.nodes, edges = DATA.edges, quoted = DATA.quoted;
+const CONCEPTS = DATA.concepts || [], CORPUS = DATA.corpus || [];
+const byId = new Map(nodes.map(n => [n.id, n]));
+const backlinks = new Map();
+for (const e of edges) {
+  if (!backlinks.has(e.to)) backlinks.set(e.to, []);
+  backlinks.get(e.to).push(e.from);
+}
+const tweetNode = new Map();
+for (const n of nodes) for (const t of n.tweets) tweetNode.set(t.id, n.id);
+
+const stageOf = n => n.grade >= 5 ? 'evergreen' : n.grade >= 3 ? 'budding' : (n.size >= 10 ? 'budding' : 'seedling');
+const stageGlyph = { seedling: '◦', budding: '◐', evergreen: '●' };
+const stripTco = s => s.replace(/https:\/\/t\.co\/\w+/g, '').replace(/[ \t]+\n/g, '\n').replace(/\n{3,}/g, '\n\n').trim();
+const titleOf = n => n.title || (stripTco(n.tweets[0].x).replace(/\s+/g, ' ').slice(0, 90) + '…');
+function esc(s) { return s.replace(/&/g, '&amp;').replace(/</g, '&lt;'); }
+
+/* ============ ECA machinery ============ */
+function cssVar(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+function runECA(row, rule) {
+  const n = row.length, next = new Uint8Array(n);
+  for (let x = 0; x < n; x++) {
+    const p = (row[(x - 1 + n) % n] << 2) | (row[x] << 1) | row[(x + 1) % n];
+    next[x] = (rule >> p) & 1;
+  }
+  return next;
+}
+function hashStr(s) { let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
+// fingerprint: deterministic ECA glyph from a node id — the visual identity used for pane↔card pairing
+const FP_RULES = [30, 54, 90, 110];
+function drawFingerprint(cnv, id, color) {
+  const cols = 17, rows = 10, cell = 2;
+  cnv.width = cols * cell; cnv.height = rows * cell;
+  cnv.style.width = (cols * cell) + 'px'; cnv.style.height = (rows * cell) + 'px';
+  const h = hashStr(id);
+  const rule = FP_RULES[h & 3];
+  let row = new Uint8Array(cols);
+  for (let i = 0; i < cols; i++) row[i] = (h >> (i % 31)) & 1 ^ ((h >> ((i * 7 + 3) % 31)) & 1 && i % 3 === 0 ? 1 : 0);
+  if (!row.some(v => v)) row[Math.floor(cols / 2)] = 1;
+  const ctx = cnv.getContext('2d');
+  ctx.fillStyle = color || cssVar('--acc-dim');
+  for (let y = 0; y < rows; y++) {
+    for (let x = 0; x < cols; x++) if (row[x]) ctx.fillRect(x * cell, y * cell, cell, cell);
+    row = runECA(row, rule);
+  }
+}
+function fpCanvas(id, color, cls) {
+  const c = document.createElement('canvas');
+  c.className = 'fp' + (cls ? ' ' + cls : '');
+  drawFingerprint(c, id, color);
+  return c;
+}
+// ambient background automaton (static render, very faint)
+function drawAmbient(cnv, seedStr) {
+  const w = cnv.clientWidth || cnv.parentElement.clientWidth, h = Math.max(cnv.clientHeight, 400);
+  if (!w) return;
+  cnv.width = w; cnv.height = h;
+  const cell = 4, cols = Math.ceil(w / cell), rows = Math.ceil(h / cell);
+  const hh = hashStr(seedStr || 'pz');
+  let row = new Uint8Array(cols);
+  for (let i = 0; i < cols; i++) row[i] = ((hh >> (i % 31)) ^ (i * 2654435761)) & 1 && (i % 5 < 2) ? 1 : 0;
+  const ctx = cnv.getContext('2d');
+  ctx.fillStyle = cssVar('--acc');
+  for (let y = 0; y < rows; y++) {
+    for (let x = 0; x < cols; x++) if (row[x]) ctx.fillRect(x * cell, y * cell, cell - 1, cell - 1);
+    row = runECA(row, 110);
+  }
+}
+// header strip
+(function () {
+  const c = document.getElementById('eca');
+  function run() {
+    const w = c.clientWidth, h = c.clientHeight;
+    if (!w) return;
+    c.width = w; c.height = h;
+    const cell = 3, cols = Math.ceil(w / cell), rows = Math.ceil(h / cell);
+    let row = new Uint8Array(cols);
+    for (let i = 0; i < cols; i++) row[i] = Math.random() < 0.14 ? 1 : 0;
+    const ctx = c.getContext('2d');
+    ctx.fillStyle = cssVar('--acc-dim');
+    for (let y = 0; y < rows; y++) {
+      for (let x = 0; x < cols; x++) if (row[x]) ctx.fillRect(x * cell, y * cell, cell - 1, cell - 1);
+      row = runECA(row, 110);
+    }
+  }
+  run();
+  window.addEventListener('resize', run);
+})();
+
+/* ============ view switching ============ */
+const views = { index: [document.getElementById('vIndex'), document.getElementById('bIndex')],
+  weave: [document.getElementById('vWeave'), document.getElementById('bWeave')],
+  reader: [document.getElementById('vReader'), document.getElementById('bReader')],
+  web: [document.getElementById('vWeb'), document.getElementById('bWeb')] };
+let cur = 'index';
+function show(v) {
+  cur = v;
+  for (const k in views) { views[k][0].classList.toggle('on', k === v); views[k][1].classList.toggle('on', k === v); }
+  if (v === 'web') initWeb();
+  if (v === 'reader') requestAnimationFrame(drawThreadlines);
+  const amb = views[v][0].querySelector('.bgeca');
+  if (amb && !amb.dataset.drawn) { drawAmbient(amb, v); amb.dataset.drawn = '1'; }
+}
+document.getElementById('bIndex').onclick = () => show('index');
+document.getElementById('bWeave').onclick = () => { show('weave'); renderWeave(); };
+document.getElementById('bReader').onclick = () => { if (!paneCount() && nodes.length) openNode(bestDefault(), null); show('reader'); };
+document.getElementById('bWeb').onclick = () => show('web');
+function bestDefault() { return [...nodes].sort((a, b) => (b.grade || 0) - (a.grade || 0) || b.favs - a.favs)[0].id; }
+
+/* ============ trailheads ============ */
+const themeCounts = new Map();
+for (const n of nodes) for (const t of (n.tags || [])) themeCounts.set(t, (themeCounts.get(t) || 0) + 1);
+const themesSorted = [...themeCounts.entries()].sort((a, b) => b[1] - a[1]);
+let activeTheme = null;
+const themesEl = document.getElementById('themes');
+function renderThemes() {
+  themesEl.innerHTML = '';
+  for (const [t, c] of themesSorted) {
+    const b = document.createElement('button');
+    b.className = 'chip' + (activeTheme === t ? ' on' : '');
+    b.innerHTML = esc(t) + ' <span class="n">' + c + '</span>';
+    b.onclick = () => { activeTheme = activeTheme === t ? null : t; renderThemes(); renderList(); };
+    themesEl.appendChild(b);
+  }
+}
+const listEl = document.getElementById('tlist'), listHead = document.getElementById('listhead');
+function score(n) { return (n.grade || 0) * 200 + n.favs + n.size * 8 + (backlinks.get(n.id) || []).length * 40; }
+function renderList() {
+  listEl.innerHTML = '';
+  let pool = nodes.filter(n => n.kind === 'thread' || (backlinks.get(n.id) || []).length > 0);
+  if (activeTheme) pool = pool.filter(n => (n.tags || []).includes(activeTheme));
+  listHead.textContent = activeTheme ? 'trailhead: ' + activeTheme : 'most developed';
+  pool.sort((a, b) => score(b) - score(a));
+  for (const n of pool.slice(0, 120)) {
+    const st = stageOf(n);
+    const row = document.createElement('div');
+    row.className = 'trow';
+    row.appendChild(fpCanvas(n.id));
+    const stg = document.createElement('span');
+    stg.className = 'stage' + (st === 'evergreen' ? ' ever' : '');
+    stg.textContent = stageGlyph[st];
+    row.appendChild(stg);
+    const tt = document.createElement('span');
+    tt.className = 't';
+    tt.innerHTML = esc(titleOf(n)) + (n.tags && n.tags.length ? ' <span class="tags">· ' + n.tags.map(esc).join(' · ') + '</span>' : '');
+    row.appendChild(tt);
+    const meta = document.createElement('span');
+    meta.className = 'meta';
+    meta.textContent = n.started + ' · ' + n.size + ' tw · ' + n.favs + ' ♥' + ((backlinks.get(n.id) || []).length ? ' · ' + backlinks.get(n.id).length + ' backlinks' : '');
+    row.appendChild(meta);
+    row.onclick = () => { openNode(n.id, null); show('reader'); };
+    listEl.appendChild(row);
+  }
+}
+document.getElementById('stats').innerHTML =
+  '<b>' + nodes.filter(n => n.kind === 'thread').length + '</b> threads · <b>' + edges.length + '</b> quote-links · <b>' +
+  CORPUS.length.toLocaleString() + '</b> tweets woven across <b>' + CONCEPTS.length + '</b> concepts · largest web ~<b>3,600</b> tweets · ● evergreen ◐ budding ◦ seedling';
+
+/* ============ weave ============ */
+const selConcepts = new Set();
+let weaveQuery = null; // text search mode
+const chipsEl = document.getElementById('chips');
+const conceptCounts = new Array(CONCEPTS.length).fill(0);
+for (const t of CORPUS) for (const c of t.c) conceptCounts[c]++;
+// thread-level concept union: a thread "covers" a concept if any of its tweets mention it
+const threadConcepts = new Map();
+for (const t of CORPUS) {
+  if (!t.th) continue;
+  if (!threadConcepts.has(t.th)) threadConcepts.set(t.th, new Set());
+  for (const c of t.c) threadConcepts.get(t.th).add(c);
+}
+const conceptOrder = CONCEPTS.map((_, i) => i).sort((a, b) => conceptCounts[b] - conceptCounts[a]);
+function renderChips() {
+  chipsEl.innerHTML = '';
+  for (const ci of conceptOrder) {
+    if (conceptCounts[ci] < 4) continue;
+    const b = document.createElement('button');
+    b.className = 'chip' + (selConcepts.has(ci) ? ' on' : '');
+    b.innerHTML = esc(CONCEPTS[ci]) + ' <span class="n">' + conceptCounts[ci] + '</span>';
+    b.onclick = () => {
+      weaveQuery = null; document.getElementById('search').value = '';
+      selConcepts.has(ci) ? selConcepts.delete(ci) : selConcepts.add(ci);
+      renderWeave();
+    };
+    chipsEl.appendChild(b);
+  }
+}
+function renderWeave() {
+  renderChips();
+  const metaEl = document.getElementById('wmeta'), relEl = document.getElementById('related'), resEl = document.getElementById('wresults');
+  let results;
+  if (weaveQuery) {
+    const q = weaveQuery.toLowerCase();
+    results = CORPUS.filter(t => t.x.toLowerCase().includes(q));
+    metaEl.innerHTML = '<b>' + results.length + '</b> tweets matching “' + esc(weaveQuery) + '”';
+    relEl.innerHTML = '';
+  } else if (selConcepts.size) {
+    const sel = [...selConcepts];
+    let viaThread = 0;
+    results = CORPUS.filter(t => {
+      if (sel.every(c => t.c.includes(c))) return true;
+      // thread-level: this tweet touches ≥1 selected concept, and its thread covers the rest
+      if (t.th && t.c.some(c => selConcepts.has(c))) {
+        const cover = threadConcepts.get(t.th);
+        if (sel.every(c => cover.has(c))) { t._viaTh = true; viaThread++; return true; }
+      }
+      t._viaTh = false;
+      return false;
+    });
+    metaEl.innerHTML = '<b>' + results.length + '</b> tweets · ' + sel.map(c => '<b>' + esc(CONCEPTS[c]) + '</b>').join(' ∩ ') +
+      (viaThread ? ' <span style="color:var(--faint)">(' + viaThread + ' via thread context)</span>' : '');
+    // related: co-occurring concepts in the result set
+    const co = new Map();
+    for (const t of results) for (const c of t.c) if (!selConcepts.has(c)) co.set(c, (co.get(c) || 0) + 1);
+    const top = [...co.entries()].sort((a, b) => b[1] - a[1]).slice(0, 8);
+    relEl.innerHTML = top.length ? 'co-occurs with: ' : '';
+    for (const [c, n] of top) {
+      const b = document.createElement('button');
+      b.textContent = CONCEPTS[c] + ' (' + n + ')';
+      b.onclick = () => { selConcepts.add(c); renderWeave(); };
+      relEl.appendChild(b);
+    }
+  } else {
+    metaEl.innerHTML = 'select concepts above — or search — to pull their tweets from the whole corpus';
+    relEl.innerHTML = '';
+    resEl.innerHTML = '';
+    return;
+  }
+  resEl.innerHTML = '';
+  let lastYear = null, shown = 0;
+  for (const t of results) {
+    if (shown >= 400) break;
+    const y = t.d.slice(0, 4);
+    if (y !== lastYear) {
+      lastYear = y;
+      const yh = document.createElement('div'); yh.className = 'yhead'; yh.textContent = y; resEl.appendChild(yh);
+    }
+    const el = document.createElement('div');
+    el.className = 'wtw';
+    const cs = t.c.map(c => CONCEPTS[c]).join(' · ');
+    el.innerHTML = '<div class="x">' + esc(stripTco(t.x)) + '</div>' +
+      '<div class="d">' + t.d + ' <span class="f">' + t.f + ' ♥</span>' + (t.m ? '<span>▣ media</span>' : '') +
+      '<span class="cs">' + esc(cs) + (t._viaTh ? ' · thread context' : '') + '</span>' +
+      (t.th ? '<span class="thlink" data-th="' + t.th + '">read in thread ⟶</span>' : '') + '</div>';
+    resEl.appendChild(el);
+    shown++;
+  }
+  if (results.length > shown) {
+    const more = document.createElement('div'); more.className = 'yhead'; more.textContent = '… ' + (results.length - shown) + ' more (narrow the selection)';
+    resEl.appendChild(more);
+  }
+}
+document.getElementById('wresults').addEventListener('click', e => {
+  const th = e.target.closest('[data-th]');
+  if (th) { openNode(th.dataset.th, null); show('reader'); }
+});
+
+/* ============ search -> weave ============ */
+document.getElementById('search').addEventListener('keydown', e => {
+  if (e.key !== 'Enter') return;
+  const q = e.target.value.trim();
+  weaveQuery = q || null;
+  selConcepts.clear();
+  show('weave');
+  renderWeave();
+});
+
+/* ============ reader: stacked panes + provenance ============ */
+const panesEl = document.getElementById('panes');
+const svgNS = 'http://www.w3.org/2000/svg';
+const linesEl = document.getElementById('threadlines');
+function paneCount() { return panesEl.querySelectorAll('.pane').length; }
+function renderTweetText(t) {
+  let x = esc(stripTco(t.x));
+  x = x.replace(/@(\w+)/g, '<a class="ext" href="https://twitter.com/$1" target="_blank" rel="noopener">@$1</a>');
+  return x;
+}
+function quoteCard(qid) {
+  const info = quoted[qid];
+  const targetNode = tweetNode.get(qid) || (info && info.node);
+  const resolvable = targetNode && byId.has(targetNode);
+  const text = info ? info.x : (resolvable ? byId.get(targetNode).tweets.find(t => t.id === qid)?.x : null);
+  if (!text) return null;
+  const card = document.createElement('div');
+  card.className = 'qcard' + (resolvable ? '' : ' dead');
+  card.tabIndex = 0;
+  if (resolvable) card.dataset.go = targetNode;
+  if (resolvable) card.appendChild(fpCanvas(targetNode));
+  const body = document.createElement('div');
+  body.className = 'qbody';
+  const shown = stripTco(text);
+  body.innerHTML = '<div class="qx">' + esc(shown.length > 320 ? shown.slice(0, 320) + '…' : shown) + '</div>' +
+    '<div class="qd">' + (info ? info.d : '') + (resolvable ? ' · <span class="go">follow →</span>' : ' · not in garden') + '</div>';
+  card.appendChild(body);
+  return card;
+}
+function buildPane(n, provenance) {
+  const pane = document.createElement('div');
+  pane.className = 'pane';
+  const inner = document.createElement('div');
+  inner.className = 'inner';
+  // crumb with provenance
+  const crumb = document.createElement('div');
+  crumb.className = 'crumb';
+  const kind = document.createElement('span');
+  kind.textContent = (n.kind === 'thread' ? 'thread · ' + n.size + ' tweets' : 'tweet') +
+    (n.reply ? ' · replying to @' + n.reply : '') + (n.span > 14 ? ' · grown over ' + Math.round(n.span) + ' days' : '');
+  crumb.appendChild(kind);
+  if (provenance) {
+    const via = document.createElement('button');
+    via.className = 'via';
+    via.textContent = '⟿ via “' + titleOf(byId.get(provenance.fromNode)).slice(0, 44) + '”';
+    via.title = 'show where this was quoted';
+    via.onclick = () => {
+      provenance.srcCard.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      provenance.srcCard.classList.remove('flash');
+      requestAnimationFrame(() => provenance.srcCard.classList.add('flash'));
+    };
+    crumb.appendChild(via);
+  }
+  const close = document.createElement('button');
+  close.className = 'close';
+  close.textContent = 'close ✕';
+  close.onclick = () => { pane.remove(); cleanupPaths(); drawThreadlines(); };
+  crumb.appendChild(close);
+  inner.appendChild(crumb);
+  // header: fingerprint + title
+  const head = document.createElement('div');
+  head.className = 'head';
+  head.appendChild(fpCanvas(n.id, null, 'fp-head'));
+  const h3 = document.createElement('h3');
+  h3.textContent = titleOf(n);
+  head.appendChild(h3);
+  inner.appendChild(head);
+  const st = stageOf(n);
+  const meta = document.createElement('div');
+  meta.className = 'meta';
+  meta.innerHTML = '<span class="stage' + (st === 'evergreen' ? ' ever' : '') + '">' + stageGlyph[st] + ' ' + st + '</span> · ' + n.started + ' · ' + n.favs + ' ♥ total';
+  inner.appendChild(meta);
+  if (n.tags && n.tags.length) {
+    const tr = document.createElement('div');
+    tr.className = 'tagrow';
+    for (const t of n.tags) {
+      const b = document.createElement('button');
+      b.textContent = t;
+      b.onclick = () => { activeTheme = t; renderThemes(); renderList(); show('index'); };
+      tr.appendChild(b);
+    }
+    inner.appendChild(tr);
+  }
+  // tweets
+  for (const t of n.tweets) {
+    const tw = document.createElement('div');
+    tw.className = 'tw';
+    const x = document.createElement('div');
+    x.className = 'x';
+    x.innerHTML = renderTweetText(t);
+    tw.appendChild(x);
+    for (const q of (t.q || [])) {
+      const card = quoteCard(q);
+      if (card) tw.appendChild(card);
+    }
+    const d = document.createElement('div');
+    d.className = 'd';
+    d.innerHTML = t.d + ' · <span class="f">' + t.f + ' ♥</span>' + (t.m ? '<span class="mm">▣ media</span>' : '');
+    tw.appendChild(d);
+    inner.appendChild(tw);
+  }
+  // backlinks
+  const backs = backlinks.get(n.id) || [];
+  if (backs.length) {
+    const bl = document.createElement('div');
+    bl.className = 'backs';
+    bl.innerHTML = '<h4>quoted by ' + backs.length + '</h4>';
+    for (const b of backs.slice(0, 12)) {
+      const bn = byId.get(b);
+      if (!bn) continue;
+      const card = document.createElement('div');
+      card.className = 'qcard';
+      card.tabIndex = 0;
+      card.dataset.go = b;
+      card.appendChild(fpCanvas(b, cssVar('--amber-dim')));
+      const body = document.createElement('div');
+      body.className = 'qbody';
+      body.innerHTML = '<div class="qx">' + esc(titleOf(bn)) + '</div><div class="qd">' + bn.started + ' · ' + bn.size + ' tw · <span class="go">open →</span></div>';
+      card.appendChild(body);
+      bl.appendChild(card);
+    }
+    inner.appendChild(bl);
+  }
+  pane.appendChild(inner);
+  return pane;
+}
+// provenance registry: child pane -> {fromNode, srcCard, childPane}
+const paths = [];
+function cleanupPaths() {
+  for (let i = paths.length - 1; i >= 0; i--) {
+    if (!document.contains(paths[i].childPane) || !document.contains(paths[i].srcCard)) {
+      paths[i].srcCard?.classList?.remove('onpath');
+      paths.splice(i, 1);
+    }
+  }
+}
+function openNode(id, provenance) {
+  const n = byId.get(id);
+  if (!n) return;
+  if (!provenance) {
+    panesEl.querySelectorAll('.pane').forEach(p => p.remove());
+    paths.length = 0;
+  }
+  const pane = buildPane(n, provenance);
+  panesEl.appendChild(pane);
+  if (provenance) {
+    provenance.childPane = pane;
+    paths.push(provenance);
+    provenance.srcCard.classList.add('onpath');
+  }
+  pane.addEventListener('click', e => {
+    const go = e.target.closest('[data-go]');
+    if (go && !e.target.closest('a')) {
+      // trim panes right of this one (their provenance dies with them)
+      while (pane.nextElementSibling) pane.nextElementSibling.remove();
+      pane.querySelectorAll('.qcard.onpath').forEach(c => c.classList.remove('onpath'));
+      cleanupPaths();
+      openNode(go.dataset.go, { fromNode: n.id, srcCard: go, fromPane: pane });
+      return;
+    }
+  });
+  pane.addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      const go = e.target.closest('[data-go]');
+      if (go) {
+        while (pane.nextElementSibling) pane.nextElementSibling.remove();
+        pane.querySelectorAll('.qcard.onpath').forEach(c => c.classList.remove('onpath'));
+        cleanupPaths();
+        openNode(go.dataset.go, { fromNode: n.id, srcCard: go, fromPane: pane });
+      }
+    }
+  });
+  pane.addEventListener('scroll', () => requestAnimationFrame(drawThreadlines));
+  requestAnimationFrame(() => {
+    document.getElementById('vReader').scrollTo({ left: 1e6, behavior: 'smooth' });
+    drawThreadlines();
+  });
+}
+/* the threadlines overlay: literal threads from source quote-card -> child pane */
+let hoverPath = null;
+function drawThreadlines() {
+  const reader = document.getElementById('vReader');
+  if (!reader.classList.contains('on')) return;
+  const rRect = panesEl.getBoundingClientRect();
+  linesEl.setAttribute('width', panesEl.scrollWidth);
+  linesEl.setAttribute('height', panesEl.clientHeight);
+  linesEl.style.width = panesEl.scrollWidth + 'px';
+  linesEl.style.height = panesEl.clientHeight + 'px';
+  while (linesEl.firstChild) linesEl.firstChild.remove();
+  cleanupPaths();
+  const acc = cssVar('--acc'), accDim = cssVar('--acc-dim');
+  for (const p of paths) {
+    const cardR = p.srcCard.getBoundingClientRect();
+    const paneR = p.fromPane.getBoundingClientRect();
+    const childR = p.childPane.getBoundingClientRect();
+    // start: right edge of source card, clamped to its pane's visible vertical range
+    let y1 = cardR.top + cardR.height / 2;
+    const clamped = y1 < paneR.top + 20 || y1 > paneR.bottom - 20;
+    y1 = Math.max(paneR.top + 20, Math.min(paneR.bottom - 20, y1));
+    const x1 = paneR.right - rRect.left - 2;
+    const x2 = childR.left - rRect.left + 2;
+    const y2 = childR.top + 30;
+    const path = document.createElementNS(svgNS, 'path');
+    const mx = (x1 + x2) / 2;
+    path.setAttribute('d', `M ${x1} ${y1 - rRect.top} C ${mx} ${y1 - rRect.top}, ${mx} ${y2 - rRect.top}, ${x2} ${y2 - rRect.top}`);
+    path.setAttribute('fill', 'none');
+    path.setAttribute('stroke', p === hoverPath ? acc : accDim);
+    path.setAttribute('stroke-width', p === hoverPath ? 1.6 : 1);
+    path.setAttribute('opacity', p === hoverPath ? 0.9 : 0.4);
+    if (clamped) path.setAttribute('stroke-dasharray', '3 4');
+    linesEl.appendChild(path);
+  }
+}
+panesEl.addEventListener('mouseover', e => {
+  const card = e.target.closest('.qcard.onpath');
+  const via = e.target.closest('.via');
+  let p = null;
+  if (card) p = paths.find(x => x.srcCard === card);
+  if (via) p = paths.find(x => x.childPane.contains(via));
+  if (p !== hoverPath) { hoverPath = p; drawThreadlines(); }
+});
+panesEl.addEventListener('mouseout', () => { if (hoverPath) { hoverPath = null; drawThreadlines(); } });
+document.getElementById('vReader').addEventListener('scroll', () => requestAnimationFrame(drawThreadlines));
+window.addEventListener('resize', () => requestAnimationFrame(drawThreadlines));
+
+/* ============ web (canvas) ============ */
+let webInit = false, cam = { x: 0, y: 0, z: 0.7 }, hoverN = null;
+function fitWeb() {
+  const cnv = document.getElementById('cnv');
+  if (!cnv.clientWidth || !nodes.length) return;
+  let minX = 1e9, maxX = -1e9, minY = 1e9, maxY = -1e9;
+  for (const n of nodes) { minX = Math.min(minX, n.x); maxX = Math.max(maxX, n.x); minY = Math.min(minY, n.y); maxY = Math.max(maxY, n.y); }
+  cam.x = (minX + maxX) / 2; cam.y = (minY + maxY) / 2;
+  cam.z = Math.min(4, 0.92 * Math.min(cnv.clientWidth / (maxX - minX + 100), cnv.clientHeight / (maxY - minY + 100)));
+}
+function initWeb() {
+  if (webInit) { drawWeb(); return; }
+  webInit = true;
+  const cnv = document.getElementById('cnv');
+  const info = document.getElementById('webinfo');
+  const dpr = window.devicePixelRatio || 1;
+  let fitted = false;
+  function resize() {
+    if (!cnv.clientWidth) return;
+    const w = Math.round(cnv.clientWidth * dpr), h = Math.round(cnv.clientHeight * dpr);
+    if (cnv.width !== w || cnv.height !== h) { cnv.width = w; cnv.height = h; }
+    if (!fitted) { fitWeb(); fitted = true; }
+    drawWeb();
+  }
+  new ResizeObserver(resize).observe(cnv);
+  window.addEventListener('resize', resize);
+  let drag = null;
+  cnv.addEventListener('pointerdown', e => { drag = { sx: e.clientX, sy: e.clientY, cx: cam.x, cy: cam.y, moved: false }; cnv.setPointerCapture(e.pointerId); });
+  cnv.addEventListener('pointermove', e => {
+    if (drag) {
+      const dx = e.clientX - drag.sx, dy = e.clientY - drag.sy;
+      if (Math.abs(dx) + Math.abs(dy) > 3) drag.moved = true;
+      cam.x = drag.cx - dx / cam.z; cam.y = drag.cy - dy / cam.z; drawWeb();
+    } else {
+      hoverN = pick(e); drawWeb();
+      if (hoverN) {
+        info.style.display = 'flex';
+        info.innerHTML = '';
+        info.appendChild(fpCanvas(hoverN.id));
+        const b = document.createElement('div');
+        b.innerHTML = '<div class="t">' + esc(titleOf(hoverN)) + '</div><div class="m">' + hoverN.started + ' · ' + hoverN.size + ' tw · ' + hoverN.favs + ' ♥' + (hoverN.tags && hoverN.tags.length ? ' · ' + hoverN.tags.map(esc).join(', ') : '') + '</div>';
+        info.appendChild(b);
+      } else info.style.display = 'none';
+    }
+  });
+  cnv.addEventListener('pointerup', e => {
+    if (drag && !drag.moved) { const n = pick(e); if (n) { openNode(n.id, null); show('reader'); } }
+    drag = null;
+  });
+  cnv.addEventListener('wheel', e => {
+    e.preventDefault();
+    const f = Math.exp(-e.deltaY * 0.0012);
+    cam.z = Math.max(0.15, Math.min(4, cam.z * f));
+    drawWeb();
+  }, { passive: false });
+  function pick(e) {
+    const r = cnv.getBoundingClientRect();
+    const wx = (e.clientX - r.left - r.width / 2) / cam.z + cam.x;
+    const wy = (e.clientY - r.top - r.height / 2) / cam.z + cam.y;
+    let best = null, bd = 1e9;
+    for (const n of nodes) {
+      const d = Math.hypot(n.x - wx, n.y - wy);
+      if (d < Math.max(n.r, 6) + 4 && d < bd) { best = n; bd = d; }
+    }
+    return best;
+  }
+  requestAnimationFrame(resize);
+}
+function drawWeb() {
+  const cnv = document.getElementById('cnv');
+  if (!cnv.width) return;
+  const ctx = cnv.getContext('2d');
+  const dpr = window.devicePixelRatio || 1;
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.clearRect(0, 0, cnv.clientWidth, cnv.clientHeight);
+  ctx.save();
+  ctx.translate(cnv.clientWidth / 2, cnv.clientHeight / 2);
+  ctx.scale(cam.z, cam.z);
+  ctx.translate(-cam.x, -cam.y);
+  const acc = cssVar('--acc'), faint = cssVar('--faint'), amber = cssVar('--amber'), muted = cssVar('--muted');
+  ctx.strokeStyle = faint; ctx.globalAlpha = 0.35; ctx.lineWidth = 0.6 / cam.z;
+  ctx.beginPath();
+  for (const e of edges) {
+    const a = byId.get(e.from), b = byId.get(e.to);
+    if (!a || !b) continue;
+    ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y);
+  }
+  ctx.stroke();
+  ctx.globalAlpha = 1;
+  for (const n of nodes) {
+    const st = stageOf(n);
+    ctx.beginPath();
+    ctx.arc(n.x, n.y, n.r, 0, 7);
+    ctx.fillStyle = st === 'evergreen' ? amber : st === 'budding' ? acc : muted;
+    ctx.globalAlpha = st === 'seedling' ? 0.45 : 0.85;
+    ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+  if (hoverN) {
+    ctx.beginPath(); ctx.arc(hoverN.x, hoverN.y, hoverN.r + 3, 0, 7);
+    ctx.strokeStyle = acc; ctx.lineWidth = 1.4 / cam.z; ctx.stroke();
+  }
+  ctx.restore();
+}
+
+renderThemes();
+renderList();
+renderChips();
+</script>

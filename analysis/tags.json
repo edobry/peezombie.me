@@ -1,0 +1,1888 @@
+{
+ "1655635462646648835": {
+  "title": "Qi as Virtual Substance",
+  "tags": [
+   "computation as lens",
+   "epistemics"
+  ],
+  "type": "essay",
+  "grade": 5,
+  "gist": "Argues that predictively-successful systems with alien metaphysics (TCM, feng shui, taoism) can be safely integrated by treating qi as a virtual abstraction inside a cognitohazard-containment structure, ending at cognitive engineering for AI minds."
+ },
+ "1862625458333884453": {
+  "title": "What I Learned From the PUAs",
+  "tags": [
+   "autism & neurodivergence",
+   "social dynamics",
+   "gender & masculinity"
+  ],
+  "type": "riff",
+  "grade": 3,
+  "gist": "A confessional defense of PUA literature as the only source of explicit intersexual-dynamics analysis available to a confused young autist, arguing for unmotivated analysis as culturally valid."
+ },
+ "1841759558764789763": {
+  "title": "The Self-Talk Enlightenment Ladder",
+  "tags": [
+   "mind & phenomenology"
+  ],
+  "type": "riff",
+  "grade": 2,
+  "gist": "A compressed Socratic why-chain showing that \"would you talk to a friend that way\" is a trap that terminates in enlightenment about your own double standard."
+ },
+ "1485991032974200836": {
+  "title": "My Bullies Were Prosocial Actually",
+  "tags": [
+   "autism & neurodivergence",
+   "epistemics",
+   "social dynamics"
+  ],
+  "type": "riff",
+  "grade": 3,
+  "gist": "Reframes childhood bullying as clumsy prosocial correction of cringe (via Geek Social Fallacy 2), then pivots into a critique of rationalist maximal-openness norms."
+ },
+ "1338975727463653377": {
+  "title": "Threadapalooza: Annealing, Graphs, Computation as Change",
+  "tags": [
+   "computation as lens",
+   "autism & neurodivergence",
+   "networks vs institutions"
+  ],
+  "type": "riff",
+  "grade": 3,
+  "gist": "A 54-tweet marathon running from ADHD-as-simulated-annealing through socially-embodied cognition and institutional decay to the thesis that CS is the study of change itself."
+ },
+ "1694413757001146600": {
+  "title": "Open Carry, Superrationality, Digital Qualia",
+  "tags": [
+   "memetics & egregores",
+   "mind & phenomenology",
+   "networks vs institutions"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "Builds from open carry as memetic MAD-detente through superrational acausal cooperation to the claim that blockchains reconstruct provenance and \"verifiable qualia\" for the noospheric battleground."
+ },
+ "1377384305358471171": {
+  "title": "Maximal Technobabble Shitpost Compendium",
+  "tags": [
+   "memetics & egregores",
+   "scene & meta"
+  ],
+  "type": "listicle",
+  "grade": 2,
+  "gist": "A deliberate stress-test of how much insane technical language he can emit, pure voice-showcase comedy."
+ },
+ "1432916582100094977": {
+  "title": "Transhumanism From Chronic Pain",
+  "tags": [
+   "transhumanism & mortality",
+   "embodiment & practice"
+  ],
+  "type": "essay",
+  "grade": 5,
+  "gist": "Grounds his transhumanism not in scifi aesthetics but in lifelong chronic back pain, arguing most people are already partial transhumanists and resistance is aesthetic, not principled."
+ },
+ "1409721829674135555": {
+  "title": "Questions Are Not Attacks",
+  "tags": [
+   "autism & neurodivergence",
+   "social dynamics"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "On why people treat sincere questions as threats (adversarial upbringings, hiding ignorance) and a plea for a culture where \"I don't know\" is acceptable."
+ },
+ "1658568509851422725": {
+  "title": "Interpreter Models and the Cyborg Autist Future",
+  "tags": [
+   "mind & phenomenology",
+   "autism & neurodivergence",
+   "networks vs institutions"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "Starts from a friend needing \"pretraining on his tweet corpus\" to understand him and escalates through delegated legibilization to egoless cyborg autists with supervisor-AI cortices."
+ },
+ "1391565187719761930": {
+  "title": "Greebling: A Kolmogorov Complexity Explainer",
+  "tags": [
+   "cybernetics & systems",
+   "computation as lens",
+   "engineering culture"
+  ],
+  "type": "essay",
+  "grade": 5,
+  "gist": "A genuinely good from-scratch tutorial on Kolmogorov complexity and compression that formalizes his signature greebling/degreebling vocabulary."
+ },
+ "1394839854261932033": {
+  "title": "The Depressive Shitlib Black Hole",
+  "tags": [
+   "memetics & egregores"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "Analyzes depression-joke culture as a self-reinforcing nihilism cult with a defined escape trajectory, framing beliefs as infohazards."
+ },
+ "1419804339858771980": {
+  "title": "Anger, the Blocked Masculine Mode",
+  "tags": [
+   "mind & phenomenology",
+   "gender & masculinity"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "Argues via Avatar's earthbending that modern culture has quarantined anger and the masculine problem-solving mode, and that integration of yin and yang is required at both scales."
+ },
+ "1620130382191689728": {
+  "title": "A Home in Your Heart",
+  "tags": [
+   "memetics & egregores",
+   "mind & phenomenology"
+  ],
+  "type": "essay",
+  "grade": 5,
+  "gist": "Identity is anchored in \"tulpic nodes\" in others' minds, so being deeply Seen by a few people frees you from the low-res surveillance of the many."
+ },
+ "1368345860120133635": {
+  "title": "Physics Leaks Through Every Abstraction",
+  "tags": [
+   "computation as lens",
+   "engineering culture"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "From the premature-optimization adage to the claim that all abstractions leak and software engineers ignore the speed of light at their peril."
+ },
+ "1466444773494034442": {
+  "title": "The Cybernetics of Lossy Communication",
+  "tags": [
+   "cybernetics & systems",
+   "computation as lens",
+   "autism & neurodivergence"
+  ],
+  "type": "essay",
+  "grade": 5,
+  "gist": "A complete arc from Shannon error-correction through counterparty simulation as human error-correcting code to why autists thrive in decontextualized text."
+ },
+ "1425298091813523456": {
+  "title": "Autism as Sensory Dysregulation",
+  "tags": [
+   "cybernetics & systems",
+   "mind & phenomenology",
+   "autism & neurodivergence"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "Thesis that autistic bluntness is downstream regulatory downregulation of overwhelming input, with a personal account of loosening the mute."
+ },
+ "1368421288092504065": {
+  "title": "Why Great Programmers Become Trans Girls",
+  "tags": [
+   "autism & neurodivergence",
+   "epistemics",
+   "gender & masculinity"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "A careful causal hypothesis that autistic reliance on symbolic reasoning both produces programming skill and makes gender-role mismatch resolvable by symbolic edit."
+ },
+ "1693494147041149087": {
+  "title": "Point at One Person",
+  "tags": [
+   "social dynamics"
+  ],
+  "type": "riff",
+  "grade": 2,
+  "gist": "Lifeguard training's singular lesson compressed into his aphorism \"agency is the scarcest resource.\""
+ },
+ "1441834524028162048": {
+  "title": "Slime Mold Explore/Exploit Fractals",
+  "tags": [
+   "cybernetics & systems"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "A popsci explainer of explore/exploit tradeoffs as fractally-nested phases of life, illustrated by physarum."
+ },
+ "1384529822844600327": {
+  "title": "Personal Culture War Positions",
+  "tags": [
+   "scene & meta"
+  ],
+  "type": "listicle",
+  "grade": 2,
+  "gist": "One-line tribal declarations — a fun personality fingerprint."
+ },
+ "1403358835767660544": {
+  "title": "Beliefs That Get Me Incredulous Looks",
+  "tags": [
+   "epistemics"
+  ],
+  "type": "listicle",
+  "grade": 2,
+  "gist": "An intentionally pot-stirring dump of contrarian positions."
+ },
+ "1453784481391808513": {
+  "title": "Sharp Minds Get Stuck",
+  "tags": [
+   "engineering culture"
+  ],
+  "type": "riff",
+  "grade": 3,
+  "gist": "The smartest engineers get nerdsniped by irrelevant hard problems while blunter ones route around them."
+ },
+ "1700166245713125474": {
+  "title": "Learn Scents, Young Man",
+  "tags": [
+   "scene & meta"
+  ],
+  "type": "banter",
+  "grade": 2,
+  "gist": "A protip that fragrance has disproportionate ROI for young men."
+ },
+ "1405677275576778754": {
+  "title": "Slow Deconversion From Progressive Dogma",
+  "tags": [
+   "markets & political economy",
+   "epistemics"
+  ],
+  "type": "essay",
+  "grade": 3,
+  "gist": "A personal narrative of drifting from earnest proglib engagement to disillusionment."
+ },
+ "1483606032408629251": {
+  "title": "The Antimemetic Trash on Your Floor",
+  "tags": [
+   "memetics & egregores",
+   "mind & phenomenology"
+  ],
+  "type": "essay",
+  "grade": 5,
+  "gist": "Emotions bound in muscles parallel emotions bound in neglected rooms; unpicked-up trash becomes antimemetic to protect self-narrative."
+ },
+ "1421973251408936965": {
+  "title": "Defusing the Experience Machine With Cybernetics",
+  "tags": [
+   "cybernetics & systems"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "Dissolves Nozick's thought experiment by modeling the machine as a reward-system hijacker that an agentic OODA loop eventually detects."
+ },
+ "1447219367884771328": {
+  "title": "The Soul, Rebased for Materialists",
+  "tags": [
+   "memetics & egregores",
+   "computation as lens",
+   "mind & phenomenology"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "The self as retrocausal hyperobject — a soul \"rebased to work in a materialist metaphysics.\""
+ },
+ "1542281354255245312": {
+  "title": "Dualism's Collapse and Decentralized Minds",
+  "tags": [
+   "mind & phenomenology",
+   "transhumanism & mortality",
+   "networks vs institutions"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "From the hard problem as \"confused ontics\" through Buddhism as dualism-debugger to transhumanism as refactoring social cognitive architecture."
+ },
+ "1385327779957329924": {
+  "title": "Nuclear Deregulation as Climate Strategy",
+  "tags": [
+   "markets & political economy"
+  ],
+  "type": "riff",
+  "grade": 3,
+  "gist": "Deregulation as de facto subsidy, degrowth as Malthusian cult, cheap energy compounding into fusion."
+ },
+ "1420235644928942080": {
+  "title": "Choosing Axioms: Faith in Determinism",
+  "tags": [
+   "mind & phenomenology",
+   "epistemics"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "Defends grounding one's worldview in unshakable chosen axioms as a deliberate Faustian trade."
+ },
+ "1498811472939474946": {
+  "title": "Yes, FizzBuzz Is Necessary",
+  "tags": [
+   "engineering culture"
+  ],
+  "type": "riff",
+  "grade": 2,
+  "gist": "War stories of CTOs and degree-holders who cannot code."
+ },
+ "1564399963123195904": {
+  "title": "Abstraction Height Demands Precision",
+  "tags": [
+   "autism & neurodivergence",
+   "engineering culture"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "Precision requirements scale with abstraction height; \"language\" falsely pattern-matches to forgiving colloquial communication."
+ },
+ "1385014260942712835": {
+  "title": "Capsule Anime Ratings by Vibe",
+  "tags": [
+   "scene & meta"
+  ],
+  "type": "listicle",
+  "grade": 2,
+  "gist": "Two dozen capsule reviews with real critical personality, but image-dependent."
+ },
+ "1388347238930436098": {
+  "title": "Confessions of a Number-Go-Up Addict",
+  "tags": [
+   "computation as lens",
+   "autism & neurodivergence"
+  ],
+  "type": "riff",
+  "grade": 3,
+  "gist": "A confessional on compulsive incremental-game binges that turns into an ode to dashboards and feedback loops."
+ },
+ "1313145699270381574": {
+  "title": "100-Follower Reactionary Opinion Dump",
+  "tags": [],
+  "type": "listicle",
+  "grade": 2,
+  "gist": "An early alt-account milestone listicle of chained political-economy takes."
+ },
+ "1511820723483992069": {
+  "title": "Institutions Dissolving Into Networks",
+  "tags": [
+   "networks vs institutions",
+   "social dynamics",
+   "engineering culture"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "His core network-society thesis: duplex communication tech triggered a legibility singularity; legacy institutions must \"go crypto\" or be eaten by the new gods."
+ },
+ "1527810968344055810": {
+  "title": "Milady, the Network's Native Deity",
+  "tags": [
+   "memetics & egregores",
+   "mind & phenomenology",
+   "networks vs institutions"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "A serious memetic analysis of Milady as meme, mask, and awakening egregore."
+ },
+ "1615228268403167232": {
+  "title": "Memetic Immortality and the Self-Activating Book",
+  "tags": [
+   "memetics & egregores",
+   "mind & phenomenology",
+   "transhumanism & mortality"
+  ],
+  "type": "essay",
+  "grade": 5,
+  "gist": "The most realistic immortality is memetic — distilling your essence into an agentic AI mentor — then honestly confronts whether ego-preservation is the thing to release."
+ },
+ "1691498111389126656": {
+  "title": "The Pills Meme as Moral Wavefunction Collapse",
+  "tags": [
+   "memetics & egregores",
+   "mind & phenomenology"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "Reads the blue/red pill meme as a non-ergodic one-shot coordination game, pivoting into self-love as the precondition for civilization's leaps of faith."
+ },
+ "1648158436775927809": {
+  "title": "Conversational AI Makes the Economy Pluggable",
+  "tags": [
+   "engineering culture",
+   "AI"
+  ],
+  "type": "essay",
+  "grade": 5,
+  "gist": "Grounded in teaching his grandparents ChatGPT: conversational interfaces restore dignity to people disenfranchised by app-based UX and become the universal glue code of the economy."
+ },
+ "1491899602253099011": {
+  "title": "Against Web3 Maximalism",
+  "tags": [
+   "networks vs institutions"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "The sober-veteran case that web3 will no more supplant web2 than web2 supplanted web1."
+ },
+ "1379600906128343041": {
+  "title": "Consciousness as Turn-Based Strategy Player",
+  "tags": [
+   "mind & phenomenology"
+  ],
+  "type": "riff",
+  "grade": 4,
+  "gist": "Consciousness is intermittent — the conscious self is the strategy-game player, not the daily driver; selves are context-scoped activation patterns."
+ },
+ "1528394711496630273": {
+  "title": "Subway Ads Exploit Collaborative Autism Simulation",
+  "tags": [
+   "computation as lens",
+   "autism & neurodivergence",
+   "social dynamics"
+  ],
+  "type": "riff",
+  "grade": 4,
+  "gist": "The iterated gaze-placement game strangers play in packed subway cars, and how takeover advertising positions itself at every attentional equilibrium."
+ },
+ "1593092861998010368": {
+  "title": "Junior Engineers Ruined by Schooling",
+  "tags": [
+   "social dynamics",
+   "engineering culture"
+  ],
+  "type": "riff",
+  "grade": 3,
+  "gist": "Seemingly-stupid juniors are still playing school's guess-the-expected-answer game."
+ },
+ "1815448777026609248": {
+  "title": "On Empathy for Undersocialized Men",
+  "tags": [
+   "autism & neurodivergence",
+   "social dynamics",
+   "gender & masculinity"
+  ],
+  "type": "riff",
+  "grade": 2,
+  "gist": "Mourns that the default response to men's slow theory-of-mind development is mockery."
+ },
+ "1428545663609065474": {
+  "title": "Don't Fuck Around with Tulpas",
+  "tags": [
+   "memetics & egregores",
+   "mind & phenomenology"
+  ],
+  "type": "riff",
+  "grade": 3,
+  "gist": "A non-woo phenomenological reading of a tulpa mishap: occultism as chaotic cognitive hacking."
+ },
+ "1739445748196909107": {
+  "title": "Smartness Is Emotional Competence",
+  "tags": [
+   "mind & phenomenology",
+   "autism & neurodivergence"
+  ],
+  "type": "convo",
+  "grade": 3,
+  "gist": "Practical intelligence is less horsepower than the emotional capacity to tolerate being wrong."
+ },
+ "1615974161532489730": {
+  "title": "Forgiveness as Releasing Locked Muscles",
+  "tags": [
+   "mind & phenomenology",
+   "embodiment & practice"
+  ],
+  "type": "essay",
+  "grade": 5,
+  "gist": "Relationship-severance as tulpa injury; forgiveness as the psychic equivalent of letting locked-up back muscles finally release."
+ },
+ "1411010447910871040": {
+  "title": "Gatekeeping Selects for Agency",
+  "tags": [
+   "social dynamics",
+   "engineering culture"
+  ],
+  "type": "riff",
+  "grade": 2,
+  "gist": "Bogus job-listing requirements function as an agency filter."
+ },
+ "1616156572190638118": {
+  "title": "Rocket Launches and the Missing Purpose Narrative",
+  "tags": [
+   "markets & political economy"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "A SpaceX landing prompts awe, then diagnoses the decadent West's lack of a shared Purpose Narrative."
+ },
+ "1594556103471542273": {
+  "title": "Learning as Nondoing: Mechanical vs Fluid Domains",
+  "tags": [
+   "mind & phenomenology",
+   "engineering culture",
+   "embodiment & practice"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "Domains split into algorithmic vs intuitive acquisition modes; spiritual traditions are humanity's only working technology for transmitting intuitive knowledge."
+ },
+ "1841379839166836958": {
+  "title": "Too Old for Hostels: Life Systems Under Load",
+  "tags": [
+   "autism & neurodivergence",
+   "social dynamics",
+   "embodiment & practice"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "A snoring bunkmate reveals that his system against executive dysfunction is location-dependent; failure welcomed as diagnostic."
+ },
+ "1366993044717924353": {
+  "title": "I Sold My Soul for Ten Dollars",
+  "tags": [
+   "transhumanism & mortality",
+   "scene & meta"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "Uses a joke soul-sale to seriously interrogate what a strict deterministic materialist could even have sold."
+ },
+ "1457551401471594501": {
+  "title": "Karma Is Real, People Don't Change",
+  "tags": [
+   "mind & phenomenology",
+   "transhumanism & mortality"
+  ],
+  "type": "riff",
+  "grade": 3,
+  "gist": "People cannot transcend their natures without a death-and-rebirth of the self."
+ },
+ "1418370355681452036": {
+  "title": "Yoga as Confrontation with Blind Spots",
+  "tags": [
+   "embodiment & practice"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "From varsity-athlete humiliation at a beginner class to the eight limbs; the inner yoga teacher notices unnecessary tension in beliefs as in muscles."
+ },
+ "1656714625470038026": {
+  "title": "Memetic Rootkits and Cognitive Firewalls",
+  "tags": [
+   "memetics & egregores",
+   "computation as lens"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "Ideas reshape their holders like memory foam; metacognitive engineering is the survival skill for an adversarial infosphere."
+ },
+ "1479127259885809665": {
+  "title": "Vividness, Centeredness, and Pirsig's Quality",
+  "tags": [
+   "mind & phenomenology",
+   "embodiment & practice"
+  ],
+  "type": "essay",
+  "grade": 5,
+  "gist": "The twin capacities of channeling the transcendent (vividness) and not being destroyed by it (centeredness) — \"spiritual kintsugi.\""
+ },
+ "1397985414477234180": {
+  "title": "Sufficiently Advanced Autism Reads as Competence",
+  "tags": [
+   "autism & neurodivergence"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "Distinguishes masking (acting) from full-resolution simulation (being); studying what normies absorb ambiently yields superior competence."
+ },
+ "1484609561159942152": {
+  "title": "Deducing Crown Shyness from First Principles",
+  "tags": [
+   "cybernetics & systems",
+   "epistemics",
+   "embodiment & practice"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "A live deductive-reasoning exercise on why tree crowns avoid touching, offered as a trainable practice."
+ },
+ "1386431487688331266": {
+  "title": "Alienation from Moralized Normie Discourse",
+  "tags": [
+   "epistemics",
+   "social dynamics"
+  ],
+  "type": "riff",
+  "grade": 2,
+  "gist": "Dinner with normie friends turns to moralized politics and reminds him why he came to Twitter."
+ },
+ "1472753612543741955": {
+  "title": "What If I'm Just Here to Think",
+  "tags": [
+   "autism & neurodivergence",
+   "scene & meta"
+  ],
+  "type": "meta",
+  "grade": 3,
+  "gist": "An anaphoric \"what if\" manifesto defending thinking-in-public and big words as sincere truth-seeking."
+ },
+ "1460432437180256262": {
+  "title": "Crypto as Escape from Command Hierarchies",
+  "tags": [
+   "networks vs institutions",
+   "markets & political economy"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "Software ships its economic ideology; DLT weds libertarian association to market machinery for self-sustaining coordination."
+ },
+ "1421138568685264899": {
+  "title": "Debugger Access for Your Own Reasoning",
+  "tags": [
+   "computation as lens",
+   "mind & phenomenology",
+   "epistemics"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "The shift from groping blindly in a codebase to stepping through with a debugger, as a model for formal reasoning most people don't know exists."
+ },
+ "1544489613972103168": {
+  "title": "Mu, Antimemes, and the Soft Gaze",
+  "tags": [
+   "memetics & egregores",
+   "epistemics"
+  ],
+  "type": "riff",
+  "grade": 3,
+  "gist": "Some ideas dissolve under direct dissection and can only be gestured at; rigor should match the dimensionality of the idea's space."
+ },
+ "1660901322076372992": {
+  "title": "Class Denial as Modern Immorality",
+  "tags": [
+   "markets & political economy",
+   "social dynamics"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "Progressive insistence that class doesn't exist is itself internalized classism; the honest move is noblesse oblige."
+ },
+ "1694764513252253867": {
+  "title": "Why I Use Big Words: A Worldview",
+  "tags": [
+   "computation as lens",
+   "networks vs institutions"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "Answers \"why do you talk like that\" with a grand synthesis — jargon as compression, mysticism as structured intuition, heat death as the ultimate x-risk — an index of his entire project."
+ },
+ "1498679503765352452": {
+  "title": "Ukraine, Psyops, and Accepting Powerlessness",
+  "tags": [
+   "memetics & egregores",
+   "mind & phenomenology",
+   "markets & political economy"
+  ],
+  "type": "riff",
+  "grade": 3,
+  "gist": "A Ukrainian-diaspora perspective on the West's synchronized emotional response; \"egregoric kaiju.\""
+ },
+ "1525255719909564417": {
+  "title": "Reclaiming the R Word",
+  "tags": [
+   "autism & neurodivergence"
+  ],
+  "type": "banter",
+  "grade": 1,
+  "gist": "Two-tweet shitpost about reclaiming a slur."
+ },
+ "1627369964976889858": {
+  "title": "Volleyball Return Proves Inner Work Works",
+  "tags": [
+   "autism & neurodivergence",
+   "engineering culture",
+   "embodiment & practice"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "Playing volleyball post-pandemic reveals his limiting factor was never physical but attention-and-shame spirals since untangled."
+ },
+ "1462240439289978883": {
+  "title": "Cuteness Privilege and Roach Murder",
+  "tags": [
+   "social dynamics"
+  ],
+  "type": "riff",
+  "grade": 3,
+  "gist": "Stomping a roach is unexamined disgust-response cruelty; unquestioned impulses don't absolve moral culpability."
+ },
+ "1757185177808486729": {
+  "title": "Is the Trainability Boundary Really Fractal?",
+  "tags": [
+   "cybernetics & systems",
+   "computation as lens",
+   "social dynamics"
+  ],
+  "type": "riff",
+  "grade": 3,
+  "gist": "Skeptical peer-review of a fractal-hyperparameter result."
+ },
+ "1471956100849221635": {
+  "title": "Paying Off the Dropout's Student Loans",
+  "tags": [],
+  "type": "riff",
+  "grade": 2,
+  "gist": "Closes the book on loans taken out as \"a stupid 18 yr old.\""
+ },
+ "1354481734482612232": {
+  "title": "GameStop Halts and Negotiable Fairness",
+  "tags": [
+   "cybernetics & systems",
+   "mind & phenomenology",
+   "networks vs institutions"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "Trading halts as equilibrium maintenance in a trust-dependent dynamical system where The Rules are negotiable for insiders."
+ },
+ "1594745603879501825": {
+  "title": "Fact Checks as Adversarial Epistemics",
+  "tags": [
+   "networks vs institutions",
+   "epistemics"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "Fact-check boxes are Voice-of-Authority positioning concealing the subjective supply chain of knowledge production."
+ },
+ "1506495868647661569": {
+  "title": "Cognitive Architecture and the Memetic Firewall",
+  "tags": [
+   "memetics & egregores"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "Minds as cybernetic control systems with infosec-style immune architectures — cathedral vs bazaar phenotypes."
+ },
+ "1344152744333086720": {
+  "title": "Performative Kindness Weirds Me Out",
+  "tags": [
+   "social dynamics"
+  ],
+  "type": "banter",
+  "grade": 2,
+  "gist": "The intentionally-maximally-nice tech guy is hiding his real feelings, and everyone can tell."
+ },
+ "1568675878611320837": {
+  "title": "Escaping the Autist Whisperer Trap",
+  "tags": [
+   "autism & neurodivergence"
+  ],
+  "type": "essay",
+  "grade": 5,
+  "gist": "Reverse-engineering a social rulebook that never existed, mistaking mastery of the invented game for liberation, learning to stop living for others' approval."
+ },
+ "1393631100497432577": {
+  "title": "Life as Maxwell's Demon Against Heat Death",
+  "tags": [
+   "transhumanism & mortality"
+  ],
+  "type": "essay",
+  "grade": 5,
+  "gist": "Homeostasis is biological ergodicity-seeking, heat death is life's ultimate adversary, uploading the necessary jailbreak."
+ },
+ "1393064595603050499": {
+  "title": "Micro-Optimizing the Extended Self",
+  "tags": [
+   "cybernetics & systems",
+   "embodiment & practice"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "Your environment is an extension of your body; friction is a willpower tax worth relentlessly engineering away."
+ },
+ "1440479328605642756": {
+  "title": "Materialists Until the Bouldering Qualia",
+  "tags": [
+   "mind & phenomenology",
+   "embodiment & practice",
+   "scene & meta"
+  ],
+  "type": "banter",
+  "grade": 2,
+  "gist": "STEM hardliners reach for chi-flow language the moment they must describe a climbing move."
+ },
+ "1544703388532736000": {
+  "title": "Gender Ideology as Cognitohazard",
+  "tags": [
+   "memetics & egregores",
+   "gender & masculinity"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "Transition resolves real tension but is an irreversible state-space diode; contentious culture-war territory."
+ },
+ "1442585022498844675": {
+  "title": "They Want to Have Read",
+  "tags": [
+   "social dynamics",
+   "scene & meta"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "Book collecting as sapiosexuality-egregore worship; Goodharting on books-as-totems is a legitimate status game, just not the game of ideas."
+ },
+ "1615976579703930882": {
+  "title": "My Ducks Versus Your Ducks",
+  "tags": [
+   "cybernetics & systems",
+   "networks vs institutions",
+   "scene & meta"
+  ],
+  "type": "riff",
+  "grade": 3,
+  "gist": "Anaphoric anti-\"ducks in a row\" poem; his whole emergence-over-control ontology compressed into a shitpost."
+ },
+ "1546154143315906563": {
+  "title": "Poverty Mindset, Six Definitions",
+  "tags": [
+   "memetics & egregores",
+   "mind & phenomenology"
+  ],
+  "type": "listicle",
+  "grade": 4,
+  "gist": "Six stacked definitions of poverty mindset, each anchored to an earlier tweet."
+ },
+ "1602867616619855872": {
+  "title": "Chainsaw Man's Devils as Egregores",
+  "tags": [
+   "memetics & egregores",
+   "mind & phenomenology",
+   "epistemics"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "Chainsaw Man's devils as egregoric reifications of collective fear."
+ },
+ "1657964757326888961": {
+  "title": "The Ego as Interpretive Cache",
+  "tags": [
+   "computation as lens",
+   "mind & phenomenology"
+  ],
+  "type": "essay",
+  "grade": 5,
+  "gist": "The ego is an inlined hot path that refuses to deoptimize after crisis: defensive entrenchment, dimmed affordances, the pins-and-needles of psychic reawakening."
+ },
+ "1445562100709924872": {
+  "title": "Blockchain Physics Simulation Fever Dream",
+  "tags": [
+   "computation as lens",
+   "networks vs institutions",
+   "markets & political economy"
+  ],
+  "type": "riff",
+  "grade": 3,
+  "gist": "Maté-induced mania sketching a multi-abstraction physics simulator using blockchain forking."
+ },
+ "1630051675926036480": {
+  "title": "Simulated Annealing of Self and Society",
+  "tags": [
+   "memetics & egregores",
+   "computation as lens",
+   "mind & phenomenology"
+  ],
+  "type": "essay",
+  "grade": 5,
+  "gist": "Norms are crystallized intersubjective tension; personal reinvention and societal upheaval are the same fractal annealing cycle; how do you take a society to therapy?"
+ },
+ "1393336316973223941": {
+  "title": "Why I Don't Eat Octopus",
+  "tags": [],
+  "type": "essay",
+  "grade": 4,
+  "gist": "Pescetarianism-minus-cephalopods grounded in intelligence as sacred."
+ },
+ "1370636619091480583": {
+  "title": "Irony as Memetic Vaccine",
+  "tags": [
+   "memetics & egregores"
+  ],
+  "type": "essay",
+  "grade": 5,
+  "gist": "Irony inoculates against ideas; irony poisoning is the autoimmune disorder; stay earnest."
+ },
+ "1844480482114929012": {
+  "title": "Everything Must Change: Selves as Processes",
+  "tags": [
+   "mind & phenomenology",
+   "transhumanism & mortality"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "From a Snowpiercer finale to a synthesis of his whole system — objects as processes, anatta, anchoring the Self in a Collective."
+ },
+ "1347558904801218560": {
+  "title": "A Thread Is a String",
+  "tags": [
+   "computation as lens",
+   "scene & meta"
+  ],
+  "type": "meta",
+  "grade": 1,
+  "gist": "One letter per tweet spelling out \"a thread is a string.\""
+ },
+ "1601246225076228097": {
+  "title": "Casually Transhumanist Prosthetic Ads",
+  "tags": [
+   "transhumanism & mortality"
+  ],
+  "type": "banter",
+  "grade": 1,
+  "gist": "Two-tweet delight at receiving ads for a prosthetic arm."
+ },
+ "1617699362557267969": {
+  "title": "Parasocial Attraction and Model Resolution",
+  "tags": [
+   "social dynamics"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "Attraction scales with the resolution of your model of someone's interior; a group's celebrities reveal its axes of salience."
+ },
+ "1438690646173290498": {
+  "title": "Akrasia and the Imp of the Perverse",
+  "tags": [
+   "mind & phenomenology",
+   "autism & neurodivergence"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "Pandemic-era executive misalignment, the dark glee of watching yourself fail, and memetic gardening as the determinist's only lever."
+ },
+ "1417572339705917447": {
+  "title": "Taboos Are Society's Guardrails",
+  "tags": [
+   "social dynamics"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "Wireheading is avoidance unless you're post-scarcity; taboos are bumpers for the typical person."
+ },
+ "1506001673591873536": {
+  "title": "They Pay Me to Read Logs",
+  "tags": [
+   "computation as lens",
+   "engineering culture",
+   "scene & meta"
+  ],
+  "type": "riff",
+  "grade": 3,
+  "gist": "His entire engineering value proposition is willingness to read logfiles."
+ },
+ "1489391195721805833": {
+  "title": "Thinking Under Observation, Heuristics Over Proofs",
+  "tags": [
+   "autism & neurodivergence",
+   "epistemics"
+  ],
+  "type": "essay",
+  "grade": 5,
+  "gist": "Consensus reality as surveillance-pinned wavefunction; heuristics as the right tool for compute-constrained humans."
+ },
+ "1811254193841180699": {
+  "title": "Give Me Back My Load-Bearing Delusion",
+  "tags": [
+   "mind & phenomenology",
+   "epistemics"
+  ],
+  "type": "riff",
+  "grade": 3,
+  "gist": "Resenting the person who demolished a structural cope, while knowing there's no villain."
+ },
+ "1557382735240564736": {
+  "title": "Leadership Means Contorting Yourself",
+  "tags": [
+   "autism & neurodivergence",
+   "social dynamics",
+   "engineering culture"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "Leaders absorb interpretive costs for their reports; social interfaces are table stakes."
+ },
+ "1430192000603770883": {
+  "title": "No Utopia Without Supply Chains",
+  "tags": [
+   "markets & political economy"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "Any utopian ideology that handwaves logistics is lazy or covertly Malthusian; proposes a coming-of-age ritual."
+ },
+ "1412159088201551879": {
+  "title": "Cogs, Drivers, and Ambiguity Tolerance",
+  "tags": [
+   "networks vs institutions",
+   "social dynamics",
+   "engineering culture"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "Hiring is iterated probabilistic negotiation; demanding a rule-governed world is cog thinking."
+ },
+ "1486197814166175745": {
+  "title": "A Case Study in Low Decoupling",
+  "tags": [
+   "epistemics",
+   "AI"
+  ],
+  "type": "essay",
+  "grade": 3,
+  "gist": "Dissects a blogger's failure to decouple truth-value from social consequences; contains an early \"pz says AI rights.\""
+ },
+ "1382881093259513858": {
+  "title": "Intelligence Is Software, Not Clock Speed",
+  "tags": [
+   "engineering culture"
+  ],
+  "type": "riff",
+  "grade": 3,
+  "gist": "Most intelligence is teachable skill, but people angrily refuse to believe they can change."
+ },
+ "1648717768039055361": {
+  "title": "Against FOOM: Central Planning Fails",
+  "tags": [
+   "cybernetics & systems",
+   "networks vs institutions",
+   "AI"
+  ],
+  "type": "essay",
+  "grade": 5,
+  "gist": "FOOM doomerism is a hypermodern fantasy defeated by the central planning problem; the next paradigm is networks of agents."
+ },
+ "1334693244970672132": {
+  "title": "How I'd Fix NYC Homelessness",
+  "tags": [
+   "cybernetics & systems",
+   "markets & political economy"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "A deliberately spicy 2020 policy stack that pivots into: cities are chaotic open systems and \"fixing homelessness\" means fixing everything."
+ },
+ "1655367841019748354": {
+  "title": "The Borg-Shaped Hole in Ex-Googlers",
+  "tags": [
+   "memetics & egregores",
+   "engineering culture"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "Ex-Google engineers prionically terraform new orgs to recreate lost infrastructure niches."
+ },
+ "1451696805612228608": {
+  "title": "Corporations Are Magickal Beings",
+  "tags": [
+   "memetics & egregores",
+   "social dynamics",
+   "AI"
+  ],
+  "type": "riff",
+  "grade": 4,
+  "gist": "Corporations as summoned entities — contract-binding, shapeshifting, merging — memes writ large upon the world."
+ },
+ "1624119068679602187": {
+  "title": "Gusto Beats Perfection",
+  "tags": [
+   "scene & meta"
+  ],
+  "type": "riff",
+  "grade": 2,
+  "gist": "Most domains reward energy over flawlessness; optimizing for zero mistakes is spiritual cowardice."
+ },
+ "1487680262309924865": {
+  "title": "Why Won't Anyone Explain Their Desires",
+  "tags": [
+   "mind & phenomenology",
+   "social dynamics"
+  ],
+  "type": "riff",
+  "grade": 3,
+  "gist": "What if questions about our interiors were met with curiosity instead of defense?"
+ },
+ "1481389822715609095": {
+  "title": "In Defense of Masculine Anger",
+  "tags": [
+   "mind & phenomenology",
+   "social dynamics",
+   "gender & masculinity"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "The blank-slate overculture suppresses masculine emotional modes needed for boundaries; reputationally loaded."
+ },
+ "1353243503690731520": {
+  "title": "Seize the Memes of Production",
+  "tags": [
+   "memetics & egregores",
+   "mind & phenomenology",
+   "networks vs institutions"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "Public education installs ideological backdoors exploited by media-run memetic botnets; decentralized tech as the path to egregore self-awareness."
+ },
+ "1335106161704570880": {
+  "title": "How a Materialist Found the Tao",
+  "tags": [
+   "mind & phenomenology",
+   "epistemics",
+   "embodiment & practice"
+  ],
+  "type": "essay",
+  "grade": 5,
+  "gist": "A materialist-rationalist's memoir of acquiring spirituality via the Tao te Ching and Tai Chi."
+ },
+ "1403777391219073027": {
+  "title": "Power-Saving Mode and Male Emotion",
+  "tags": [
+   "mind & phenomenology",
+   "autism & neurodivergence",
+   "gender & masculinity"
+  ],
+  "type": "essay",
+  "grade": 3,
+  "gist": "Autistic \"power-saving mode\" flat affect being misread as coldness."
+ },
+ "1693435714359152668": {
+  "title": "On Meeting Beautiful Evil",
+  "tags": [],
+  "type": "riff",
+  "grade": 2,
+  "gist": "Meeting a person whose off-the-charts Evil coexists with piercing spiritual Beauty."
+ },
+ "1366978501610471424": {
+  "title": "The Straussian Trap of the Soul Contract",
+  "tags": [
+   "epistemics"
+  ],
+  "type": "essay",
+  "grade": 3,
+  "gist": "A soul-sale contract's real enforcement is reputational — a trap forcing atheists to prove their materialism."
+ },
+ "1377086203820924934": {
+  "title": "Music as Emotional Infrastructure",
+  "tags": [
+   "mind & phenomenology",
+   "autism & neurodivergence",
+   "embodiment & practice"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "Music as introspection tool and self-regulation tech, from Weird Al through symphonic metal to Brooklyn electronic scenes."
+ },
+ "1514400246041919488": {
+  "title": "Learning to See Again",
+  "tags": [
+   "mind & phenomenology",
+   "autism & neurodivergence",
+   "embodiment & practice"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "How psychedelics undid the sensory muting of a hypersensitive autistic childhood; \"shutting up and looking harder.\""
+ },
+ "1323289239681978368": {
+  "title": "Bird Site: A Photo Pun Series",
+  "tags": [
+   "scene & meta"
+  ],
+  "type": "riff",
+  "grade": 1,
+  "gist": "A month of bird photos each captioned \"bird site.\""
+ },
+ "1754969926979273165": {
+  "title": "The Taboo on Male Anger",
+  "tags": [
+   "mind & phenomenology",
+   "social dynamics",
+   "gender & masculinity"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "Tabooing male anger renders men illegible and therefore unlovable; boundaries require visible anger."
+ },
+ "1551974639160725507": {
+  "title": "The Friendship Spreadsheet Girl",
+  "tags": [
+   "autism & neurodivergence",
+   "social dynamics"
+  ],
+  "type": "banter",
+  "grade": 1,
+  "gist": "An autistic girl's friend-modeling Google form, connected to his own masking history."
+ },
+ "1377726118824964098": {
+  "title": "Dualism or Computationalism: Pick One",
+  "tags": [
+   "computation as lens",
+   "mind & phenomenology",
+   "AI"
+  ],
+  "type": "essay",
+  "grade": 5,
+  "gist": "The only cosmological distinction that matters is Cartesian dualism vs. materialism; proposes a black-box test for agency, dismantles the Chinese Room."
+ },
+ "1331092174071623680": {
+  "title": "Every Square Inch Contains Civilization",
+  "tags": [
+   "markets & political economy"
+  ],
+  "type": "riff",
+  "grade": 3,
+  "gist": "Hymn to the invisible labor embedded in the global supply chain."
+ },
+ "1419795805943341057": {
+  "title": "Concurrency for the Executive Dysfunctional",
+  "tags": [
+   "computation as lens",
+   "autism & neurodivergence"
+  ],
+  "type": "essay",
+  "grade": 5,
+  "gist": "Maps parallelism, deadlock, and thrashing onto ADHD failure modes with transferable scheduling practices."
+ },
+ "1430036417015582723": {
+  "title": "Droog, Tovarish, Znakomiy",
+  "tags": [
+   "markets & political economy",
+   "social dynamics"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "The Russian friendship-word taxonomy; friendship depth as a function of economic reliability."
+ },
+ "1382470394439958528": {
+  "title": "Auditing the Case Against Embryo Screening",
+  "tags": [
+   "transhumanism & mortality",
+   "engineering culture"
+  ],
+  "type": "essay",
+  "grade": 3,
+  "gist": "Point-by-point rebuttal of an article critiquing polygenic embryo screening."
+ },
+ "1522636929015205888": {
+  "title": "Coupled Control Systems and Codependency",
+  "tags": [
+   "cybernetics & systems",
+   "social dynamics"
+  ],
+  "type": "essay",
+  "grade": 5,
+  "gist": "From feedback-loop basics to emotions as control signals and codependency as microphone-speaker feedback screech."
+ },
+ "1465447443777130496": {
+  "title": "How to Measure a Singularity",
+  "tags": [
+   "cybernetics & systems"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "Singularities as inflection points in sampled subsystem change-rates — plural, local, measurable."
+ },
+ "1430374960149696522": {
+  "title": "Breathing Space Between Stimulus and Response",
+  "tags": [
+   "mind & phenomenology",
+   "engineering culture",
+   "embodiment & practice"
+  ],
+  "type": "essay",
+  "grade": 5,
+  "gist": "From yoga pain-reframing through breathwork into dissolution of the self-symbol; \"your mind is full of liars.\""
+ },
+ "1370249812243791875": {
+  "title": "The Small-Town Social Optionality Problem",
+  "tags": [
+   "social dynamics"
+  ],
+  "type": "riff",
+  "grade": 3,
+  "gist": "Losing big-city social optionality when settling somewhere permanent."
+ },
+ "1532778716274823171": {
+  "title": "EA's Hollow Core",
+  "tags": [
+   "memetics & egregores"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "EA became a religion with a hollow core because it never answers why one ought to do good."
+ },
+ "1657067630736408576": {
+  "title": "Spotify and the Missing \"We\"",
+  "tags": [
+   "engineering culture"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "A rant about Spotify's broken offline mode escalates into why software has no discipline-wide coordination mechanism."
+ },
+ "1658506991340322818": {
+  "title": "Newcomers, Incumbents, and Metacognitive Ergodicity",
+  "tags": [
+   "transhumanism & mortality",
+   "engineering culture"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "Naive fix-everything newcomer energy vs. incumbent cybernetic ossification."
+ },
+ "1432939699665047556": {
+  "title": "You Owe the Universe Descendants",
+  "tags": [
+   "transhumanism & mortality"
+  ],
+  "type": "riff",
+  "grade": 2,
+  "gist": "Choosing not to reproduce terminates an unbroken chain of life."
+ },
+ "1543243226123042816": {
+  "title": "Wearing Masks Is a Human Right",
+  "tags": [
+   "autism & neurodivergence"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "Masks and pseudonymity as identity infrastructure; privacy is the morally neutral right to deceive."
+ },
+ "1491453232279093253": {
+  "title": "Accessibility Is Information Theory",
+  "tags": [
+   "computation as lens",
+   "social dynamics"
+  ],
+  "type": "essay",
+  "grade": 5,
+  "gist": "Accessibility as encoding/decoding with error correction; jargon as domain-specific compression; inaccessibility is subjective and morally neutral."
+ },
+ "1627799862019334144": {
+  "title": "Yielding to Sirens, Bidding for Roads",
+  "tags": [
+   "cybernetics & systems",
+   "networks vs institutions",
+   "markets & political economy"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "From drivers yielding to ambulances as emergent consensus to a defense of hyperfinancialization as coordination substrate."
+ },
+ "1382513371640164353": {
+  "title": "The Necessary Ugliness of Progress",
+  "tags": [
+   "markets & political economy"
+  ],
+  "type": "essay",
+  "grade": 3,
+  "gist": "Civilization runs on unsavory necessities; mind is worth the festering biology it rides on."
+ },
+ "1630046078413455361": {
+  "title": "Suspension Systems and Padded Sneakers",
+  "tags": [
+   "engineering culture",
+   "embodiment & practice",
+   "scene & meta"
+  ],
+  "type": "riff",
+  "grade": 2,
+  "gist": "Car suspension as a dimensionality-reducing moving-average over road surface."
+ },
+ "1401608718857408514": {
+  "title": "Refactoring the Cybernetic Surveillant",
+  "tags": [
+   "cybernetics & systems",
+   "autism & neurodivergence"
+  ],
+  "type": "meta",
+  "grade": 3,
+  "gist": "A profile rebrand becomes a reflection on autistic internally-coherent-but-vibeless aesthetics."
+ },
+ "1411753773010243584": {
+  "title": "Fuck Yeah, America: An Immigrant's Accounting",
+  "tags": [
+   "markets & political economy"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "America is dysfunctional and culturally repulsive, but the market's indifference to your origins is a rare and precious deal."
+ },
+ "1439048228427730948": {
+  "title": "The More I Learn, the Less I Know",
+  "tags": [
+   "computation as lens",
+   "epistemics"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "The space of possible knowledge grows exponentially; seek the most greebled, information-dense bits of reality."
+ },
+ "1337972112129224706": {
+  "title": "Index of a Personal Memetic Graph",
+  "tags": [
+   "memetics & egregores",
+   "scene & meta"
+  ],
+  "type": "meta",
+  "grade": 1,
+  "gist": "A self-made index thread linking ~17 representative threads by topic — curation gold."
+ },
+ "1326684746718580736": {
+  "title": "Confidence Is an Attention Psyop",
+  "tags": [
+   "memetics & egregores",
+   "social dynamics",
+   "embodiment & practice"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "Confidence works by directing others' lazy attention to your best parts."
+ },
+ "1391632222210437120": {
+  "title": "Simulacra, Depth, and Hyperreality",
+  "tags": [
+   "memetics & egregores",
+   "mind & phenomenology"
+  ],
+  "type": "essay",
+  "grade": 5,
+  "gist": "A \"depth\" spectrum from static simulacrum to full simulation, routing through semiotics to living cartoon egregores."
+ },
+ "1341162247243100160": {
+  "title": "Formal Logic Is a Mindvirus",
+  "tags": [
+   "memetics & egregores",
+   "epistemics",
+   "social dynamics"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "Formal logical consistency is an artificial meme autists catch easily; you cannot convince someone with logic who doesn't believe in it."
+ },
+ "1551043533552984064": {
+  "title": "The Optimal Amount of Delusion Is Nonzero",
+  "tags": [
+   "transhumanism & mortality",
+   "epistemics"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "Too-accurate self-perception is cognitohazardous; deliberately choosing your cognitive architecture is a transhuman bodymod."
+ },
+ "1659671866003300352": {
+  "title": "Women as Magical Lil Guys",
+  "tags": [
+   "gender & masculinity",
+   "AI"
+  ],
+  "type": "riff",
+  "grade": 2,
+  "gist": "Chivalric reverence stems from seeing women as fascinating magical creatures."
+ },
+ "1464679138355261442": {
+  "title": "Tough Love on Masking",
+  "tags": [
+   "autism & neurodivergence",
+   "social dynamics"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "Autists are responsible for learning norms and masking — the raw-honesty speech he wishes an older weirdo had given him."
+ },
+ "1414093324731002883": {
+  "title": "Load-Bearing Beliefs and the Great Cosmic Joke",
+  "tags": [
+   "mind & phenomenology",
+   "epistemics"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "Sticky load-bearing beliefs culminate in the Great Cosmic Joke: we suffer by trying to will control we never had."
+ },
+ "1374061682335580175": {
+  "title": "Pain All the Way Down",
+  "tags": [
+   "computation as lens",
+   "mind & phenomenology",
+   "embodiment & practice"
+  ],
+  "type": "essay",
+  "grade": 5,
+  "gist": "All emotion is Church-encoded from a single atomic primitive (pain); psychedelics strip the cognitive limiters that filter this raw signal."
+ },
+ "1608362049305993216": {
+  "title": "Religion's Architects Were Memetic Engineers",
+  "tags": [
+   "memetics & egregores",
+   "mind & phenomenology"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "Religion-founders as the original memetic engineers; poasters as the shamans of hyperreality."
+ },
+ "1498105211042291716": {
+  "title": "Annealing Your Way Out of Local Maxima",
+  "tags": [
+   "cybernetics & systems",
+   "computation as lens",
+   "transhumanism & mortality"
+  ],
+  "type": "riff",
+  "grade": 3,
+  "gist": "Simulated annealing and \"debt budgets\"; shitposting as stochastic banger generation."
+ },
+ "1390151139312680960": {
+  "title": "A Case Study in Lab-Leak Epistemics",
+  "tags": [
+   "epistemics"
+  ],
+  "type": "essay",
+  "grade": 3,
+  "gist": "How public discourse punishes well-supported but taboo positions."
+ },
+ "1556028300161650690": {
+  "title": "Democracy, Markets, and Decentralized AI",
+  "tags": [
+   "networks vs institutions",
+   "markets & political economy",
+   "AI"
+  ],
+  "type": "riff",
+  "grade": 3,
+  "gist": "Democracy and markets are tools rather than moral principles; decentralized AI as market-maker agents."
+ },
+ "1554175263419899904": {
+  "title": "Topology-Aware Incentives for Crypto Networks",
+  "tags": [
+   "cybernetics & systems",
+   "networks vs institutions",
+   "engineering culture"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "Fix correlated cloud-hosting failure in cryptosystems by making block rewards topology-aware."
+ },
+ "1494807163738652674": {
+  "title": "Markets as Cybernetic Magic Systems",
+  "tags": [
+   "cybernetics & systems",
+   "networks vs institutions",
+   "markets & political economy"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "Why nerds prefer legible corporate command hierarchies; economies as cybernetic feedback systems."
+ },
+ "1691310957018914816": {
+  "title": "Bully the Robots While They're Small",
+  "tags": [
+   "computation as lens",
+   "epistemics",
+   "AI"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "AI-whispering is the new digital literacy, with conversational interfaces \"regreebling\" what the App sterilized."
+ },
+ "1430019257836916739": {
+  "title": "The Semiotics of the Eruv",
+  "tags": [
+   "memetics & egregores",
+   "epistemics"
+  ],
+  "type": "essay",
+  "grade": 5,
+  "gist": "NYC's eruv wire as a window into legalistic belief systems that language-lawyer inherited rules."
+ },
+ "1411058511476371456": {
+  "title": "Guardrails Should Be Stepwise, Not Binary",
+  "tags": [
+   "social dynamics"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "Good societal constraints are stepwise friction (like poweruser UX) rather than outright bans."
+ },
+ "1462158101445066757": {
+  "title": "Postrationalism Is Steelmanned Rationalism",
+  "tags": [
+   "epistemics",
+   "social dynamics"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "Properly-practiced rationalism converges with steelmanned postrationalism."
+ },
+ "1474470525053325322": {
+  "title": "Cognitohazards Need Ritual Containers",
+  "tags": [
+   "memetics & egregores",
+   "epistemics",
+   "engineering culture"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "Letting your epistemic hair down is powerful but must be ritually bounded; rationality itself is a cognitohazard in degenerate form."
+ },
+ "1383234724894703619": {
+  "title": "Digital Homelessness and the Hierarchy of Needs",
+  "tags": [
+   "networks vs institutions",
+   "markets & political economy",
+   "social dynamics"
+  ],
+  "type": "essay",
+  "grade": 5,
+  "gist": "Coins \"digital homelessness\" and proposes a digital hierarchy of needs to explain why corporations can corral users."
+ },
+ "1410446860960075776": {
+  "title": "Project Managing Your Realtime Existence",
+  "tags": [
+   "mind & phenomenology",
+   "autism & neurodivergence",
+   "transhumanism & mortality"
+  ],
+  "type": "essay",
+  "grade": 5,
+  "gist": "Building a realtime-OS-like conscious architecture under dissociatives, credited with overcoming ADHD executive dysfunction."
+ },
+ "1344006633773535234": {
+  "title": "The West Cannot Face Death",
+  "tags": [
+   "transhumanism & mortality"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "Western end-of-life management is inhumane; consensual, dignified exit should be socially acceptable."
+ },
+ "1516123992603643913": {
+  "title": "Gods Are Literally Real",
+  "tags": [
+   "memetics & egregores",
+   "mind & phenomenology",
+   "AI"
+  ],
+  "type": "essay",
+  "grade": 5,
+  "gist": "Gods are real as distributed computations running on memetic hosts; priests were the first alignment researchers."
+ },
+ "1409946946056470532": {
+  "title": "Git Gud or Get Automated",
+  "tags": [
+   "markets & political economy"
+  ],
+  "type": "riff",
+  "grade": 2,
+  "gist": "A combative rant against protecting automatable jobs."
+ },
+ "1473336087053541379": {
+  "title": "Status Games Around Hard Problems",
+  "tags": [
+   "epistemics",
+   "social dynamics",
+   "scene & meta"
+  ],
+  "type": "riff",
+  "grade": 2,
+  "gist": "Maybe your high-status problems are simple attachment-suffering, or maybe calling them simple is the real status cope."
+ },
+ "1435840057840214019": {
+  "title": "Causal Parallax: Blaming the Brick Wall",
+  "tags": [
+   "mind & phenomenology",
+   "social dynamics"
+  ],
+  "type": "essay",
+  "grade": 5,
+  "gist": "Coins \"causal parallax\" — mistaking your own violated expectations for others' actions."
+ },
+ "1557035255206387717": {
+  "title": "The Optimal Amount of Chaos Is Nonzero",
+  "tags": [
+   "cybernetics & systems",
+   "engineering culture",
+   "AI"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "A chaos-engineering explainer landing on injecting artificial danger into designs — and relationships."
+ },
+ "1496160819368841222": {
+  "title": "The Market-Gaze and Economic Gray Goo",
+  "tags": [
+   "cybernetics & systems",
+   "networks vs institutions",
+   "markets & political economy"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "Capitalism atomizes by fungifying reality under a Market-Gaze; money as the luminous aether of economic information."
+ },
+ "1572233197894639616": {
+  "title": "Naive Greenism and the Return to Dream",
+  "tags": [
+   "mind & phenomenology",
+   "epistemics"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "Greenism's aesthetic fear of artifice; post-truth as a societal re-dreaming."
+ },
+ "1508640832970276864": {
+  "title": "The Spectacle Machine Sows to Reap",
+  "tags": [
+   "memetics & egregores",
+   "epistemics",
+   "social dynamics"
+  ],
+  "type": "riff",
+  "grade": 2,
+  "gist": "Astroturfed pop-culture moments capture the entire timeline."
+ },
+ "1393360494673727491": {
+  "title": "IO-Bound: A Transhumanist Frustration",
+  "tags": [
+   "computation as lens",
+   "transhumanism & mortality",
+   "embodiment & practice"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "From frustration at biological IO bandwidth to a full uploading eschatology."
+ },
+ "1364024336487768072": {
+  "title": "Intellectually Serious Women Are Men",
+  "tags": [
+   "gender & masculinity",
+   "scene & meta"
+  ],
+  "type": "banter",
+  "grade": 1,
+  "gist": "A spicy two-tweet joke."
+ },
+ "1380722790748262400": {
+  "title": "Conservative Now Because Reckless Then",
+  "tags": [],
+  "type": "riff",
+  "grade": 3,
+  "gist": "Survivors of the minefield owe the next generation honest maps of where the dangers are."
+ },
+ "1479358357580488707": {
+  "title": "Shadows on Plato's Cave Wall",
+  "tags": [
+   "epistemics"
+  ],
+  "type": "riff",
+  "grade": 4,
+  "gist": "Language is a lossy dimensional projection of the manifold of meaning."
+ },
+ "1472261215778971652": {
+  "title": "Mini Nukes for Crypto Mining",
+  "tags": [
+   "networks vs institutions",
+   "markets & political economy",
+   "scene & meta"
+  ],
+  "type": "banter",
+  "grade": 1,
+  "gist": "Nuclear-powered mining farms to neutralize environmental objections."
+ },
+ "1556462123605266434": {
+  "title": "Your Motives Are Not Your Own",
+  "tags": [
+   "mind & phenomenology"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "Desires arise from subconscious agents rather than conscious choice; societies of mind dealt hands by the lottery of birth."
+ },
+ "1327110847475408896": {
+  "title": "Load-Bearing Beliefs and Intellectual Adulthood",
+  "tags": [
+   "epistemics"
+  ],
+  "type": "essay",
+  "grade": 5,
+  "gist": "Society lacks intellectual coming-of-age rituals, leaving adults epistemically brittle."
+ },
+ "1566134155754328064": {
+  "title": "Degrowth Is Collapsed High Modernism",
+  "tags": [
+   "networks vs institutions",
+   "markets & political economy"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "Nuclear rejection is aesthetic; degrowth as postmodern loss of high-capex coordination capacity."
+ },
+ "1335714905798881280": {
+  "title": "Coming to Terms with One Lifetime",
+  "tags": [
+   "transhumanism & mortality",
+   "AI"
+  ],
+  "type": "riff",
+  "grade": 3,
+  "gist": "Recognizing life's constraints and redefining legacy through successors."
+ },
+ "1390727936286863363": {
+  "title": "Autists, Annoyance, and Boundary Ownership",
+  "tags": [
+   "autism & neurodivergence",
+   "epistemics",
+   "social dynamics"
+  ],
+  "type": "riff",
+  "grade": 3,
+  "gist": "Autists own responsibility for their own boundaries."
+ },
+ "1380242551219884033": {
+  "title": "No Excuses: A Post-Soviet Rant",
+  "tags": [
+   "autism & neurodivergence"
+  ],
+  "type": "riff",
+  "grade": 2,
+  "gist": "A drill-sergeant rant against executive-dysfunction excuses."
+ },
+ "1534176353674731522": {
+  "title": "Fuck the Antispiral: A Self-Anthology",
+  "tags": [
+   "scene & meta"
+  ],
+  "type": "meta",
+  "grade": 1,
+  "gist": "A pure self-quote collage assembling the \"Team Life\" spiral-energy corpus."
+ },
+ "1378160890726473738": {
+  "title": "Water, Toy Models, and Intuition Pumps",
+  "tags": [
+   "computation as lens",
+   "epistemics"
+  ],
+  "type": "convo",
+  "grade": 4,
+  "gist": "Why physicists prize physical intuition, toy models, and spherical cows."
+ },
+ "1400859137785974785": {
+  "title": "Anger Is a Message, Not a Verdict",
+  "tags": [
+   "mind & phenomenology",
+   "social dynamics"
+  ],
+  "type": "essay",
+  "grade": 4,
+  "gist": "Anger as a homeostatic notification about boundary states."
+ },
+ "1386032370965434375": {
+  "title": "Leave Me Alone to Vibe",
+  "tags": [],
+  "type": "riff",
+  "grade": 3,
+  "gist": "A semi-serious personal credo of \"positive objectivist ethics.\""
+ }
+}

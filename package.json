@@ -1,0 +1,22 @@
+{
+  "name": "peezombie.me",
+  "version": "1.0.0",
+  "private": true,
+  "description": "The pee_zombie Twitter corpus (2020-2025) rendered as a digital garden.",
+  "scripts": {
+    "parse": "cd pipeline && bun parse.ts",
+    "concepts": "cd pipeline && bun concepts.ts",
+    "tags": "cd pipeline && bun make-tags.ts",
+    "export": "cd pipeline && bun export-garden.ts",
+    "bundle": "cd pipeline && bun bundle.ts",
+    "graph": "cd pipeline && bun graph.ts",
+    "analysis": "cd pipeline && bun export.ts",
+    "build": "bun run parse && bun run concepts && bun run tags && bun run export && bun run bundle",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.4.0",
+    "typescript": "^7.0.2"
+  },
+  "type": "module"
+}
