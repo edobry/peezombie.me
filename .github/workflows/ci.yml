@@ -1,0 +1,33 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - run: bun install --frozen-lockfile
+
+      - name: Typecheck
+        run: bun run typecheck
+
+      - name: Build the garden
+        run: bun run build
+
+      - name: Test the built artifact
+        run: bun test
+
+      # site/index.html is committed, and Railway deploys it as-is. If a source
+      # change alters the output, the commit must carry the rebuilt file —
+      # otherwise the repo and the deployed page disagree.
+      - name: Committed site/ matches a fresh build
+        run: git diff --exit-code -- site/

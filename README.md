@@ -27,6 +27,47 @@ survey is in [`research/`](research/).
 | `research/` | Prior-art notes (digital gardens; the TPOT/Visa threading tradition) |
 | `site/index.html` | The built artifact. This is what gets served. |
 
+## Provenance
+
+The corpus comes from a Twitter/X account data export requested **2025-09-21**
+(`twitter-2025-09-21-*.zip`, ~747 MB, mostly media the pipeline never reads).
+
+**What is in this repo:** `data/tweets.js` (22,549 tweets, 2020-2025) and
+`data/note-tweet.js` (long-form tweet bodies). These are the only two files
+`parse.ts` reads.
+
+**What is deliberately excluded**, and why:
+
+| Excluded | Reason |
+| --- | --- |
+| `account.js`, `profile.js` | contain the account email; the pipeline never reads them |
+| `direct-messages*.js`, `*-headers.js` | private correspondence, incl. third parties |
+| `contact.js` | an uploaded address book |
+| `ip-audit.js`, `account-creation-ip.js`, `device-token.js`, `ni-devices.js` | device and network identifiers |
+| `phone-number.js`, `email-address-change.js` | direct identifiers |
+| `like.js`, `block.js`, `mute.js` | reading and moderation behavior, not authored work |
+| `grok-chat-item.js`, `personalization.js`, `ad-*.js` | inferred profile and ad telemetry |
+| the archive `.zip` itself | gitignored; it carries all of the above |
+
+**Everything published here was posted publicly.** `protected-history.js` in the
+export is empty, meaning the account was never protected, so no tweet in this
+corpus was ever follower-only. No tweet carries Twitter's `possibly_sensitive`
+flag.
+
+**Caveat this repo cannot check for you:** the export is a point-in-time
+snapshot. A tweet deleted *after* 2025-09-21 is still in `data/tweets.js`.
+
+## Licensing
+
+Two licenses, because this repo holds two different things:
+
+- **Code** — everything in `pipeline/`, plus the build configuration: [MIT](LICENSE).
+- **The corpus and the writing** — `data/`, `analysis/`, `spec/`, `research/`, and
+  the rendered prose in `site/`: **© Eugene Dobry, all rights reserved** unless and
+  until stated otherwise here.
+
+If you want to reuse the corpus itself, ask.
+
 ## Build
 
 ```sh
