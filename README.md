@@ -72,8 +72,25 @@ If you want to reuse the corpus itself, ask.
 
 ```sh
 bun install     # first time only — TypeScript + @types/bun
+# data/ is not in this repo — see "Getting the corpus" below
 bun run build
 ```
+
+### Getting the corpus
+
+`data/` is gitignored and absent from history. Populate it either way:
+
+**From a Twitter/X archive export:**
+
+```sh
+unzip twitter-*.zip 'data/tweets*.js' 'data/note-tweet.js' -d .
+```
+
+**From the [Community Archive](https://www.community-archive.org/):** the corpus is
+also queryable via its public Supabase REST API (`tweets`, `tweet_urls`,
+`enriched_tweets`). Prefer `tweet_urls.expanded_url` over
+`enriched_tweets.quoted_tweet_id` — the latter does not strip URL tracking
+parameters, so a large share of quote-link IDs come back malformed.
 
 Runs, in order: `parse` → `concepts` → `tags` → `export` → `bundle`, writing
 `site/index.html`. `bun run typecheck` runs `tsc --noEmit` over the pipeline.

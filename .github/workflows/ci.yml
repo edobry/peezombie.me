@@ -20,14 +20,12 @@ jobs:
       - name: Typecheck
         run: bun run typecheck
 
-      - name: Build the garden
-        run: bun run build
-
-      - name: Test the built artifact
+      # `bun run build` is NOT run here. The corpus (data/) is deliberately not in
+      # this repo, so CI cannot regenerate site/index.html. The tests below run
+      # against the COMMITTED artifact instead, which is what actually gets served.
+      #
+      # Consequence, stated plainly: CI can no longer prove that site/index.html
+      # matches a fresh build of the current pipeline. If you change pipeline/,
+      # rebuild locally and commit the result — nothing here will catch a stale site/.
+      - name: Test the committed artifact
         run: bun test
-
-      # site/index.html is committed, and Railway deploys it as-is. If a source
-      # change alters the output, the commit must carry the rebuilt file —
-      # otherwise the repo and the deployed page disagree.
-      - name: Committed site/ matches a fresh build
-        run: git diff --exit-code -- site/

@@ -1,8 +1,11 @@
 .DS_Store
 node_modules/
 
-# Raw Twitter archive export (~747 MB, mostly media the pipeline never reads).
-# Only data/tweets.js and data/note-tweet.js are needed, and those are committed.
+# The corpus itself is NOT committed. data/ is the principal's own Twitter export;
+# it is reconstructed locally from the archive zip (see README > Provenance), or
+# pulled from the Community Archive API. History was purged of it via git-filter-repo
+# on 2026-08-27.
+data/
 twitter-*.zip
 
 # Pipeline intermediates — all regenerable via `npm run build`.
