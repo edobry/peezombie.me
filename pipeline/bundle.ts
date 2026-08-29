@@ -12,10 +12,9 @@
 // build silently turned a tweet's `$$` into `$`. A function replacement has no
 // such interpretation.
 //
-// The three functions below are exported and kept free of I/O so the round-trip
-// can be tested against a synthetic payload. That matters because the corpus is
-// not in the repo: a test that compares the built page against garden-data.json
-// cannot run in CI, and for a while did not (see bundle.test.ts).
+// The transform functions below are exported and free of I/O so the round-trip
+// can be tested against a synthetic payload — the corpus is not in the repo, so
+// a test needing garden-data.json cannot run in CI.
 import fs from "node:fs";
 import path from "node:path";
 

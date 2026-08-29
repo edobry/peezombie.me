@@ -1,26 +1,18 @@
 #!/usr/bin/env bun
 // Regression tests for the bundle step.
 //
-// The load-bearing test is round-trip fidelity. A previous build passed the
-// data to String.replace as a replacement STRING, so a tweet containing `$$`
-// was silently rewritten to `$` — one corrupted character in 4 MB, invisible to
-// every other check.
+// The round-trip test is load-bearing: an earlier build passed the data to
+// String.replace as a replacement STRING, so a tweet's `$$` was silently
+// rewritten to `$` — one corrupted character in 4 MB, invisible to every other
+// check. That is why the fixture carries `$$`, `$&`, `` $` ``, `$'` and a
+// literal `</script>`, and why a second test asserts they are still in it.
 //
-// That test used to compare the built page against `pipeline/garden-data.json`.
-// It was written when the corpus was tracked and CI ran `bun run build`; commit
-// 21acaa9 removed the corpus and stopped CI from building, which left the test
-// reading a gitignored file that exists in no fresh checkout. CI went red and
-// stayed red.
+// The fixture is synthetic on purpose: the corpus is not in the repo, so a test
+// needing garden-data.json cannot run in CI. Do not "improve" this by comparing
+// against real build output.
 //
-// It now round-trips a SYNTHETIC payload through the same functions the build
-// uses. That needs no corpus, so it actually runs in CI — and it covers the
-// class better than the old comparison did, because it asserts every dangerous
-// sequence is present rather than hoping the real corpus happens to contain one
-// ($& and $' may well appear nowhere in 22,549 tweets).
-//
-// The remaining tests read the COMMITTED site/index.html, which is in the repo.
-// Whether that artifact is current for the pipeline is a different question, and
-// not one this file can answer — mt#4751 owns it.
+// The other tests read the committed site/index.html. Whether that artifact is
+// current for the pipeline is mt#4751's question, not this file's.
 import { describe, expect, test } from "bun:test";
 import fs from "node:fs";
 import path from "node:path";
