@@ -1,6 +1,5 @@
 tasks:
   backend: minsky
-  strictIds: false
 persistence:
   backend: postgres
 logger:
@@ -13,7 +12,5 @@ repository:
   github:
     owner: edobry
     repo: peezombie.me
-mcp:
-  transport: stdio
 project:
   slug: edobry/peezombie.me
