@@ -10,8 +10,8 @@ The pee_zombie Twitter corpus (2020–2025) rendered as a digital garden, served
 
 ## Runtime
 
-**Bun, never Node** — `bun install`, `bun run <script>`, `bun test`. Not a style preference; see
-trap 2.
+**Bun, never Node** — `bun install`, `bun run <script>`, `bun test`. Every script in `package.json`
+and every CI step already assumes it; match them when you run anything ad-hoc.
 
 ## Layout
 
