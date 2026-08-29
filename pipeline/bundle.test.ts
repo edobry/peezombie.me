@@ -1,37 +1,68 @@
 #!/usr/bin/env bun
-// Regression tests for the bundle step, run against the BUILT artifact.
-// Run `bun run build` first (CI does).
+// Regression tests for the bundle step.
 //
-// The load-bearing test is round-trip fidelity. A previous build passed the
-// data to String.replace as a replacement STRING, so a tweet containing `$$`
-// was silently rewritten to `$` — one corrupted character in 4 MB, invisible to
-// every other check. Comparing the embedded payload against its source catches
-// that entire class ($$, $&, $`, $', and `</script>` escaping) without being
-// brittle the way a golden hash would be.
+// The round-trip test is load-bearing: an earlier build passed the data to
+// String.replace as a replacement STRING, so a tweet's `$$` was silently
+// rewritten to `$` — one corrupted character in 4 MB, invisible to every other
+// check. That is why the fixture carries `$$`, `$&`, `` $` ``, `$'` and a
+// literal `</script>`, and why a second test asserts they are still in it.
+//
+// The fixture is synthetic on purpose: the corpus is not in the repo, so a test
+// needing garden-data.json cannot run in CI. Do not "improve" this by comparing
+// against real build output.
+//
+// The other tests read the committed site/index.html. Whether that artifact is
+// current for the pipeline is mt#4751's question, not this file's.
 import { describe, expect, test } from "bun:test";
 import fs from "node:fs";
 import path from "node:path";
+import { DATA_PLACEHOLDER, embedData, extractEmbeddedPayload } from "./bundle";
 
 const DIR = import.meta.dir;
 const HTML = path.join(DIR, "..", "site", "index.html");
-const DATA = path.join(DIR, "garden-data.json");
 
 const html = fs.readFileSync(HTML, "utf8");
 
 /** Pull the embedded payload back out of the built page, undoing the `<\/` escape. */
 function embeddedPayload(): string {
-  const open = '<script type="application/json" id="data">';
-  const a = html.indexOf(open);
-  expect(a).toBeGreaterThan(-1);
-  const start = a + open.length;
-  const end = html.indexOf("</script>", start);
-  expect(end).toBeGreaterThan(start);
-  return html.slice(start, end).replace(/<\\\//g, "</");
+  return extractEmbeddedPayload(html);
 }
 
 describe("bundle round-trip fidelity", () => {
-  test("embedded payload is byte-identical to garden-data.json", () => {
-    expect(embeddedPayload()).toBe(fs.readFileSync(DATA, "utf8"));
+  // Every sequence String.replace would reinterpret in a replacement STRING,
+  // plus the `</script>` that would close the JSON block early.
+  const adversarial = JSON.stringify({
+    generated: "2026-01-01",
+    tweets: [
+      "a $$ b", "a $& b", "a $` b", "a $' b", "a $1 b",
+      "closing </script> tag", "nested </scr" + "ipt> pieces",
+      "backslash \\ and quote \" and newline \n",
+    ],
+  });
+
+  test("a synthetic payload survives embed -> extract byte-identically", () => {
+    const template = `<!DOCTYPE html><html lang="en"><body>` +
+      `<script type="application/json" id="data">${DATA_PLACEHOLDER}</script>` +
+      `</body></html>`;
+    expect(extractEmbeddedPayload(embedData(template, adversarial))).toBe(adversarial);
+  });
+
+  test("the adversarial payload actually contains what it claims to test", () => {
+    // Guards the test above from decaying into a tautology if the fixture is edited.
+    for (const seq of ["$$", "$&", "$`", "$'", "</script>"]) {
+      expect(adversarial).toContain(seq);
+    }
+  });
+
+  test("embedding leaves no literal `</script>` inside the block", () => {
+    const template = `<script type="application/json" id="data">${DATA_PLACEHOLDER}</script>`;
+    const out = embedData(template, adversarial);
+    const start = out.indexOf(">") + 1;
+    expect(out.slice(start, out.indexOf("</script>", start))).not.toContain("</script>");
+  });
+
+  test("a template missing the placeholder is rejected", () => {
+    expect(() => embedData("<html></html>", adversarial)).toThrow(DATA_PLACEHOLDER);
   });
 
   test("embedded payload parses and carries every top-level key", () => {

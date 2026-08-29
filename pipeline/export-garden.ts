@@ -152,8 +152,21 @@ for (let i = 0; i < N; i++) { const nd = nodes[i]!; nd.x = Math.round(px[i]); nd
 
 // --- concept weave: all own tweets matching the concept lexicon ---
 const weave: { concepts: string[]; corpus: CorpusEntry[] } = { concepts: [], corpus: [] };
-try {
-  const ci: ConceptIndex = JSON.parse(fs.readFileSync(path.join(DIR, 'concept-index.json'), 'utf8'));
+{
+  // Hard-fail rather than skip. This block used to be wrapped in a try/catch that
+  // logged 'no concept index, skipping weave' and continued, so a run that skipped
+  // `concepts` still exited 0 and still wrote a plausible-looking garden-data.json —
+  // with 0 concepts and 0 corpus tweets instead of 96 and 8,197. The build looked
+  // like it worked. Missing input is an error, not an option.
+  const ciPath = path.join(DIR, 'concept-index.json');
+  if (!fs.existsSync(ciPath)) {
+    throw new Error(
+      `concept-index.json not found at ${ciPath}.\n` +
+      `Run \`bun run concepts\` before \`export\` — or just \`bun run build\`, which orders the ` +
+      `steps correctly. Without it the concept and corpus layers render empty.`
+    );
+  }
+  const ci: ConceptIndex = JSON.parse(fs.readFileSync(ciPath, 'utf8'));
   const tweetById = new Map<string, Tweet>(tweets.map(t => [t.id, t]));
   weave.concepts = ci.concepts;
   for (const [id, cidx] of Object.entries(ci.perTweet)) {
@@ -168,7 +181,7 @@ try {
     });
   }
   weave.corpus.sort((a, b) => a.d.localeCompare(b.d));
-} catch (e) { console.log('no concept index, skipping weave:', (e as Error).message); }
+}
 
 const out: GardenData = { generated: '2026-07-06', account: 'pee_zombie', nodes, edges: edgeList, quoted: quotedTexts, concepts: weave.concepts, corpus: weave.corpus };
 fs.writeFileSync(path.join(DIR, 'garden-data.json'), JSON.stringify(out));

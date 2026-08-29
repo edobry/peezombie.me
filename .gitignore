@@ -15,3 +15,22 @@ pipeline/thread-links.json
 pipeline/concept-index.json
 pipeline/garden-data.json
 pipeline/tags.json
+
+# Scratch notes, not part of the project.
+.notes/
+
+# Minsky project identity (.minsky/config.yaml) IS tracked — it is how this repo
+# resolves to its project. config.local.yaml is machine-local (absolute paths,
+# per-machine harness) and must not be.
+.minsky/config.local.yaml
+
+# Left over from an `init` run predating mt#4715, when the default was
+# --rule-format cursor. `init` now compiles for the detected harness, so this repo
+# (worked in Claude Code — see mt#4676) no longer generates .cursor/ at all. The
+# ignore stays because existing checkouts still carry the old directory.
+.cursor/
+
+# Agent-harness telemetry. Minsky's hooks write calibration and evaluation logs
+# into .minsky/ of whatever repo they run in; none of it is project state.
+.minsky/*.jsonl
+.minsky/calibration-*.json

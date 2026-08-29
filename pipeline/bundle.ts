@@ -11,21 +11,59 @@
 // `$$`, `$&`, `` $` `` and `$'` in a replacement STRING as escapes — an earlier
 // build silently turned a tweet's `$$` into `$`. A function replacement has no
 // such interpretation.
+//
+// The transform functions below are exported and free of I/O so the round-trip
+// can be tested against a synthetic payload — the corpus is not in the repo, so
+// a test needing garden-data.json cannot run in CI.
 import fs from "node:fs";
 import path from "node:path";
 
-const DIR = import.meta.dir;
-const SITE = path.join(DIR, "..", "site");
+export const DATA_PLACEHOLDER = "/*__DATA__*/";
+const SCRIPT_OPEN = '<script type="application/json" id="data">';
 
-const template = fs.readFileSync(path.join(DIR, "garden-template.html"), "utf8");
-const data = fs.readFileSync(path.join(DIR, "garden-data.json"), "utf8");
-const escaped = data.replace(/<\//g, "<\\/");
+/** Escape `</` so a `</script>` inside the data cannot close the JSON block early. */
+export function escapeForScriptBlock(data: string): string {
+  return data.replace(/<\//g, "<\\/");
+}
 
-if (!template.includes("/*__DATA__*/")) throw new Error("template is missing the /*__DATA__*/ placeholder");
-const out = template.replace("/*__DATA__*/", () => escaped);
+/** Inverse of escapeForScriptBlock — what a reader does to recover the payload. */
+export function unescapeFromScriptBlock(embedded: string): string {
+  return embedded.replace(/<\\\//g, "</");
+}
 
-fs.mkdirSync(SITE, { recursive: true });
-fs.writeFileSync(path.join(SITE, "index.html"), out);
+/**
+ * Inline `data` into `template` at the placeholder. The replacement is a
+ * function so that `$$`, `$&`, `` $` `` and `$'` in the data are inserted
+ * literally rather than interpreted as String.replace escapes.
+ */
+export function embedData(template: string, data: string): string {
+  if (!template.includes(DATA_PLACEHOLDER)) {
+    throw new Error(`template is missing the ${DATA_PLACEHOLDER} placeholder`);
+  }
+  return template.replace(DATA_PLACEHOLDER, () => escapeForScriptBlock(data));
+}
 
-// favicon.svg, og.png and robots.txt are checked in alongside it and served as-is.
-console.log(`bundled -> site/index.html (${Buffer.byteLength(out)} bytes)`);
+/** Pull the embedded payload back out of a built page, undoing the `<\/` escape. */
+export function extractEmbeddedPayload(html: string): string {
+  const a = html.indexOf(SCRIPT_OPEN);
+  if (a === -1) throw new Error("built page has no JSON data block");
+  const start = a + SCRIPT_OPEN.length;
+  const end = html.indexOf("</script>", start);
+  if (end <= start) throw new Error("built page's JSON data block is unterminated");
+  return unescapeFromScriptBlock(html.slice(start, end));
+}
+
+if (import.meta.main) {
+  const DIR = import.meta.dir;
+  const SITE = path.join(DIR, "..", "site");
+
+  const template = fs.readFileSync(path.join(DIR, "garden-template.html"), "utf8");
+  const data = fs.readFileSync(path.join(DIR, "garden-data.json"), "utf8");
+  const out = embedData(template, data);
+
+  fs.mkdirSync(SITE, { recursive: true });
+  fs.writeFileSync(path.join(SITE, "index.html"), out);
+
+  // favicon.svg, og.png and robots.txt are checked in alongside it and served as-is.
+  console.log(`bundled -> site/index.html (${Buffer.byteLength(out)} bytes)`);
+}

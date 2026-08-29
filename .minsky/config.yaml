@@ -1,0 +1,16 @@
+tasks:
+  backend: minsky
+persistence:
+  backend: postgres
+logger:
+  mode: auto
+  level: info
+  enableAgentLogs: false
+repository:
+  backend: github
+  url: https://github.com/edobry/peezombie.me.git
+  github:
+    owner: edobry
+    repo: peezombie.me
+project:
+  slug: edobry/peezombie.me
