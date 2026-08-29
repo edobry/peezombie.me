@@ -4,114 +4,85 @@
 
 # peezombie.me
 
-The [pee_zombie](https://twitter.com/pee_zombie) Twitter corpus (2020–2025) rendered as a digital
-garden: threads read as essays, quote-tweets read as hyperlinks, the whole web navigable by concept
-rather than chronology. Live at **https://peezombie.me**.
-
-The corpus is a deliberate hypertext, not a pile of tweets — 22,549 tweets, 1,776 self-reply
-threads, and 1,662 self-quote links resolving to 1,110 thread-to-thread edges, whose giant
-connected component spans 913 nodes. Design rationale: `spec/tweet-garden.md`. Prior-art survey:
-`research/`.
+The pee_zombie Twitter corpus (2020–2025) rendered as a digital garden, served at
+**https://peezombie.me**. Background and design rationale are in `README.md` and
+`spec/tweet-garden.md` — read them when you need the why; this file is the operating rules.
 
 ## Runtime
 
-**Bun, never Node** — `bun install`, `bun run <script>`, `bun test`. This is not a style
-preference here; see the determinism trap below.
+**Bun, never Node** — `bun install`, `bun run <script>`, `bun test`. Not a style preference; see
+trap 2.
 
 ## Layout
 
 | Path | What it is |
 | --- | --- |
-| `data/` | The two archive files the pipeline reads (`tweets.js`, `note-tweet.js`). **Not in the repo** — see Corpus boundary. |
-| `pipeline/` | Build scripts — extraction, graph construction, layout, bundling |
-| `pipeline/types.ts` | Shared domain types — `Tweet`, `Thread`, `GardenNode`, `GardenData` |
-| `analysis/corpus-catalog.md` | The editorial layer — hand-curated titles, themes, grades, gists for the top 200 threads |
-| `spec/`, `research/` | Design documents; prior-art notes |
+| `data/` | The two archive files the pipeline reads. **Never committed** — see Corpus boundary. |
+| `pipeline/` | Build scripts; `types.ts` holds the shared domain types |
+| `analysis/corpus-catalog.md` | The editorial layer — the only file where curation judgment lives |
 | `site/index.html` | The built artifact. This is what gets served. |
 
-`parse.ts` and `graph.ts` are fully mechanical. Editorial judgment lives only in
-`analysis/corpus-catalog.md` — edit it line by line, then rebuild.
+`parse.ts` and `graph.ts` are fully mechanical: to change what the site says, edit
+`analysis/corpus-catalog.md` and rebuild.
 
 ## Build
 
 ```sh
-bun install
 bun run build      # parse → concepts → tags → export → bundle, writes site/index.html
-bun run typecheck  # tsc --noEmit over the pipeline
+bun run typecheck  # tsc --noEmit
 ```
 
-Three traps, each of which fails **silently** rather than loudly. All three are the same shape: the
-build looks like it worked.
+Three traps. All have the same shape — **the build looks like it worked**:
 
-1. **Run `concepts` before `export`.** Skipping it does not fail — you still get 778 nodes and 976
-   edges — but `concept-index.json` is absent, so the concept and corpus layers come out empty
-   (96 → 0 concepts, 8,197 → 0 corpus tweets). `bun run build` already orders this correctly; the
-   trap is running the steps by hand.
-2. **Regenerate `site/index.html` with Bun only.** The force layout uses a seeded LCG and is
-   byte-identical across repeated Bun runs, but V8 and JavaScriptCore disagree on the float math,
-   so a Node run produces different node coordinates. Neither is more correct — but the committed
-   build is Bun's, and a Node-generated artifact will show up as a spurious full-file diff.
-3. **CI does not rebuild, so it cannot catch a stale `site/index.html`.** `data/` is deliberately
-   absent, so CI runs `typecheck` plus `bun test` against the *committed* artifact instead of a
-   fresh build. Consequence, stated plainly: **if you change `pipeline/`, rebuild locally and commit
-   the result** — nothing in CI will tell you the served artifact no longer matches the pipeline.
+1. **Run `concepts` before `export`.** Skipping it does not fail; you still get plausible node and
+   edge counts. But `concept-index.json` is missing, so the concept and corpus layers come out
+   empty (96 → 0 concepts, 8,197 → 0 corpus tweets). `bun run build` orders this correctly — the
+   trap is running steps by hand.
+2. **Regenerate `site/index.html` with Bun only.** The force layout is byte-stable across Bun runs
+   but V8 and JavaScriptCore disagree on the float math, so a Node run silently produces different
+   coordinates and a spurious full-file diff.
+3. **CI does not rebuild, so it cannot catch a stale `site/index.html`.** The corpus is not in the
+   repo, so CI typechecks and tests the *committed* artifact. **If you change `pipeline/`, rebuild
+   locally and commit the result** — nothing will tell you the served site no longer matches the
+   pipeline.
 
-## Corpus boundary — read before touching `data/`
+## Corpus boundary
 
-`data/` is gitignored and absent from history (purged with `git-filter-repo` on 2026-08-27), as is
-the archive `.zip`. Never commit either.
+`data/` and the archive `.zip` are gitignored. **Never commit either**, and never add any other
+file from the Twitter export: the pipeline reads only `data/tweets.js` and `data/note-tweet.js`,
+and everything else is excluded for privacy — the export carries the account email, direct
+messages, an address book, and device identifiers. `README.md` § Provenance is the authoritative
+list and the reasoning.
 
-Populate `data/` locally from a Twitter/X archive export:
+Populate `data/` locally:
 
 ```sh
 unzip twitter-*.zip 'data/tweets*.js' 'data/note-tweet.js' -d .
 ```
 
-Those two files are the **only** ones `parse.ts` reads, and the exclusion of everything else in the
-export is a privacy decision, not an oversight. Do not add `account.js` or `profile.js` (they carry
-the account email), direct messages or `*-headers.js` (private correspondence, including third
-parties), `contact.js` (an uploaded address book), the IP/device identifier files,
-`phone-number.js`, `like.js`/`block.js`/`mute.js` (reading and moderation behavior, not authored
-work), or the ad and personalization telemetry. The README's Provenance table is the authoritative
-list.
+## Licensing
 
-Everything published here was posted publicly: `protected-history.js` is empty, so no tweet was
-ever follower-only, and none carries the `possibly_sensitive` flag. One caveat the repo cannot
-check for you — the export is a point-in-time snapshot, so a tweet deleted after 2025-09-21 is
-still in `data/tweets.js`.
-
-The corpus is also queryable via the [Community Archive](https://www.community-archive.org/)
-public Supabase REST API. Prefer `tweet_urls.expanded_url` over
-`enriched_tweets.quoted_tweet_id` — the latter does not strip URL tracking parameters, so a large
-share of quote-link IDs come back malformed.
-
-## Licensing — two licenses, because this repo holds two things
-
-- **Code** — `pipeline/` plus build configuration: MIT (`LICENSE`).
-- **The corpus and the writing** — `data/`, `analysis/`, `spec/`, `research/`, and the rendered
-  prose in `site/`: © Eugene Dobry, all rights reserved.
-
-Do not relicense or extract corpus content on the assumption the repo is MIT throughout.
+Code (`pipeline/`, build config) is MIT. The corpus and writing (`data/`, `analysis/`, `spec/`,
+`research/`, and the prose in `site/`) are all rights reserved. Do not treat the repo as uniformly
+MIT when reusing or publishing content.
 
 ## Deploy
 
-`site/index.html` is a single self-contained file — no external assets, nothing server-side.
-Railway's Railpack builder detects a static site from a bare `index.html` and serves it directly.
-**Pushing to `main` deploys the live site**, so treat a merge to `main` as a deploy.
+**Pushing to `main` deploys the live site** — Railway serves `site/index.html` directly. Treat a
+merge to `main` as a deploy; it is an operator action.
 
 ## Working this project with Minsky
 
-This repo is Minsky-managed: `.minsky/config.yaml` is tracked and is how the repo resolves to its
-project. Tasks live in the Minsky backend, not in files.
+Tasks live in the Minsky backend, not in files. Implementation happens in a **session workspace**,
+not in this checkout: `session_start` bound to the task, `session_*` tools for edits, then
+`session_pr_create` → the reviewer bot → `session_pr_merge`. Never set a task DONE by hand.
 
-- Implementation happens in a **session workspace**, not in this checkout — start one with
-  `session_start` bound to the task, and use the `session_*` tools for edits.
-- The PR path is `session_pr_create` → the reviewer bot reviews automatically → `session_pr_merge`.
-  Do not set a task DONE by hand; the merge does it.
-- Because merging to `main` deploys, a merge here is an operator action.
+Two repo-specific cautions:
 
-**The full Minsky workflow ruleset is deliberately not installed in this project yet.** `minsky
-init`'s scaffolded workflow templates are stale (they reference a `git approve` command that no
-longer exists) and, under Claude Code, are not reachable by any retrieval path — so carrying them
-would be worse than carrying nothing. Which rules a Minsky-managed project should receive is being
-designed under mt#4744; this file is a deliberate per-project stand-in until that lands.
+- **`CLAUDE.md` is generated from this file** by `minsky compile --target claude.md`. If you edit
+  this rule, recompile and commit both. Nothing enforces that here — unlike the Minsky repo, this
+  project has no pre-commit staleness check, so a drifted `CLAUDE.md` fails the same silent way
+  trap 3 does.
+- **Do not run `minsky init --overwrite` here.** It re-scaffolds six workflow templates that are
+  stale and that Claude Code cannot read by any retrieval path. Which rules a Minsky project
+  should receive is being designed under mt#4744; this file is the deliberate stand-in.
