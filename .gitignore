@@ -29,3 +29,8 @@ pipeline/tags.json
 # (worked in Claude Code — see mt#4676) no longer generates .cursor/ at all. The
 # ignore stays because existing checkouts still carry the old directory.
 .cursor/
+
+# Agent-harness telemetry. Minsky's hooks write calibration and evaluation logs
+# into .minsky/ of whatever repo they run in; none of it is project state.
+.minsky/*.jsonl
+.minsky/calibration-*.json
