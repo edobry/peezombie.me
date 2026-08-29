@@ -1,6 +1,6 @@
 ---
 name: peezombie.me project instructions
-description: Operating rules for the peezombie.me repo — Bun-only builds, the silent-failure traps, what must never be committed, and what a push to main does
+description: Operating rules for the peezombie.me repo — Bun-only builds, the stale-artifact trap, what must never be committed, and what a push to main does
 alwaysApply: true
 ---
 
@@ -34,19 +34,13 @@ bun run build      # parse → concepts → tags → export → bundle, writes s
 bun run typecheck  # tsc --noEmit
 ```
 
-Three traps. All have the same shape — **the build looks like it worked**:
+One trap, and it has this project's characteristic shape — **the build looks like it worked**:
 
-1. **Run `concepts` before `export`.** Skipping it does not fail; you still get plausible node and
-   edge counts. But `concept-index.json` is missing, so the concept and corpus layers come out
-   empty (96 → 0 concepts, 8,197 → 0 corpus tweets). `bun run build` orders this correctly — the
-   trap is running steps by hand.
-2. **Regenerate `site/index.html` with Bun only.** The force layout is byte-stable across Bun runs
-   but V8 and JavaScriptCore disagree on the float math, so a Node run silently produces different
-   coordinates and a spurious full-file diff.
-3. **CI does not rebuild, so it cannot catch a stale `site/index.html`.** The corpus is not in the
-   repo, so CI typechecks and tests the *committed* artifact. **If you change `pipeline/`, rebuild
-   locally and commit the result** — nothing will tell you the served site no longer matches the
-   pipeline.
+**CI does not rebuild, so it cannot catch a stale `site/index.html`.** The corpus is deliberately
+not in the repo, so CI typechecks and runs `bun test` against the *committed* artifact rather than a
+fresh build. **If you change `pipeline/`, rebuild locally and commit the result** — nothing will
+tell you the served site no longer matches the pipeline. Being replaced by a real check (mt#4751);
+delete this note when that lands.
 
 ## Corpus boundary
 
@@ -82,9 +76,9 @@ not in this checkout: `session_start` bound to the task, `session_*` tools for e
 Two repo-specific cautions:
 
 - **`CLAUDE.md` is generated from this file** by `minsky compile --target claude.md`. If you edit
-  this rule, recompile and commit both. Nothing enforces that here — unlike the Minsky repo, this
-  project has no pre-commit staleness check, so a drifted `CLAUDE.md` fails the same silent way
-  trap 3 does.
+  this rule, recompile and commit both. Nothing enforces that here — this project has no hooks, so
+  a drifted `CLAUDE.md` fails the same silent way the stale-artifact trap above does. Same class,
+  same fix; mt#4751 covers both.
 - **Do not run `minsky init --overwrite` here.** It re-scaffolds six workflow templates that are
   stale and that Claude Code cannot read by any retrieval path. Which rules a Minsky project
   should receive is being designed under mt#4744; this file is the deliberate stand-in.
