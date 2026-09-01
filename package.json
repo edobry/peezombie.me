@@ -12,6 +12,7 @@
     "graph": "cd pipeline && bun graph.ts",
     "analysis": "cd pipeline && bun export.ts",
     "build": "bun run parse && bun run concepts && bun run tags && bun run export && bun run bundle",
+    "deploy": "bun run build && bunx wrangler deploy",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {

@@ -1,0 +1,23 @@
+{
+  // Assets-only Worker: site/ is uploaded and served directly, with no Worker
+  // script. `main` and `assets.binding` are deliberately absent — both are only
+  // valid alongside a script, and adding either would make this a code deploy.
+  // https://developers.cloudflare.com/workers/static-assets/
+  //
+  // This is the whole reason the payload can be gitignored: `wrangler deploy`
+  // UPLOADS site/, so the corpus reaches production without ever being committed.
+  // A git-driven host (Railway today, or a gh-pages branch) cannot do that — it
+  // builds from the repo, so a gitignored payload would simply never arrive.
+  "name": "peezombie-me",
+  "compatibility_date": "2026-09-01",
+  "assets": {
+    "directory": "./site"
+
+    // `not_found_handling` is deliberately left at its default, which returns a
+    // real 404 for an unmatched path. That is load-bearing: a shell cached from
+    // an older deploy asks for a payload filename that no longer exists, and the
+    // loader reports the 404. Under "single-page-application" the same request
+    // would return index.html with a 200 and the page would fail on a confusing
+    // JSON parse error instead.
+  }
+}

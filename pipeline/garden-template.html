@@ -6,6 +6,11 @@
 <meta name="description" content="22,549 tweets (2020-2025) as a navigable hypertext: threads read as essays, quote-tweets as hyperlinks, browsable by concept rather than chronology.">
 <link rel="canonical" href="https://peezombie.me/">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<!-- The garden payload is fetched, not inlined (mt#4678). `crossorigin` is
+     deliberate even though this is same-origin: without it the preload is a
+     no-cors request, which does not match the loader's plain fetch() and would
+     be downloaded twice instead of reused. -->
+<link rel="preload" href="/*__DATA_URL__*/" as="fetch" crossorigin>
 <meta name="theme-color" content="#0b0d0b" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#f1f3ef" media="(prefers-color-scheme: light)">
 <meta property="og:type" content="website">
@@ -161,9 +166,20 @@ h2.sect { font-size: 11px; font-weight: 500; letter-spacing: .18em; text-transfo
   #search { width: 110px; } #top { gap: 8px; padding: 0 10px; } #top .sub { display: none; }
   .pane { flex-basis: 100vw; }
 }
+/* Boot overlay. Covers the page while the payload is in flight, and is where a
+   load failure is reported — the garden must never render empty and read as a
+   corpus with nothing in it. */
+#boot { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center;
+  background: var(--bg); padding: 24px; }
+#boot .bootmsg { margin: 0; max-width: 52ch; text-align: center; font-family: var(--mono);
+  font-size: 13px; line-height: 1.7; color: var(--muted); letter-spacing: 0.03em; }
+#boot.err .bootmsg { color: var(--amber); }
+#boot.gone { display: none; }
 </style>
 </head>
 <body>
+
+<div id="boot" role="status" aria-live="polite"><p class="bootmsg">loading the garden…</p></div>
 
 <header id="top">
   <canvas id="eca"></canvas>
@@ -218,9 +234,72 @@ h2.sect { font-size: 11px; font-weight: 500; letter-spacing: .18em; text-transfo
   </section>
 </div>
 
-<script type="application/json" id="data">/*__DATA__*/</script>
 <script>
-const DATA = JSON.parse(document.getElementById('data').textContent);
+/* The garden payload is fetched from a sibling file rather than inlined here,
+   so that the corpus stays out of this repo (mt#4678). Both values below are
+   stamped in by pipeline/bundle.ts; the URL carries a content hash, so a shell
+   cached from an older deploy asks for a filename that is no longer there. */
+const DATA_URL = "/*__DATA_URL__*/";
+const DATA_GENERATED = "/*__DATA_GENERATED__*/";
+
+const bootEl = document.getElementById('boot');
+
+/* Fail loudly and visibly. Every path below ends here rather than leaving a
+   half-drawn page: a garden with no nodes looks like a corpus with nothing in
+   it, which is the one failure mode that reads as success. */
+function bootFail(msg) {
+  bootEl.className = 'err';
+  bootEl.querySelector('.bootmsg').textContent = msg;
+  const err = new Error(msg);
+  err.reported = true;
+  return err;
+}
+
+async function loadGarden() {
+  let res;
+  try {
+    res = await fetch(DATA_URL);
+  } catch (e) {
+    throw bootFail('Could not reach the garden data at ' + DATA_URL + ' — ' + e.message);
+  }
+  if (!res.ok) {
+    throw bootFail('The garden data at ' + DATA_URL + ' returned HTTP ' + res.status +
+      '. This page is from a build that is no longer deployed — reload to pick up the current one.');
+  }
+  try {
+    return await res.json();
+  } catch (e) {
+    throw bootFail('The garden data at ' + DATA_URL + ' is not valid JSON — ' + e.message);
+  }
+}
+
+/* The shell and the payload ship separately now and can disagree; they could not
+   before. Everything the drawing code assumes is checked here, once, up front. */
+function checkGarden(d) {
+  if (!d || typeof d !== 'object') throw bootFail('The garden data is not an object.');
+  if (d.generated !== DATA_GENERATED) {
+    throw bootFail('Shell/data mismatch: this page was built for data generated ' +
+      DATA_GENERATED + ', but the payload reports ' + d.generated + '.');
+  }
+  for (const k of ['nodes', 'edges', 'concepts', 'corpus']) {
+    if (!Array.isArray(d[k])) throw bootFail('The garden data is missing its `' + k + '` array.');
+  }
+  /* `quoted` is a map keyed by tweet id — `quoted[qid]`, not a list. */
+  if (!d.quoted || typeof d.quoted !== 'object' || Array.isArray(d.quoted)) {
+    throw bootFail('The garden data is missing its `quoted` map.');
+  }
+  if (!d.nodes.length) throw bootFail('The garden data carries no nodes.');
+  const unplaced = d.nodes.find(n =>
+    typeof n.x !== 'number' || typeof n.y !== 'number' || typeof n.r !== 'number');
+  if (unplaced) {
+    throw bootFail('The garden data has no precomputed layout (node ' + unplaced.id +
+      ' is unplaced) — the export step did not run.');
+  }
+  return d;
+}
+</script>
+<script>
+function boot(DATA) {
 const nodes = DATA.nodes, edges = DATA.edges, quoted = DATA.quoted;
 const CONCEPTS = DATA.concepts || [], CORPUS = DATA.corpus || [];
 const byId = new Map(nodes.map(n => [n.id, n]));
@@ -821,6 +900,18 @@ function drawWeb() {
 renderThemes();
 renderList();
 renderChips();
+}
+
+/* boot() is everything above: the whole page, as one function of its data. The
+   body is unindented on purpose so that splitting the payload out shows up as a
+   wrapper in the diff rather than as 600 rewritten lines. */
+loadGarden()
+  .then(checkGarden)
+  .then(d => { bootEl.className = 'gone'; boot(d); })
+  .catch(err => {
+    if (!err.reported) bootFail('The garden failed to load — ' + err.message);
+    console.error(err);
+  });
 </script>
 </body>
 </html>
