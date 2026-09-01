@@ -122,6 +122,28 @@ reads them, and `account.js` contains the account email.
 
 ## Deploy
 
-`site/index.html` is a single self-contained file — no external assets, no server-side
-anything. Railway's Railpack builder detects a static site from a bare `index.html` and
-serves it directly.
+**Live today: Railway.** Pushing to `main` deploys — Railpack detects a static site and
+serves `site/index.html` directly. Treat a merge to `main` as a deploy.
+
+`site/index.html` is no longer a single self-contained file. Since mt#4678 it is a ~44 KB
+shell that fetches its data from `site/garden-data.<hash>.json`, a content-hashed file that
+is **gitignored** — the corpus must not be in this repo.
+
+That is why the deploy target is moving to Cloudflare Workers Static Assets: publishing
+there is an UPLOAD rather than a commit, so the payload reaches production without ever
+entering git.
+
+```sh
+bun run deploy   # bun run build && bunx wrangler deploy
+```
+
+This is the publish step for new data — rebuild, then upload all of `site/` (shell, payload,
+`_headers`, static assets) as one Worker deployment. It needs the corpus in `data/` to
+rebuild, so it runs from a machine that has the archive.
+
+**Sequencing, which matters:** a host that builds from the git repo can never receive the
+gitignored payload. So once the fetching shell is on `main`, Railway serves a shell whose
+data 404s. The apex must point at the Worker before, or at the same time as, that change
+reaching `main`. Until then `bun run deploy` publishes to the `workers.dev` URL and
+peezombie.me keeps serving the Railway build. Rollback is repointing the apex back to
+Railway, which still serves the last inlined build.
