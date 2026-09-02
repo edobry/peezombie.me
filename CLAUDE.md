@@ -20,7 +20,9 @@ and every CI step already assumes it; match them when you run anything ad-hoc.
 | `data/` | The two archive files the pipeline reads. **Never committed** — see Corpus boundary. |
 | `pipeline/` | Build scripts; `types.ts` holds the shared domain types |
 | `analysis/corpus-catalog.md` | The editorial layer — the only file where curation judgment lives |
-| `site/index.html` | The built artifact. This is what gets served. |
+| `site/index.html` | The built **shell** (~45 KB). Committed, and served — but it carries no corpus. |
+| `site/garden-data.<hash>.json` | The corpus payload the shell fetches at load. **Never committed** — gitignored, uploaded at deploy. |
+| `pipeline/data-ref.json` | Committed pin recording which payload the committed shell expects. Carries no corpus. |
 
 `parse.ts` and `graph.ts` are fully mechanical: to change what the site says, edit
 `analysis/corpus-catalog.md` and rebuild.
@@ -28,9 +30,15 @@ and every CI step already assumes it; match them when you run anything ad-hoc.
 ## Build
 
 ```sh
-bun run build      # parse → concepts → tags → export → bundle, writes site/index.html
+bun run build      # parse → concepts → tags → export → bundle
 bun run typecheck  # tsc --noEmit
+bun run deploy     # build, then upload site/ to the Worker — see Deploy
 ```
+
+The `bundle` step writes three things, not one: the shell `site/index.html`, the content-hashed
+payload `site/garden-data.<hash>.json` (gitignored), and the pin `pipeline/data-ref.json`. It also
+sweeps payloads from previous builds out of `site/`, so a deploy does not upload stale copies of the
+corpus alongside the current one.
 
 One trap, and it has this project's characteristic shape — **the build looks like it worked**:
 
@@ -54,6 +62,12 @@ Populate `data/` locally:
 unzip twitter-*.zip 'data/tweets*.js' 'data/note-tweet.js' -d .
 ```
 
+**The BUILT payload is on this list too, and it is the easy one to miss.**
+`site/garden-data.<hash>.json` is derived, not raw — but it carries all 8,197 corpus tweets in full
+text, so committing it puts the corpus back in git exactly as `data/` would. It is gitignored
+(`site/garden-data.*.json`), and mt#4678 exists because a derived copy walked back in through the
+build once already. `site/index.html` IS committed and that is fine: it is a corpus-free shell.
+
 ## Licensing
 
 Code (`pipeline/`, build config) is MIT. The corpus and writing (`data/`, `analysis/`, `spec/`,
@@ -62,8 +76,29 @@ MIT when reusing or publishing content.
 
 ## Deploy
 
-**Pushing to `main` deploys the live site** — Railway serves `site/index.html` directly. Treat a
-merge to `main` as a deploy; it is an operator action.
+**Merging to `main` does NOT ship the site.** It did until 2026-09-02; that changed with mt#4678 and
+this is the single most important thing to un-learn about this repo.
+
+The live site is a **Cloudflare Worker** serving static assets, on the apex `peezombie.me`.
+Publishing is an UPLOAD, not a commit:
+
+```sh
+bun run deploy     # bun run build && bunx wrangler deploy
+```
+
+That is the whole publish step. It rebuilds, then uploads all of `site/` — the shell, the hashed
+payload, `_headers`, and the static assets — as one Worker deployment. It needs the corpus in
+`data/` to rebuild, so it runs from a machine that has the archive. It is an operator action.
+
+**Why upload and not commit:** the payload carries the corpus, so it is gitignored. A host that
+builds from the git repo can never receive it. That is the same fact from both ends — it is why the
+site moved off Railway, and why merging no longer publishes.
+
+**Rollback is not "point back at Railway".** Railway still exists and still builds from `main`, but
+`main` now carries the fetching shell, so its next build would serve a shell whose payload 404s.
+Rolling back means redeploying Railway's older, pre-cutover *inlined* deployment from its deployment
+history — and then repointing DNS. If Railway is decommissioned, that path goes with it; the
+Worker's own deployment history becomes the rollback instead.
 
 ## Working this project with Minsky
 
