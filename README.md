@@ -25,7 +25,9 @@ survey is in [`research/`](research/).
 | `analysis/corpus-catalog.md` | **The editorial layer** — hand-curated titles, themes, types, grades and gists for the top 200 threads |
 | `spec/` | Design documents |
 | `research/` | Prior-art notes (digital gardens; the TPOT/Visa threading tradition) |
-| `site/index.html` | The built artifact. This is what gets served. |
+| `site/index.html` | The built **shell** (~45 KB). Committed, and served — but it carries no corpus. |
+| `site/garden-data.<hash>.json` | The corpus payload the shell fetches at load. **Never committed** — gitignored, uploaded at deploy. |
+| `pipeline/data-ref.json` | Committed pin recording which payload the committed shell expects. Carries no corpus. |
 
 ## Provenance
 
@@ -122,16 +124,17 @@ reads them, and `account.js` contains the account email.
 
 ## Deploy
 
-**Live today: Railway.** Pushing to `main` deploys — Railpack detects a static site and
-serves `site/index.html` directly. Treat a merge to `main` as a deploy.
+**Live today: a Cloudflare Worker**, on the apex `peezombie.me`, serving static assets.
+**Merging to `main` does not publish.** It did until the cutover on 2026-09-02; that is the
+thing to un-learn if you knew this repo before.
 
-`site/index.html` is no longer a single self-contained file. Since mt#4678 it is a ~44 KB
+`site/index.html` is no longer a single self-contained file. Since mt#4678 it is a ~45 KB
 shell that fetches its data from `site/garden-data.<hash>.json`, a content-hashed file that
 is **gitignored** — the corpus must not be in this repo.
 
-That is why the deploy target is moving to Cloudflare Workers Static Assets: publishing
-there is an UPLOAD rather than a commit, so the payload reaches production without ever
-entering git.
+That is the whole reason for the Worker: publishing there is an UPLOAD rather than a commit,
+so the payload reaches production without ever entering git. A host that builds from the git
+repo can never receive a gitignored file.
 
 ```sh
 bun run deploy   # bun run build && bunx wrangler deploy
@@ -141,9 +144,12 @@ This is the publish step for new data — rebuild, then upload all of `site/` (s
 `_headers`, static assets) as one Worker deployment. It needs the corpus in `data/` to
 rebuild, so it runs from a machine that has the archive.
 
-**Sequencing, which matters:** a host that builds from the git repo can never receive the
-gitignored payload. So once the fetching shell is on `main`, Railway serves a shell whose
-data 404s. The apex must point at the Worker before, or at the same time as, that change
-reaching `main`. Until then `bun run deploy` publishes to the `workers.dev` URL and
-peezombie.me keeps serving the Railway build. Rollback is repointing the apex back to
-Railway, which still serves the last inlined build.
+**Railway is still connected and still builds from `main`, and it serves nobody.** Nothing
+points at it. Treat a merge as having no effect on the live site.
+
+**Rollback is not "point the apex back at Railway".** That was true before the cutover and is
+not any more: `main` now carries the fetching shell, so a fresh Railway build would serve a
+shell whose payload 404s. Rolling back means redeploying Railway's older, pre-cutover
+*inlined* deployment from its deployment history, and then repointing DNS. Once Railway is
+decommissioned that path goes with it, and the Worker's own deployment history becomes the
+rollback.
