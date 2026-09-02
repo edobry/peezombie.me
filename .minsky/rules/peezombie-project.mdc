@@ -98,7 +98,9 @@ site moved off Railway, and why merging no longer publishes.
 
 **Railway is disconnected** (2026-09-02, mt#4891). The service still exists and its last build is
 still running, but it is no longer wired to this repo and no longer builds on a push. Nothing points
-at it. Deleting it outright is deliberately deferred — see mt#4891.
+at it. The service was deliberately disconnected rather than deleted: disconnecting is reversible,
+deleting is not, and nothing depended on deleting it. Whether to delete it is an open operator
+decision with no date attached.
 
 **Rollback does not involve Railway at all.** The rollback artifact is a commit: **`67b881d`** carries
 the pre-split, self-contained `site/index.html` — 4,257,755 bytes with the corpus inlined — and it is
