@@ -22,15 +22,37 @@ jobs:
 
       # `bun run build` is NOT run here. The corpus (data/) is deliberately not in
       # this repo, so CI cannot regenerate the site. The tests below run against
-      # the COMMITTED shell instead — site/index.html, ~41 KB, which since mt#4678
+      # the COMMITTED shell instead — site/index.html, ~45 KB, which since mt#4678
       # carries no corpus data at all; the payload it fetches is gitignored and
       # never present in CI.
       #
-      # Consequence, stated plainly: CI can no longer prove that site/index.html
-      # matches a fresh build of the current pipeline. If you change pipeline/,
-      # rebuild locally and commit the result — nothing here will catch a stale
-      # shell. What CI CAN now check, and does, is that the committed shell and
-      # pipeline/data-ref.json agree on which payload the page asks for. mt#4751
-      # owns closing the rest of that gap.
+      # That gap is now CLOSED without a rebuild (mt#4896). `pipeline/data-ref.json`
+      # records a sha256 per SOURCE input — the pipeline `.ts` files, the template,
+      # and analysis/corpus-catalog.md — and `bun test` recomputes them and fails
+      # naming any file that changed since the shell was built. Comparing source
+      # hashes needs no corpus, so it works in a fresh clone. The pin's older job,
+      # holding the shell and the payload to the same filename, still runs too.
       - name: Test the committed shell
         run: bun test
+
+      # The same staleness class, one artifact over (mt#4896): CLAUDE.md is
+      # GENERATED from .minsky/rules/peezombie-project.mdc, and nothing here
+      # enforced that the two stay in sync.
+      #
+      # A SEPARATE step from `bun test` on purpose. That one needs nothing
+      # installed; this one fetches the Minsky CLI from npm, so coupling them
+      # would let a registry outage take down the check that has no external
+      # dependency — and two steps give two failure messages instead of one.
+      #
+      # `--target claude.md` is REQUIRED, not tidiness, and the scope is exactly
+      # the artifacts this repo actually commits. A missing output counts as
+      # stale (packages/domain/src/compile/staleness.ts), so every OTHER target
+      # would fail here forever: `.cursor/` is gitignored, and this repo has no
+      # AGENTS.md at all. Adding one to satisfy a check would be the check
+      # inventing an artifact rather than guarding one.
+      #
+      # Known limitation, carried from mt#3134: --check computes its expected side
+      # with the same compiler under test, so it catches source/artifact drift but
+      # NOT a compiler regression shipped together with its own regenerated output.
+      - name: Check CLAUDE.md matches its rule source
+        run: bunx --bun @edobry/minsky compile --check --target claude.md
