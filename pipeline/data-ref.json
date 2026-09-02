@@ -2,5 +2,17 @@
   "file": "garden-data.9884b2733181b8ac.json",
   "sha256": "9884b2733181b8ac28e5be0157bc7d1a695009cb7ecdd4205cd7a1d32e352fd8",
   "generated": "2026-07-06",
-  "bytes": 4216818
+  "bytes": 4216818,
+  "inputs": {
+    "analysis/corpus-catalog.md": "600f7fe980cc7140dcd975767cf0590e853edfcb5cbfa161295d9a29472ff268",
+    "pipeline/bundle.ts": "0bfaa6c2a0593bcd23609f0b768a6a32e19014aa6e1296fd3138e55f3c04d40c",
+    "pipeline/concepts.ts": "96d4d43ca289a73a744c5ff0a428606580b6de02de64c54a9c287672efb432e4",
+    "pipeline/export-garden.ts": "f6fce438626e360cb884c0af7c72a2540b7ccdf2029b74589748a7f752cbbcce",
+    "pipeline/export.ts": "726cbcf8ee37e52e2e3c6d98fc955e5bcf199622372dcf974e3c12dd9dc3dc3a",
+    "pipeline/garden-template.html": "250d4654990d11769ac1f63d13a6085ea9926166a14512cee132ea03ffd750f5",
+    "pipeline/graph.ts": "a9884b87843e14986d92fd15022fcf34ccc126cbb5eff936dc14c69ab867b892",
+    "pipeline/make-tags.ts": "6200dc5cbf1e090c1bc552c6f0cfb2ddc3a35e5d14fd9b9962a2caeebc5ff952",
+    "pipeline/parse.ts": "c0e1080ddf82a44a10a83d3f2f32267074a376df22fea41232c3d65d92c012d7",
+    "pipeline/types.ts": "aa635a30d3fa8ba4d3eda309a364458f3f08ac242c2903d4ce6394a70c579667"
+  }
 }

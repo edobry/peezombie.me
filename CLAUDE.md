@@ -40,13 +40,11 @@ payload `site/garden-data.<hash>.json` (gitignored), and the pin `pipeline/data-
 sweeps payloads from previous builds out of `site/`, so a deploy does not upload stale copies of the
 corpus alongside the current one.
 
-One trap, and it has this project's characteristic shape — **the build looks like it worked**:
-
-**CI does not rebuild, so it cannot catch a stale `site/index.html`.** The corpus is deliberately
-not in the repo, so CI typechecks and runs `bun test` against the *committed* artifact rather than a
-fresh build. **If you change `pipeline/`, rebuild locally and commit the result** — nothing will
-tell you the served site no longer matches the pipeline. Being replaced by a real check (mt#4751);
-delete this note when that lands.
+**If you change `pipeline/` or `analysis/corpus-catalog.md`, rebuild and commit the result** — but
+you no longer have to remember that, because CI now checks it (mt#4896). `pipeline/data-ref.json`
+records a sha256 per source input, and `bun test` recomputes them and fails naming the file that
+changed. It compares source hashes rather than rebuilding, so it needs no corpus and works in a
+fresh clone.
 
 ## Corpus boundary
 
@@ -118,9 +116,10 @@ not in this checkout: `session_start` bound to the task, `session_*` tools for e
 Two repo-specific cautions:
 
 - **`CLAUDE.md` is generated from this file** by `minsky compile --target claude.md`. If you edit
-  this rule, recompile and commit both. Nothing enforces that here — this project has no hooks, so
-  a drifted `CLAUDE.md` fails the same silent way the stale-artifact trap above does. Same class,
-  same fix; mt#4751 covers both.
+  this rule, recompile and commit both. This project has no hooks, so nothing catches it locally —
+  but CI does since mt#4896. That step is scoped to `claude.md` deliberately: a missing output
+  counts as stale, and this repo commits no `AGENTS.md` and gitignores `.cursor/`, so an unscoped
+  `--check` would fail on every run forever.
 - **Do not run `minsky init --overwrite` here.** It re-scaffolds six workflow templates that are
   stale and that Claude Code cannot read by any retrieval path. Which rules a Minsky project
   should receive is being designed under mt#4744; this file is the deliberate stand-in.
