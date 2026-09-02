@@ -84,14 +84,98 @@ export interface DataRef {
   sha256: string;
   generated: string;
   bytes: number;
+  /**
+   * sha256 of every SOURCE input that determines the built artifact, keyed by
+   * repo-relative path (mt#4896).
+   *
+   * This is what lets CI answer "is the committed shell stale?" without the
+   * corpus: it compares SOURCE hashes rather than rebuilding, so `data/` stays
+   * out of the repo and the check still fails when someone edits `pipeline/`
+   * and forgets to rebuild.
+   *
+   * Optional because every `data-ref.json` committed before mt#4896 lacks it.
+   * The check treats absence as "not yet pinned" and says so, rather than
+   * reporting drift it cannot actually establish.
+   */
+  inputs?: Record<string, string>;
 }
 
-export function buildDataRef(data: string): DataRef {
+/**
+ * Files whose content determines `site/index.html` and the payload.
+ *
+ * Three exclusions, each load-bearing:
+ *
+ * 1. **`data-ref.json` itself.** `bundle.ts` writes it into a directory it
+ *    hashes, so including it would make the pin an input to its own value and
+ *    the check could never converge.
+ * 2. **The gitignored intermediates** (`tweets`, `threads`, `thread-links`,
+ *    `concept-index`, `garden-data`, `tags`). They are absent in a fresh CI
+ *    clone, so hashing them would make the check fail everywhere it matters.
+ *    They are also derived from `data/`, not sources.
+ * 3. **`*.test.ts`.** A test cannot change the built artifact, so treating one
+ *    as an input would mean every test edit demands a full rebuild — and a
+ *    rebuild needs the corpus, which is exactly the dependency this check
+ *    exists to avoid. Deliberate narrowing of the spec's ".ts sources".
+ */
+export function isPipelineInput(entry: string): boolean {
+  if (entry.endsWith(".test.ts")) return false;
+  if (entry === "garden-template.html") return true;
+  return entry.endsWith(".ts");
+}
+
+/** Pure: path→content becomes path→sha256, key-sorted so the JSON is stable. */
+export function hashInputContents(contents: Record<string, string>): Record<string, string> {
+  const out: Record<string, string> = {};
+  for (const key of Object.keys(contents).sort()) {
+    out[key] = contentHash(contents[key]!);
+  }
+  return out;
+}
+
+/**
+ * Compare a pinned input map against freshly-read hashes.
+ *
+ * Returns a human-readable line per divergence — added, removed, or changed —
+ * which is what SC2's "names what changed" needs. An empty array means in sync.
+ */
+export function diffInputHashes(
+  pinned: Record<string, string>,
+  actual: Record<string, string>
+): string[] {
+  const drift: string[] = [];
+  for (const key of Object.keys({ ...pinned, ...actual }).sort()) {
+    const before = pinned[key];
+    const after = actual[key];
+    if (before === after) continue;
+    if (before === undefined) drift.push(`${key} (added since the shell was built)`);
+    else if (after === undefined) drift.push(`${key} (deleted since the shell was built)`);
+    else drift.push(`${key} (changed since the shell was built)`);
+  }
+  return drift;
+}
+
+/** IO: read the current on-disk inputs. `repoRoot` is the directory holding `pipeline/`. */
+export function readInputHashes(repoRoot: string): Record<string, string> {
+  const contents: Record<string, string> = {};
+  const pipelineDir = path.join(repoRoot, "pipeline");
+  for (const entry of fs.readdirSync(pipelineDir)) {
+    if (!isPipelineInput(entry)) continue;
+    contents[`pipeline/${entry}`] = fs.readFileSync(path.join(pipelineDir, entry), "utf8");
+  }
+  // The editorial layer — the only file where curation judgment lives, and a
+  // real input to what the site says even though it is not code.
+  const catalog = path.join(repoRoot, "analysis", "corpus-catalog.md");
+  contents["analysis/corpus-catalog.md"] = fs.readFileSync(catalog, "utf8");
+  return hashInputContents(contents);
+}
+
+export function buildDataRef(data: string, inputs?: Record<string, string>): DataRef {
   return {
     file: payloadFilename(data),
     sha256: contentHash(data),
     generated: readGenerated(data),
     bytes: Buffer.byteLength(data),
+    ...(inputs === undefined ? {} : { inputs }),
   };
 }
 
@@ -107,7 +191,9 @@ if (import.meta.main) {
   const template = fs.readFileSync(path.join(DIR, "garden-template.html"), "utf8");
   const data = fs.readFileSync(path.join(DIR, "garden-data.json"), "utf8");
 
-  const ref = buildDataRef(data);
+  // mt#4896: pin the SOURCE inputs alongside the payload. Read before anything
+  // is written, so the hashes describe the tree this build actually ran from.
+  const ref = buildDataRef(data, readInputHashes(path.join(DIR, "..")));
   const out = stampTemplate(template, { url: payloadUrl(ref), generated: ref.generated });
 
   fs.mkdirSync(SITE, { recursive: true });

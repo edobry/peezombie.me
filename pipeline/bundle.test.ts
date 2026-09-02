@@ -25,9 +25,13 @@ import {
   DATA_URL_PLACEHOLDER,
   buildDataRef,
   contentHash,
+  diffInputHashes,
+  hashInputContents,
+  isPipelineInput,
   payloadFilename,
   payloadUrl,
   readGenerated,
+  readInputHashes,
   stampTemplate,
 } from "./bundle";
 
@@ -42,6 +46,7 @@ const dataRef = JSON.parse(fs.readFileSync(DATA_REF, "utf8")) as {
   sha256: string;
   generated: string;
   bytes: number;
+  inputs?: Record<string, string>;
 };
 
 /** Read a value bundle.ts stamped into the shell. */
@@ -274,3 +279,81 @@ if (fs.existsSync(builtPayload)) {
     });
   });
 }
+
+// ---------------------------------------------------------------------------
+// The pipeline-input staleness check (mt#4896)
+// ---------------------------------------------------------------------------
+//
+// This is the half CI could not previously do: prove the committed shell was
+// built from the CURRENT pipeline. It compares SOURCE hashes rather than
+// rebuilding, so it needs no corpus and runs in a fresh clone.
+
+describe("which files count as build inputs", () => {
+  test("pipeline sources and the template are inputs", () => {
+    for (const entry of ["bundle.ts", "parse.ts", "graph.ts", "garden-template.html"]) {
+      expect(isPipelineInput(entry)).toBe(true);
+    }
+  });
+
+  test("the pin itself is NOT an input — otherwise it feeds its own value", () => {
+    expect(isPipelineInput("data-ref.json")).toBe(false);
+  });
+
+  test("the gitignored intermediates are NOT inputs — a fresh clone has none", () => {
+    for (const entry of [
+      "tweets.json", "threads.json", "thread-links.json",
+      "concept-index.json", "garden-data.json", "tags.json",
+    ]) {
+      expect(isPipelineInput(entry)).toBe(false);
+    }
+  });
+
+  test("tests are NOT inputs — a test cannot change the built artifact", () => {
+    // Otherwise editing this very file would demand a corpus rebuild.
+    expect(isPipelineInput("bundle.test.ts")).toBe(false);
+  });
+});
+
+describe("input hashing and drift reporting", () => {
+  test("hashing is content-addressed and key-sorted", () => {
+    const hashes = hashInputContents({ "b.ts": "two", "a.ts": "one" });
+    expect(Object.keys(hashes)).toEqual(["a.ts", "b.ts"]);
+    expect(hashes["a.ts"]).toBe(contentHash("one"));
+  });
+
+  test("identical inputs report no drift", () => {
+    const h = hashInputContents({ "a.ts": "one" });
+    expect(diffInputHashes(h, h)).toEqual([]);
+  });
+
+  test("drift NAMES the file and how it diverged (SC2)", () => {
+    const pinned = hashInputContents({ "a.ts": "one", "gone.ts": "x" });
+    const actual = hashInputContents({ "a.ts": "CHANGED", "new.ts": "y" });
+    expect(diffInputHashes(pinned, actual)).toEqual([
+      "a.ts (changed since the shell was built)",
+      "gone.ts (deleted since the shell was built)",
+      "new.ts (added since the shell was built)",
+    ]);
+  });
+});
+
+describe("the committed shell was built from the current pipeline", () => {
+  test("the pin records its inputs at all", () => {
+    // Absence is a FAILURE, not a skip: a check that goes quiet when the pin is
+    // missing is the same silent-success shape this task exists to remove.
+    expect(dataRef.inputs).toBeDefined();
+  });
+
+  test("AT1/AT3: no pipeline input has changed since site/index.html was built", () => {
+    const drift = diffInputHashes(dataRef.inputs ?? {}, readInputHashes(path.join(DIR, "..")));
+    // The drift lines go INTO the compared value, not into a message argument —
+    // bun:test's expect takes no message param, so a failure has to carry its own
+    // remediation or a red CI run says nothing about what to do next (SC2).
+    const report =
+      drift.length === 0
+        ? "in sync"
+        : `site/index.html is STALE — rebuild with \`bun run build\` and commit ` +
+          `site/index.html plus pipeline/data-ref.json. Changed inputs: ${drift.join("; ")}`;
+    expect(report).toBe("in sync");
+  });
+});
