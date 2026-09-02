@@ -1,0 +1,35 @@
+# Custom response headers for Cloudflare Workers Static Assets. Workers parses
+# this file and applies its rules to asset responses; the file itself is never
+# served. https://developers.cloudflare.com/workers/static-assets/headers/
+#
+# These reproduce what Railway's edge supplied before the move. The baseline was
+# captured with `curl -sI https://peezombie.me/` on 2026-08-30; diff against it
+# at cutover, because losing one of them is a silent security regression rather
+# than a visible break.
+/*
+  Content-Security-Policy: default-src 'self'; img-src 'self' data: https: *; style-src 'self' 'unsafe-inline' https: *; script-src 'self' 'unsafe-inline' https: *; font-src 'self' data: https: *; connect-src 'self' https: *; media-src 'self' https: *; object-src 'none'; frame-src 'self' https: *;
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Content-Type-Options: nosniff
+  X-XSS-Protection: 1; mode=block
+
+# Workers derives Content-Type from the file extension and omits the charset,
+# where Railway's edge sent `text/html; charset=utf-8`. Measured on the first
+# workers.dev deploy: that was the ONLY one of the five headers to drift. The
+# document declares <meta charset="utf-8">, so a browser reaches the right
+# encoding either way, but the header is authoritative and beats sniffing.
+# Scoped to the two document paths rather than folded into `/*` above, which
+# would mislabel the JSON payload as HTML.
+/
+  Content-Type: text/html; charset=utf-8
+
+/index.html
+  Content-Type: text/html; charset=utf-8
+
+# The payload's filename carries a content hash, so the bytes behind a given URL
+# can never change — which is what makes `immutable` safe here. Without this rule
+# the Workers default (`public, max-age=0, must-revalidate`) makes every repeat
+# visit revalidate 4.2 MB. A single splat is used rather than `garden-data.*.json`
+# because the matcher allows only one splat per URL and nothing else in site/
+# begins with this prefix.
+/garden-data.*
+  Cache-Control: public, max-age=31536000, immutable

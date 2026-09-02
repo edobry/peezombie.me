@@ -16,6 +16,16 @@ pipeline/concept-index.json
 pipeline/garden-data.json
 pipeline/tags.json
 
+# The built payload (mt#4678). site/index.html IS committed — it is the served
+# shell, ~41 KB, and carries no corpus. The hashed payload beside it carries all
+# of it, so it stays out of git and reaches production by upload instead.
+# pipeline/data-ref.json is committed on purpose: it records WHICH payload the
+# committed shell asks for, without containing any of it.
+site/garden-data.*.json
+
+# wrangler's local state.
+.wrangler/
+
 # Scratch notes, not part of the project.
 .notes/
 

@@ -21,11 +21,16 @@ jobs:
         run: bun run typecheck
 
       # `bun run build` is NOT run here. The corpus (data/) is deliberately not in
-      # this repo, so CI cannot regenerate site/index.html. The tests below run
-      # against the COMMITTED artifact instead, which is what actually gets served.
+      # this repo, so CI cannot regenerate the site. The tests below run against
+      # the COMMITTED shell instead — site/index.html, ~41 KB, which since mt#4678
+      # carries no corpus data at all; the payload it fetches is gitignored and
+      # never present in CI.
       #
       # Consequence, stated plainly: CI can no longer prove that site/index.html
       # matches a fresh build of the current pipeline. If you change pipeline/,
-      # rebuild locally and commit the result — nothing here will catch a stale site/.
-      - name: Test the committed artifact
+      # rebuild locally and commit the result — nothing here will catch a stale
+      # shell. What CI CAN now check, and does, is that the committed shell and
+      # pipeline/data-ref.json agree on which payload the page asks for. mt#4751
+      # owns closing the rest of that gap.
+      - name: Test the committed shell
         run: bun test
