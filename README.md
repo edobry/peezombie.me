@@ -144,12 +144,13 @@ This is the publish step for new data — rebuild, then upload all of `site/` (s
 `_headers`, static assets) as one Worker deployment. It needs the corpus in `data/` to
 rebuild, so it runs from a machine that has the archive.
 
-**Railway is still connected and still builds from `main`, and it serves nobody.** Nothing
-points at it. Treat a merge as having no effect on the live site.
+**Railway is disconnected** (2026-09-02, mt#4891) and no longer builds on a push. The service
+still exists and its last build is still running, but nothing points at it. A merge has no
+effect on the live site.
 
-**Rollback is not "point the apex back at Railway".** That was true before the cutover and is
-not any more: `main` now carries the fetching shell, so a fresh Railway build would serve a
-shell whose payload 404s. Rolling back means redeploying Railway's older, pre-cutover
-*inlined* deployment from its deployment history, and then repointing DNS. Once Railway is
-decommissioned that path goes with it, and the Worker's own deployment history becomes the
-rollback.
+**Rollback does not involve Railway at all.** The rollback artifact is a commit: **`67b881d`**
+carries the pre-split, self-contained `site/index.html` — 4,257,755 bytes with the corpus
+inlined — retrievable from GitHub with no credentials. To roll back, serve that file; the
+simplest path is uploading it to the Worker, which needs no DNS change and no second host.
+Railway's own deployment history is not the rollback: every pre-cutover deployment there is
+`REMOVED`, so there is no warm copy to restore.
