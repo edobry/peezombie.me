@@ -96,11 +96,20 @@ payload, `_headers`, and the static assets — as one Worker deployment. It need
 builds from the git repo can never receive it. That is the same fact from both ends — it is why the
 site moved off Railway, and why merging no longer publishes.
 
-**Rollback is not "point back at Railway".** Railway still exists and still builds from `main`, but
-`main` now carries the fetching shell, so its next build would serve a shell whose payload 404s.
-Rolling back means redeploying Railway's older, pre-cutover *inlined* deployment from its deployment
-history — and then repointing DNS. If Railway is decommissioned, that path goes with it; the
-Worker's own deployment history becomes the rollback instead.
+**Railway is disconnected** (2026-09-02, mt#4891). The service still exists and its last build is
+still running, but it is no longer wired to this repo and no longer builds on a push. Nothing points
+at it. The service was deliberately disconnected rather than deleted: disconnecting is reversible,
+deleting is not, and nothing depended on deleting it. Whether to delete it is an open operator
+decision with no date attached.
+
+**Rollback does not involve Railway at all.** The rollback artifact is a commit: **`67b881d`** carries
+the pre-split, self-contained `site/index.html` — 4,257,755 bytes with the corpus inlined — and it is
+retrievable from GitHub with no credentials. To roll back, take that file and serve it; the simplest
+path is to upload it to the Worker, which needs no DNS change and no second host.
+
+Do NOT reach for Railway's deployment history: every pre-cutover deployment there is `REMOVED`, so
+there is no warm copy to restore. That was believed and written down before it was checked; the
+commit is the thing that actually survives.
 
 ## Working this project with Minsky
 
