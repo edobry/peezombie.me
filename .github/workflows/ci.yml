@@ -51,8 +51,21 @@ jobs:
       # AGENTS.md at all. Adding one to satisfy a check would be the check
       # inventing an artifact rather than guarding one.
       #
+      # The version is PINNED, and that matters more here than for a typical tool
+      # dependency: this step's verdict is a comparison against output the pinned
+      # compiler generates. Floating it would let a CLI release change the
+      # expected side, so CI could go red on a commit that touched nothing — or,
+      # worse, go green because the definition of "matching" moved. A pinned
+      # compiler makes the check reproducible: the same commit gets the same
+      # verdict tomorrow.
+      #
+      # The trade is that the pin ages. Bumping it is a deliberate, reviewable
+      # commit that regenerates CLAUDE.md alongside — which is the right shape,
+      # since a compiler bump legitimately CAN change the output.
+      #
       # Known limitation, carried from mt#3134: --check computes its expected side
       # with the same compiler under test, so it catches source/artifact drift but
       # NOT a compiler regression shipped together with its own regenerated output.
+      # Pinning bounds that: the compiler only changes when someone bumps this line.
       - name: Check CLAUDE.md matches its rule source
-        run: bunx --bun @edobry/minsky compile --check --target claude.md
+        run: bunx --bun @edobry/minsky@0.1.2 compile --check --target claude.md
