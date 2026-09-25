@@ -29,6 +29,11 @@ and every CI step already assumes it; match them when you run anything ad-hoc.
 `parse.ts` and `graph.ts` are fully mechanical: to change what the site says, edit
 `analysis/corpus-catalog.md` and rebuild.
 
+One caution when re-curating: a thread's URL is its slug (`#t/<slug>`, minted by `pipeline/slug.ts`
+from the catalog title, else the root tweet's text — mt#5204). **Renaming a titled thread in the
+catalog changes its address** and orphans links shared before the rename. Untitled threads and
+numeric-id links (`#t/<tweet id>`) are permanent.
+
 ## Build
 
 ```sh

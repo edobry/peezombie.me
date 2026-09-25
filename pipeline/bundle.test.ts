@@ -202,6 +202,24 @@ describe("the shell fails loudly rather than rendering empty", () => {
   });
 });
 
+describe("the shell is addressable (mt#5204)", () => {
+  // Routing is inline in the template and cannot be imported; like the loader
+  // checks above, these confirm the wiring survived into the built shell. The
+  // behaviour itself is exercised in a browser against the built site.
+  test("fragment routes are wired and named", () => {
+    expect(html).toContain("addEventListener('hashchange', route)");
+    expect(html).toContain("'#t'");
+  });
+
+  test("the loader refuses a payload with no slugs", () => {
+    expect(html).toContain("no URL slugs");
+  });
+
+  test("every pane carries a permalink built from its slug", () => {
+    expect(html).toContain("link.href = '#t/' + n.slug");
+  });
+});
+
 describe("document is well-formed and shareable", () => {
   test("has a doctype, a language, and a body", () => {
     expect(html.startsWith("<!DOCTYPE html>")).toBe(true);
@@ -276,6 +294,13 @@ if (fs.existsSync(builtPayload)) {
           typeof n.x !== "number" || typeof n.y !== "number" || typeof n.r !== "number"
       );
       expect(unplaced).toEqual([]);
+    });
+
+    test("every node carries a unique slug the reader can address it by (mt#5204)", () => {
+      // Mirrors checkGarden's slug gate; uniqueness is what makes `#t/<slug>` unambiguous.
+      const slugs = d.nodes.map((n: { slug?: unknown }) => n.slug);
+      for (const s of slugs) expect(s).toMatch(/^[a-z0-9-]+$/);
+      expect(new Set(slugs).size).toBe(slugs.length);
     });
   });
 }

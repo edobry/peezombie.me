@@ -15,6 +15,23 @@ The account was written as a hypertext, which means it can be rendered as one.
 Design rationale is in [`spec/tweet-garden.md`](spec/tweet-garden.md); the prior art
 survey is in [`research/`](research/).
 
+## Addresses
+
+Everything in the reader has a URL, so a thread can be sent, bookmarked, and returned to
+with the back button (mt#5204):
+
+| URL | Opens |
+| --- | --- |
+| `https://peezombie.me/#t/qi-as-virtual-substance` | one thread, by slug |
+| `https://peezombie.me/#t/<slug>/<slug>` | a reading trail — one pane per segment, with the quote threadline between them when one exists |
+| `https://peezombie.me/#t/<tweet id>` | the thread that tweet belongs to, scrolled to it — any numeric id in the garden works where a slug does |
+| `https://peezombie.me/#weave`, `#web` | the other views; trailheads is the bare URL |
+
+Slugs are minted at export (`pipeline/slug.ts`) from the catalog title, else the root tweet's
+text; every pane's header has a **link** control that copies its permalink. They are fragments
+rather than paths on purpose: the host answers an unknown path with a real 404 (see
+`wrangler.jsonc`), and a fragment needs no server at all.
+
 ## Layout
 
 | Path | What it is |
@@ -112,6 +129,10 @@ the float math, so a Node run produces different node coordinates. Neither is mo
 
 `parse.ts` and `graph.ts` are fully mechanical. Editorial judgment lives in
 `analysis/corpus-catalog.md` — edit it line by line, then re-run `bun run build`.
+
+**Renaming a titled thread changes its URL.** A thread's slug is minted from its catalog title
+(see [Addresses](#addresses)), so a rename orphans links shared before it. Untitled threads
+slug from immutable tweet text, and numeric-id links always resolve.
 
 ### Regenerating `data/` from a fresh archive export
 
