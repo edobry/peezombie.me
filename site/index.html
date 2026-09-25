@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="22,549 tweets (2020-2025) as a navigable hypertext: threads read as essays, quote-tweets as hyperlinks, browsable by concept rather than chronology.">
+<meta name="description" content="The @pee_zombie Twitter archive, 2020–2025: 22,549 tweets by Eugene Dobry on minds, software, memetics and autism, put back together as a web of threads.">
 <link rel="canonical" href="https://peezombie.me/">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <!-- The garden payload is fetched, not inlined (mt#4678). `crossorigin` is
@@ -17,14 +17,14 @@
 <meta property="og:url" content="https://peezombie.me/">
 <meta property="og:site_name" content="peezombie.me">
 <meta property="og:title" content="pee_zombie — a conceptual garden">
-<meta property="og:description" content="22,549 tweets (2020-2025) as a navigable hypertext: threads read as essays, quote-tweets as hyperlinks, browsable by concept rather than chronology.">
+<meta property="og:description" content="The @pee_zombie Twitter archive, 2020–2025: 22,549 tweets by Eugene Dobry on minds, software, memetics and autism, put back together as a web of threads.">
 <meta property="og:image" content="https://peezombie.me/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="pee_zombie — a conceptual garden: the quote-graph of a Twitter corpus.">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="pee_zombie — a conceptual garden">
-<meta name="twitter:description" content="22,549 tweets (2020-2025) as a navigable hypertext: threads read as essays, quote-tweets as hyperlinks, browsable by concept rather than chronology.">
+<meta name="twitter:description" content="The @pee_zombie Twitter archive, 2020–2025: 22,549 tweets by Eugene Dobry on minds, software, memetics and autism, put back together as a web of threads.">
 <meta name="twitter:image" content="https://peezombie.me/og.png">
 <title>pee_zombie — a conceptual garden</title>
 <style>
@@ -79,6 +79,10 @@ h2.sect { font-size: 11px; font-weight: 500; letter-spacing: .18em; text-transfo
 #vIndex .wrap { position: relative; max-width: 1100px; margin: 0 auto; padding: 36px 24px 90px; }
 .intro { font-family: var(--serif); font-size: 17px; line-height: 1.65; max-width: 60ch; }
 .intro em { color: var(--acc); font-style: normal; }
+.intro p { margin: 0 0 14px; }
+.intro p:last-child { margin-bottom: 0; }
+.intro a { color: var(--text); text-decoration: none; border-bottom: 1px dashed var(--muted); }
+.intro a:hover { color: var(--acc); border-bottom-color: var(--acc); }
 .statline { color: var(--muted); margin: 16px 0 30px; font-size: 12px; letter-spacing: .04em; }
 .statline b { color: var(--text); font-weight: 500; }
 #themes { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -192,7 +196,7 @@ h2.sect { font-size: 11px; font-weight: 500; letter-spacing: .18em; text-transfo
 <header id="top">
   <canvas id="eca"></canvas>
   <h1><span class="pz">pee_zombie</span> / conceptual garden</h1>
-  <span class="sub">2020–2025 · prototype</span>
+  <span class="sub">the @pee_zombie Twitter archive, 2020–2025</span>
   <nav>
     <button id="bIndex" class="on">trailheads</button>
     <button id="bWeave">weave</button>
@@ -206,10 +210,22 @@ h2.sect { font-size: 11px; font-weight: 500; letter-spacing: .18em; text-transfo
   <section id="vIndex" class="view on">
     <canvas class="bgeca"></canvas>
     <div class="wrap">
-      <p class="intro">Five years of thinking in public — <em>22,549 tweets</em> — replanted as a garden.
-      Threads are read as <em>essays</em>; quote-tweets are read as <em>hyperlinks</em>; every mention of a concept,
-      down to single tweets, is gathered in the <em>weave</em>. Follow a trailhead, read in the reader,
-      step sideways through the web — the same way it was written.</p>
+      <div class="intro">
+        <p>I'm <a href="https://github.com/edobry" target="_blank" rel="noopener">Eugene Dobry</a>, a software engineer in New York.
+        Starting in August 2020 I posted as <a href="https://twitter.com/pee_zombie" target="_blank" rel="noopener">@pee_zombie</a>,
+        an alt I made to fit in with a corner of Twitter that thought out loud about minds, software, memetics, autism and how to live.
+        It ran to 22,549 tweets, more than half of them in 2021. This site is that archive, put back together.</p>
+        <p>Most of it was written as threads that quote each other, so this site renders it as the web it already was.
+        Below are the <em>trailheads</em>: the threads worth starting from, grouped by theme and ranked by how developed
+        they are rather than by likes. Open one and the <em>reader</em> lays it out as an essay. Click a quoted tweet
+        inside it and the thread it points at opens alongside, so you can follow a line of thought the way it was built.
+        The <em>weave</em> collects every tweet that touches a concept, stray one-liners included; the <em>web</em> draws
+        the whole quote graph; search covers the same tweets as the weave.</p>
+        <p>The account went quiet in 2025. These days I'm building
+        <a href="https://github.com/edobry/minsky" target="_blank" rel="noopener">Minsky</a>, an environment for coding agents
+        to work inside; a good deal of what these threads say about extending a mind with tools ended up in it.
+        Everything here is verbatim, typos and all. The titles, themes and grades are mine, added afterwards.</p>
+      </div>
       <div class="statline" id="stats"></div>
       <h2 class="sect">trailheads — by theme</h2>
       <div id="themes"></div>
@@ -486,7 +502,7 @@ function renderList() {
 }
 document.getElementById('stats').innerHTML =
   '<b>' + nodes.filter(n => n.kind === 'thread').length + '</b> threads · <b>' + edges.length + '</b> quote-links · <b>' +
-  CORPUS.length.toLocaleString() + '</b> tweets woven across <b>' + CONCEPTS.length + '</b> concepts · largest web ~<b>3,600</b> tweets · ● evergreen ◐ budding ◦ seedling';
+  CORPUS.length.toLocaleString() + '</b> tweets tagged with <b>' + CONCEPTS.length + '</b> concepts · largest web ~<b>3,600</b> tweets · ● evergreen ◐ budding ◦ seedling';
 
 /* ============ weave ============ */
 const selConcepts = new Set();
