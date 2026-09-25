@@ -56,7 +56,7 @@ canvas.fp { image-rendering: pixelated; flex: 0 0 auto; }
 
 #top { display: flex; align-items: center; gap: 16px; padding: 0 16px; height: 52px; border-bottom: 1px solid var(--line); background: var(--surface); position: relative; z-index: 6; flex: 0 0 auto; }
 #eca { position: absolute; left: 0; top: 0; width: 100%; height: 100%; opacity: .22; pointer-events: none; }
-#top h1 { font-size: 13px; font-weight: 500; margin: 0; letter-spacing: .08em; z-index: 1; white-space: nowrap; }
+#top h1 { font-size: 13px; font-weight: 500; margin: 0; letter-spacing: .08em; z-index: 1; white-space: nowrap; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
 #top h1 .pz { color: var(--acc); }
 #top .sub { color: var(--muted); font-size: 11px; z-index: 1; }
 nav { display: flex; gap: 2px; z-index: 1; margin-left: auto; flex-shrink: 0; }
@@ -201,7 +201,7 @@ h2.sect { font-size: 11px; font-weight: 500; letter-spacing: .18em; text-transfo
 @media (max-width: 700px) {
   /* header: title and search on the first row, the four views as a tab bar on the second */
   #top { flex-wrap: wrap; height: auto; gap: 0; padding: 0; }
-  #top h1 { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; padding: 12px 0 12px 14px; }
+  #top h1 { flex: 1 1 auto; padding: 12px 0 12px 14px; }
   /* 16px is the floor below which iOS Safari zooms the page on focus — and with
      the document unscrollable, that zoom cannot be undone by the reader. */
   #search { flex: 0 1 200px; min-width: 150px; margin: 8px 14px 8px 12px; font-size: 16px; padding: 6px 10px; }
@@ -271,7 +271,7 @@ h2.sect { font-size: 11px; font-weight: 500; letter-spacing: .18em; text-transfo
     <button id="bReader">reader</button>
     <button id="bWeb">web</button>
   </nav>
-  <input id="search" type="search" placeholder="search the weave…" aria-label="search" enterkeyhint="search" autocomplete="off" autocapitalize="off">
+  <input id="search" type="search" placeholder="search the weave…" aria-label="search" enterkeyhint="search" autocapitalize="off">
 </header>
 
 <div id="views">
@@ -1182,7 +1182,7 @@ function initWeb() {
       else if (n) { openNode(n.id, null); show('reader'); }
       else if (e.pointerType === 'touch') { hoverN = null; drawWeb(); showInfo(null); }
     }
-    if (pointers.size < 2) pinch = null;
+    pinch = pointers.size >= 2 ? pinchOf() : null; // re-baseline on the fingers that remain, so a third finger lifting does not jump
     if (pointers.size === 0) drag = null;
     else if (pointers.size === 1) { // one of two fingers lifted: the other continues as a pan, not a tap
       const p = [...pointers.values()][0];
