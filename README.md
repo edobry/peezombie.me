@@ -25,7 +25,15 @@ with the back button (mt#5204; paths since mt#5216):
 | `https://peezombie.me/t/qi-as-virtual-substance` | one thread, by slug |
 | `https://peezombie.me/t/<slug>/<slug>` | a reading trail — one pane per segment, with the quote threadline between them when one exists |
 | `https://peezombie.me/t/<tweet id>` | the thread that tweet belongs to, scrolled to it — any numeric id in the garden works where a slug does |
-| `https://peezombie.me/weave`, `/web` | the other views; trailheads is `/` |
+| `https://peezombie.me/weave/cybernetics+autism` | the weave with those concepts selected — an intersection, so this is a real question to send |
+| `https://peezombie.me/search/wu%20wei` | the weave in text-search mode |
+| `https://peezombie.me/trailheads/autism-neurodivergence` | trailheads filtered to a theme; `/` is unfiltered |
+| `https://peezombie.me/web` | the web |
+
+Concept and theme labels travel as slugs, made in the browser by the same rules as the thread
+slugs. History works in two grains: switching views or opening a thread pushes an entry the back
+button undoes; refining inside a view (toggling a chip, picking a theme, searching) replaces the
+entry, so one back-press leaves the view however many chips were toggled (mt#5217).
 
 Slugs are minted at export (`pipeline/slug.ts`) from the catalog title, else the root tweet's
 text; every pane's header has a **link** control that copies its permalink.

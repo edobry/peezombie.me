@@ -469,7 +469,7 @@ function renderThemes() {
     const b = document.createElement('button');
     b.className = 'chip' + (activeTheme === t ? ' on' : '');
     b.innerHTML = esc(t) + ' <span class="n">' + c + '</span>';
-    b.onclick = () => { activeTheme = activeTheme === t ? null : t; renderThemes(); renderList(); };
+    b.onclick = () => { activeTheme = activeTheme === t ? null : t; renderThemes(); renderList(); syncUrl(false); };
     themesEl.appendChild(b);
   }
 }
@@ -531,6 +531,7 @@ function renderChips() {
       weaveQuery = null; document.getElementById('search').value = '';
       selConcepts.has(ci) ? selConcepts.delete(ci) : selConcepts.add(ci);
       renderWeave();
+      syncUrl(false);
     };
     chipsEl.appendChild(b);
   }
@@ -567,7 +568,7 @@ function renderWeave() {
     for (const [c, n] of top) {
       const b = document.createElement('button');
       b.textContent = CONCEPTS[c] + ' (' + n + ')';
-      b.onclick = () => { selConcepts.add(c); renderWeave(); };
+      b.onclick = () => { selConcepts.add(c); renderWeave(); syncUrl(false); };
       relEl.appendChild(b);
     }
   } else {
@@ -611,8 +612,11 @@ document.getElementById('search').addEventListener('keydown', e => {
   const q = e.target.value.trim();
   weaveQuery = q || null;
   selConcepts.clear();
-  show('weave');
+  // a search from another view is a navigation; one from inside the weave refines it
+  const refining = cur === 'weave';
+  show('weave', { silent: true });
   renderWeave();
+  syncUrl(!refining);
 });
 
 /* ============ reader: stacked panes + provenance ============ */
@@ -772,16 +776,22 @@ function cleanupPaths() {
     }
   }
 }
-/* ============ addresses (mt#5204; paths since mt#5216) ============ */
-/* The URL is a function of (view, pane trail): written on every navigation,
-   read back on load and on back/forward. Paths, answered by the Worker in
-   front of the assets (worker/index.ts) — which also serves /t/<slug> with
-   that thread's preview meta, the reason these are paths and not fragments.
-     /t/<slug>[/<slug>…]   the reader, one pane per segment, left to right
-     /weave · /web         the other views; trailheads is /
-   A segment also accepts a numeric id — a node id, or any tweet id in the
-   garden, which resolves to its thread and scrolls to the tweet. The fragment
-   form mt#5204 shipped (#t/…) is still read, and rewritten to the path. */
+/* ============ addresses (mt#5204; paths since mt#5216; every view since mt#5217) ============ */
+/* The URL is a function of view state: written on every navigation, read back
+   on load and on back/forward. Paths, answered by the Worker in front of the
+   assets (worker/index.ts) — which also serves /t/<slug> with that thread's
+   preview meta, the reason these are paths and not fragments.
+     /t/<slug>[/<slug>…]     the reader, one pane per segment, left to right
+     /weave/<c>+<c>          the weave with those concepts selected (∩)
+     /search/<query>         the weave in text-search mode
+     /trailheads/<theme>     trailheads filtered to a theme; / is unfiltered
+     /web                    the web
+   A reader segment also accepts a numeric id — a node id, or any tweet id in
+   the garden, which resolves to its thread and scrolls to the tweet. Concept
+   and theme labels travel as slugs (labelSlug, below). The fragment form
+   mt#5204 shipped (#t/…) is still read, and rewritten to the path.
+   History: a view change or an opened thread PUSHES; refining within a view —
+   a chip, a theme, a search — REPLACES, so one back-press leaves the view. */
 const BASE_TITLE = document.title;
 let lastPath = null;
 function resolveNode(key) {
@@ -790,15 +800,50 @@ function resolveNode(key) {
 function paneNodes() {
   return [...panesEl.querySelectorAll('.pane[data-id]')].map(p => byId.get(p.dataset.id)).filter(Boolean);
 }
+/* A label (concept, theme) as an address segment. A mirror of pipeline/slug.ts,
+   which is the source of truth for the rules: lower-case, drop apostrophes,
+   hyphenate every other non-alphanumeric run, cut at 60 on a word. Labels are
+   display strings, not identifiers stored anywhere, so this lives here. */
+function labelSlug(s) {
+  const base = s.toLowerCase().replace(/['’]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+  if (base.length <= 60) return base;
+  const cut = base.slice(0, 60), at = cut.lastIndexOf('-');
+  return at > 20 ? cut.slice(0, at) : cut;
+}
+/* slug -> index and index -> slug for a list of labels. Collisions are numbered
+   in list order and reported, so a grown lexicon cannot silently give two
+   labels one address. (None today: 96 concepts, 15 themes.) */
+function addressBook(labels) {
+  const toIndex = new Map(), slugs = [];
+  labels.forEach((label, i) => {
+    const base = labelSlug(label) || String(i);
+    let s = base;
+    for (let k = 2; toIndex.has(s); k++) s = base + '-' + k;
+    if (s !== base) console.warn('address collision: “' + label + '” is ' + s);
+    toIndex.set(s, i);
+    slugs[i] = s;
+  });
+  return { toIndex, slugs };
+}
+const conceptAddr = addressBook(CONCEPTS);
+const themeNames = themesSorted.map(([t]) => t);
+const themeAddr = addressBook(themeNames);
 function currentPath() {
   if (cur === 'reader') { const ns = paneNodes(); return '/t' + (ns.length ? '/' + ns.map(n => n.slug).join('/') : ''); }
-  return cur === 'index' ? '/' : '/' + cur;
+  if (cur === 'index') return activeTheme ? '/trailheads/' + themeAddr.slugs[themeNames.indexOf(activeTheme)] : '/';
+  if (cur === 'weave') {
+    if (weaveQuery) return '/search/' + encodeURIComponent(weaveQuery);
+    if (selConcepts.size) return '/weave/' + [...selConcepts].sort((a, b) => a - b).map(i => conceptAddr.slugs[i]).join('+');
+    return '/weave';
+  }
+  return '/' + cur;
 }
 function applyTitle() {
   const ns = cur === 'reader' ? paneNodes() : [];
   document.title = ns.length ? titleOf(ns[ns.length - 1]) + ' — pee_zombie' : BASE_TITLE;
 }
-/* push: a navigation the back button should undo. replace: tidying (a closed pane). */
+/* push: a navigation the back button should undo. replace: a refinement (a
+   chip, a theme, a search) or tidying (a closed pane). */
 function syncUrl(push) {
   const p = currentPath();
   if (p === lastPath) return;
@@ -820,7 +865,25 @@ function route() {
   if (p === lastPath) return;
   lastPath = p;
   const seg = p.split('/').map(safeDecode).filter(Boolean);
-  const view = seg[0] === 't' ? 'reader' : seg[0] === 'weave' || seg[0] === 'web' ? seg[0] : 'index';
+  const head = seg[0];
+  const view = head === 't' ? 'reader' : head === 'weave' || head === 'search' ? 'weave' : head === 'web' ? 'web' : 'index';
+  if (view === 'index') {
+    // an unknown theme is no theme; the plain view is the fallback, not an error
+    const ti = head === 'trailheads' && seg[1] ? themeAddr.toIndex.get(seg[1]) : undefined;
+    const next = ti === undefined ? null : themeNames[ti];
+    if (next !== activeTheme) { activeTheme = next; renderThemes(); renderList(); }
+  }
+  if (view === 'weave') {
+    selConcepts.clear();
+    if (head === 'search') {
+      weaveQuery = seg.slice(1).join('/') || null;
+    } else {
+      weaveQuery = null;
+      // unknown concepts are dropped and the rest applied
+      for (const s of (seg[1] || '').split('+')) { const ci = conceptAddr.toIndex.get(s); if (ci !== undefined) selConcepts.add(ci); }
+    }
+    document.getElementById('search').value = weaveQuery || '';
+  }
   if (view !== cur) show(view, { silent: true });
   if (view === 'reader') openTrail(seg.slice(1));
   if (view === 'weave') renderWeave();

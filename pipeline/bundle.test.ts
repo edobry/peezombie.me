@@ -211,6 +211,11 @@ describe("the shell is addressable (mt#5204, paths since mt#5216)", () => {
     expect(html).toContain("'/t'");
   });
 
+  test("the weave, search and trailheads views are addressable too (mt#5217)", () => {
+    for (const route of ["'/weave/'", "'/search/'", "'/trailheads/'"]) expect(html).toContain(route);
+    expect(html).toContain("function labelSlug(");
+  });
+
   test("the fragment form mt#5204 shipped is still read", () => {
     expect(html).toContain("function legacyPath()");
   });
