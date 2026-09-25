@@ -18,19 +18,23 @@ survey is in [`research/`](research/).
 ## Addresses
 
 Everything in the reader has a URL, so a thread can be sent, bookmarked, and returned to
-with the back button (mt#5204):
+with the back button (mt#5204; paths since mt#5216):
 
 | URL | Opens |
 | --- | --- |
-| `https://peezombie.me/#t/qi-as-virtual-substance` | one thread, by slug |
-| `https://peezombie.me/#t/<slug>/<slug>` | a reading trail — one pane per segment, with the quote threadline between them when one exists |
-| `https://peezombie.me/#t/<tweet id>` | the thread that tweet belongs to, scrolled to it — any numeric id in the garden works where a slug does |
-| `https://peezombie.me/#weave`, `#web` | the other views; trailheads is the bare URL |
+| `https://peezombie.me/t/qi-as-virtual-substance` | one thread, by slug |
+| `https://peezombie.me/t/<slug>/<slug>` | a reading trail — one pane per segment, with the quote threadline between them when one exists |
+| `https://peezombie.me/t/<tweet id>` | the thread that tweet belongs to, scrolled to it — any numeric id in the garden works where a slug does |
+| `https://peezombie.me/weave`, `/web` | the other views; trailheads is `/` |
 
 Slugs are minted at export (`pipeline/slug.ts`) from the catalog title, else the root tweet's
-text; every pane's header has a **link** control that copies its permalink. They are fragments
-rather than paths on purpose: the host answers an unknown path with a real 404 (see
-`wrangler.jsonc`), and a fragment needs no server at all.
+text; every pane's header has a **link** control that copies its permalink.
+
+**A thread link unfurls as that thread.** The Worker in front of the assets (`worker/index.ts`)
+answers `/t/<slug>` with the shell, its `<title>`, Open Graph and Twitter meta rewritten to the
+thread's title and an excerpt of its first tweet, read from `site/og.json`. That is why these
+are paths and not fragments: a fragment never reaches a server. The `#t/…` form mt#5204 shipped
+briefly is still read and rewritten to the path.
 
 ## Layout
 
@@ -45,6 +49,8 @@ rather than paths on purpose: the host answers an unknown path with a real 404 (
 | `site/index.html` | The built **shell** (~45 KB). Committed, and served — but it carries no corpus. |
 | `site/garden-data.<hash>.json` | The corpus payload the shell fetches at load. **Never committed** — gitignored, uploaded at deploy. |
 | `pipeline/data-ref.json` | Committed pin recording which payload the committed shell expects. Carries no corpus. |
+| `site/og.json` | Per-thread preview index the Worker reads: title and a root-tweet excerpt per slug. **Never committed** — corpus text; gitignored, uploaded at deploy. |
+| `worker/` | The Worker script in front of the assets: serves app routes as the shell, with per-thread Open Graph meta for `/t/<slug>`. Corpus-free; typechecks in a fresh clone. |
 
 ## Provenance
 
@@ -145,7 +151,11 @@ reads them, and `account.js` contains the account email.
 
 ## Deploy
 
-**Live today: a Cloudflare Worker**, on the apex `peezombie.me`, serving static assets.
+**Live today: a Cloudflare Worker**, on the apex `peezombie.me`, serving static assets with a
+small script in front of them (`worker/index.ts`, mt#5216) that answers the app's path routes
+and rewrites per-thread preview meta — see [Addresses](#addresses). Assets are served first;
+the script runs only for paths no asset matches, and hands everything but app routes back to
+the assets binding, so an unknown path is still a real 404.
 **Merging to `main` does not publish.** It did until the cutover on 2026-09-02; that is the
 thing to un-learn if you knew this repo before.
 
