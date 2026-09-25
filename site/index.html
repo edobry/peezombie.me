@@ -45,24 +45,33 @@
   --text:#28302a; --muted:#5c675d; --faint:#98a399; --acc:#3d6f3f; --acc-dim:#69906b; --acc-glow:#2c5a2e; --amber:#8a6c33; --amber-dim:#ab9367; }
 
 * { box-sizing: border-box; }
-html, body { height: 100%; }
-body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--mono); font-size: 13px; overflow: hidden; }
+html { height: 100%; }
+/* The shell is a flex column rather than a header band plus an absolutely
+   positioned rest: the header can then be any height (two rows on a phone),
+   and dvh tracks a phone browser's retracting toolbars where 100% and 100vh
+   do not. */
+body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--mono); font-size: 13px; overflow: hidden;
+  height: 100%; height: 100dvh; display: flex; flex-direction: column; }
 canvas.fp { image-rendering: pixelated; flex: 0 0 auto; }
 
-#top { display: flex; align-items: center; gap: 16px; padding: 0 16px; height: 52px; border-bottom: 1px solid var(--line); background: var(--surface); position: relative; z-index: 6; }
+#top { display: flex; align-items: center; gap: 16px; padding: 0 16px; height: 52px; border-bottom: 1px solid var(--line); background: var(--surface); position: relative; z-index: 6; flex: 0 0 auto; }
 #eca { position: absolute; left: 0; top: 0; width: 100%; height: 100%; opacity: .22; pointer-events: none; }
-#top h1 { font-size: 13px; font-weight: 500; margin: 0; letter-spacing: .08em; z-index: 1; }
+/* The title never wraps. It can truncate with an ellipsis, but only once the search box has
+   shrunk to its minimum: the 3px of slack absorbs the sub-pixel share it gets before then. */
+#top h1 { font-size: 13px; font-weight: 500; margin: 0; letter-spacing: .08em; z-index: 1; white-space: nowrap; min-width: 0; overflow: hidden; text-overflow: ellipsis; padding-right: 3px; }
 #top h1 .pz { color: var(--acc); }
 #top .sub { color: var(--muted); font-size: 11px; z-index: 1; }
-nav { display: flex; gap: 2px; z-index: 1; margin-left: auto; }
+nav { display: flex; gap: 2px; z-index: 1; margin-left: auto; flex-shrink: 0; }
 nav button { font: inherit; background: none; border: 1px solid transparent; color: var(--muted); padding: 5px 12px; cursor: pointer; letter-spacing: .06em; }
 nav button:hover { color: var(--text); }
 nav button.on { color: var(--acc); border-color: var(--line); background: var(--bg); }
 nav button:focus-visible, a:focus-visible, .qcard:focus-visible, .chip:focus-visible { outline: 1px solid var(--acc); outline-offset: 2px; }
-#search { z-index: 1; background: var(--bg); border: 1px solid var(--line); color: var(--text); font: inherit; padding: 5px 10px; width: 210px; }
+/* flex-shrink 1000: when the header is short of room the search gives way first, down to
+   its minimum, before the title has to truncate */
+#search { z-index: 1; background: var(--bg); border: 1px solid var(--line); color: var(--text); font: inherit; padding: 5px 10px; width: 210px; flex: 0 1000 auto; min-width: 130px; }
 #search::placeholder { color: var(--faint); }
 
-#views { position: absolute; top: 52px; bottom: 0; left: 0; right: 0; }
+#views { position: relative; flex: 1 1 auto; min-height: 0; }
 .view { position: absolute; inset: 0; display: none; }
 .view.on { display: block; }
 .bgeca { position: absolute; inset: 0; opacity: .055; pointer-events: none; }
@@ -75,7 +84,7 @@ h2.sect { font-size: 11px; font-weight: 500; letter-spacing: .18em; text-transfo
 .chip .n { color: var(--faint); }
 
 /* ---------- trailheads ---------- */
-#vIndex { overflow-y: auto; }
+#vIndex { overflow-y: auto; overscroll-behavior-y: contain; }
 #vIndex .wrap { position: relative; max-width: 1100px; margin: 0 auto; padding: 36px 24px 90px; }
 .intro { font-family: var(--serif); font-size: 17px; line-height: 1.65; max-width: 60ch; }
 .intro em { color: var(--acc); font-style: normal; }
@@ -96,9 +105,13 @@ h2.sect { font-size: 11px; font-weight: 500; letter-spacing: .18em; text-transfo
 .trow .meta { flex: 0 0 auto; color: var(--faint); font-size: 11px; white-space: nowrap; }
 
 /* ---------- weave ---------- */
-#vWeave { overflow-y: auto; }
+#vWeave { overflow-y: auto; overscroll-behavior-y: contain; }
 #vWeave .wrap { position: relative; max-width: 1100px; margin: 0 auto; padding: 36px 24px 90px; }
 #chips { display: flex; flex-wrap: wrap; gap: 7px; }
+/* On a phone the chips would run to ~50 rows before the first result, so the
+   list is cut at CHIP_CUT and the rest sit behind this toggle. Desktop shows
+   them all; the toggle exists only below the breakpoint. */
+#chipsmore { display: none; margin-top: 8px; color: var(--acc-dim); }
 #wmeta { color: var(--muted); margin: 22px 0 4px; font-size: 12px; }
 #wmeta b { color: var(--acc); font-weight: 500; }
 #related { margin: 6px 0 10px; color: var(--faint); font-size: 11.5px; }
@@ -115,11 +128,11 @@ h2.sect { font-size: 11px; font-weight: 500; letter-spacing: .18em; text-transfo
 .wtw .d .thlink:hover { color: var(--acc); }
 
 /* ---------- reader (stacked panes) ---------- */
-#vReader { overflow-x: auto; overflow-y: hidden; }
+#vReader { overflow-x: auto; overflow-y: hidden; overscroll-behavior-x: contain; }
 #vReader.on { display: flex; }
 #panes { display: flex; height: 100%; position: relative; }
 #threadlines { position: absolute; inset: 0; pointer-events: none; z-index: 4; }
-.pane { flex: 0 0 640px; max-width: 92vw; height: 100%; overflow-y: auto; border-right: 1px solid var(--line); background: var(--bg); position: relative; }
+.pane { flex: 0 0 640px; max-width: 92vw; height: 100%; overflow-y: auto; overscroll-behavior-y: contain; border-right: 1px solid var(--line); background: var(--bg); position: relative; }
 .pane:nth-child(even of .pane) { background: color-mix(in srgb, var(--bg) 96.5%, var(--acc) 3.5%); }
 .pane .inner { padding: 28px 36px 90px; }
 .pane .crumb { color: var(--faint); font-size: 11px; letter-spacing: .05em; display: flex; align-items: baseline; gap: 10px; min-height: 18px; }
@@ -166,17 +179,75 @@ h2.sect { font-size: 11px; font-weight: 500; letter-spacing: .18em; text-transfo
 .backs .qcard:hover, .backs .qcard.onpath { border-left-color: var(--amber); }
 
 /* ---------- web ---------- */
-#cnv { position: absolute; left: 0; top: 0; width: 100%; height: 100%; cursor: grab; }
+/* touch-action: none — the canvas takes the pan and the pinch itself (see initWeb) */
+#cnv { position: absolute; left: 0; top: 0; width: 100%; height: 100%; cursor: grab; touch-action: none; }
 #webinfo { position: absolute; left: 14px; bottom: 14px; max-width: 400px; background: var(--surface); border: 1px solid var(--line); padding: 12px 14px; display: none; align-items: flex-start; gap: 12px; }
 #webinfo .t { font-family: var(--serif); font-size: 14.5px; line-height: 1.45; }
 #webinfo .m { color: var(--muted); font-size: 11px; margin-top: 6px; }
+#webinfo .go { color: var(--acc-dim); font-size: 11px; margin-top: 6px; }
+#webinfo { cursor: pointer; }
 #weblegend { position: absolute; right: 14px; top: 12px; color: var(--muted); font-size: 11px; text-align: right; line-height: 1.8; pointer-events: none; }
 #weblegend .k { color: var(--faint); }
 
 @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+/* ---------- narrow screens ----------
+   Three steps down. Above 1150px the header is one row with everything in it.
+   The subtitle goes first (it is the longest item), then the h1's suffix; at
+   phone width the header becomes two rows and every view takes its phone layout. */
+@media (max-width: 1150px) {
+  #top .sub { display: none; }
+}
+@media (max-width: 800px) {
+  #top h1 .cg { display: none; }
+  nav button { padding: 5px 8px; }
+}
 @media (max-width: 700px) {
-  #search { width: 110px; } #top { gap: 8px; padding: 0 10px; } #top .sub { display: none; }
-  .pane { flex-basis: 100vw; }
+  /* header: title and search on the first row, the four views as a tab bar on the second */
+  #top { flex-wrap: wrap; height: auto; gap: 0; padding: 0; }
+  #top h1 { flex: 1 1 auto; padding: 12px 0 12px 14px; }
+  /* 16px is the floor below which iOS Safari zooms the page on focus — and with
+     the document unscrollable, that zoom cannot be undone by the reader. */
+  #search { flex: 0 1 200px; min-width: 150px; margin: 8px 14px 8px 12px; font-size: 16px; padding: 6px 10px; }
+  #search::placeholder { font-size: 13px; }
+  /* order: the nav precedes the search in the DOM; putting it last keeps the search on the first row */
+  nav { flex: 1 0 100%; order: 9; margin-left: 0; gap: 0; border-top: 1px solid var(--line); }
+  nav button { flex: 1 1 0; padding: 10px 2px; border: 0; border-bottom: 2px solid transparent; font-size: 12px; letter-spacing: .04em; }
+  nav button.on { background: none; border-color: var(--acc); }
+
+  /* trailheads and weave */
+  #vIndex .wrap, #vWeave .wrap { padding: 22px 16px 80px; }
+  .intro { font-size: 16px; }
+  .statline { margin: 14px 0 22px; }
+  h2.sect { margin: 30px 0 12px; }
+  .chip { padding: 8px 12px; }
+  /* a row is a grid so the meta line can drop under the title instead of squeezing it */
+  .trow { display: grid; grid-template-columns: auto auto 1fr; column-gap: 10px; row-gap: 3px; align-items: center; padding: 12px 2px; }
+  .trow .t { font-size: 15px; }
+  .trow .meta { grid-column: 3; white-space: normal; }
+  #chips.collapsed .chip.beyond { display: none; }
+  #chipsmore:not([hidden]) { display: inline-flex; }
+  #related button { padding: 4px; }
+  .wtw { padding: 12px 2px 12px 12px; margin-left: 2px; }
+  .wtw .d .thlink { display: inline-block; padding: 4px 0; }
+
+  /* reader: one pane per screen, snapped, so a swipe lands on a pane and not between two */
+  #vReader { scroll-snap-type: x mandatory; }
+  .pane { flex-basis: 100vw; max-width: none; border-right: 0; scroll-snap-align: start; scroll-snap-stop: always; }
+  .pane .inner { padding: 14px 18px 80px; }
+  .pane .crumb { flex-wrap: wrap; align-items: center; column-gap: 12px; row-gap: 0; }
+  /* basis 0 so the label shares the first row with link and close, and wraps its own text rather than pushing them down */
+  .pane .crumb .kind { flex: 1 1 0; min-width: 0; }
+  .pane .crumb .via { flex: 1 0 100%; order: 5; text-align: left; white-space: normal; padding: 6px 0 2px; }
+  .pane .crumb .link, .pane .crumb .close { padding: 6px 0; }
+  .pane .head { gap: 12px; margin-top: 10px; }
+  .pane h3 { font-size: 22px; }
+  .pane .tagrow button { padding: 5px 10px; }
+  .tw .x { font-size: 16.5px; }
+  .qcard { padding: 10px 12px; gap: 10px; }
+
+  /* web */
+  #webinfo { left: 10px; right: 10px; bottom: 10px; max-width: none; }
+  #weblegend { font-size: 10px; right: 10px; top: 8px; }
 }
 /* Boot overlay. Covers the page while the payload is in flight, and is where a
    load failure is reported — the garden must never render empty and read as a
@@ -195,7 +266,7 @@ h2.sect { font-size: 11px; font-weight: 500; letter-spacing: .18em; text-transfo
 
 <header id="top">
   <canvas id="eca"></canvas>
-  <h1><span class="pz">pee_zombie</span> / conceptual garden</h1>
+  <h1><span class="pz">pee_zombie</span><span class="cg"> / conceptual garden</span></h1>
   <span class="sub">the @pee_zombie Twitter archive, 2020–2025</span>
   <nav>
     <button id="bIndex" class="on">trailheads</button>
@@ -203,7 +274,7 @@ h2.sect { font-size: 11px; font-weight: 500; letter-spacing: .18em; text-transfo
     <button id="bReader">reader</button>
     <button id="bWeb">web</button>
   </nav>
-  <input id="search" type="search" placeholder="search the weave…" aria-label="search">
+  <input id="search" type="search" placeholder="search the weave…" aria-label="search" enterkeyhint="search" autocapitalize="off">
 </header>
 
 <div id="views">
@@ -243,6 +314,7 @@ h2.sect { font-size: 11px; font-weight: 500; letter-spacing: .18em; text-transfo
       Select several to intersect: <em>cybernetics ∩ autism</em> is a real question here.</p>
       <h2 class="sect">concepts</h2>
       <div id="chips"></div>
+      <button id="chipsmore" class="chip" type="button" hidden></button>
       <div id="wmeta"></div>
       <div id="related"></div>
       <div id="wresults"></div>
@@ -520,12 +592,24 @@ for (const t of CORPUS) {
   for (const c of t.c) threadConcepts.get(t.th).add(c);
 }
 const conceptOrder = CONCEPTS.map((_, i) => i).sort((a, b) => conceptCounts[b] - conceptCounts[a]);
+/* Below the phone breakpoint the chips past CHIP_CUT hide behind a toggle. The
+   classes are set at every width and the stylesheet decides; a selected chip is
+   never hidden, whatever its rank, so a selection can always be undone. */
+const CHIP_CUT = 24;
+let chipsCollapsed = true;
+const chipsMore = document.getElementById('chipsmore');
+chipsMore.onclick = () => { chipsCollapsed = !chipsCollapsed; renderChips(); };
 function renderChips() {
   chipsEl.innerHTML = '';
+  chipsEl.classList.toggle('collapsed', chipsCollapsed);
+  let shown = 0, beyond = 0;
   for (const ci of conceptOrder) {
     if (conceptCounts[ci] < 4) continue;
     const b = document.createElement('button');
-    b.className = 'chip' + (selConcepts.has(ci) ? ' on' : '');
+    const sel = selConcepts.has(ci);
+    b.className = 'chip' + (sel ? ' on' : '');
+    if (shown >= CHIP_CUT && !sel) { b.classList.add('beyond'); beyond++; }
+    shown++;
     b.innerHTML = esc(CONCEPTS[ci]) + ' <span class="n">' + conceptCounts[ci] + '</span>';
     b.onclick = () => {
       weaveQuery = null; document.getElementById('search').value = '';
@@ -535,6 +619,8 @@ function renderChips() {
     };
     chipsEl.appendChild(b);
   }
+  chipsMore.hidden = beyond === 0;
+  chipsMore.textContent = chipsCollapsed ? '+ ' + beyond + ' more concepts' : 'fewer concepts';
 }
 function renderWeave() {
   renderChips();
@@ -658,6 +744,7 @@ function buildPane(n, provenance) {
   const crumb = document.createElement('div');
   crumb.className = 'crumb';
   const kind = document.createElement('span');
+  kind.className = 'kind';
   kind.textContent = (n.kind === 'thread' ? 'thread · ' + n.size + ' tweets' : 'tweet') +
     (n.reply ? ' · replying to @' + n.reply : '') + (n.span > 14 ? ' · grown over ' + Math.round(n.span) + ' days' : '');
   crumb.appendChild(kind);
@@ -937,6 +1024,7 @@ function missingPane(keys) {
   const crumb = document.createElement('div');
   crumb.className = 'crumb';
   const kind = document.createElement('span');
+  kind.className = 'kind';
   kind.textContent = 'not found';
   crumb.appendChild(kind);
   const close = document.createElement('button');
@@ -1067,6 +1155,10 @@ window.addEventListener('resize', () => requestAnimationFrame(drawThreadlines));
 
 /* ============ web (canvas) ============ */
 let webInit = false, cam = { x: 0, y: 0, z: 0.7 }, hoverN = null;
+/* The zoom floor follows the fit: a phone fits the whole web at ~0.07, well
+   under the 0.15 a desktop never goes below, and a fixed floor there made the
+   first pinch jump in and put the overview out of reach. */
+let zMin = 0.15;
 function fitWeb() {
   const cnv = document.getElementById('cnv');
   if (!cnv.clientWidth || !nodes.length) return;
@@ -1074,6 +1166,7 @@ function fitWeb() {
   for (const n of nodes) { minX = Math.min(minX, n.x); maxX = Math.max(maxX, n.x); minY = Math.min(minY, n.y); maxY = Math.max(maxY, n.y); }
   cam.x = (minX + maxX) / 2; cam.y = (minY + maxY) / 2;
   cam.z = Math.min(4, 0.92 * Math.min(cnv.clientWidth / (maxX - minX + 100), cnv.clientHeight / (maxY - minY + 100)));
+  zMin = Math.min(0.15, cam.z / 2);
 }
 function initWeb() {
   if (webInit) { drawWeb(); return; }
@@ -1091,43 +1184,95 @@ function initWeb() {
   }
   new ResizeObserver(resize).observe(cnv);
   window.addEventListener('resize', resize);
-  let drag = null;
-  cnv.addEventListener('pointerdown', e => { drag = { sx: e.clientX, sy: e.clientY, cx: cam.x, cy: cam.y, moved: false }; cnv.setPointerCapture(e.pointerId); });
+  /* Input. A mouse hovers to preview and clicks to read. A finger cannot hover,
+     so on touch the first tap on a node shows its card and a second tap — on the
+     node or on the card — opens it; a tap on empty space dismisses. Two fingers
+     pinch: the canvas has touch-action: none, so the browser leaves both the pan
+     and the pinch to this code. */
+  const pointers = new Map(); // pointerId -> last client position, for the pinch
+  let drag = null, pinch = null;
+  function pinchOf() { // the two fingers as a distance and a midpoint
+    const [a, b] = [...pointers.values()];
+    return { d: Math.hypot(a.x - b.x, a.y - b.y), mx: (a.x + b.x) / 2, my: (a.y + b.y) / 2 };
+  }
+  function showInfo(n, touch) {
+    if (!n) { info.style.display = 'none'; return; }
+    info.style.display = 'flex';
+    info.innerHTML = '';
+    info.appendChild(fpCanvas(n.id));
+    const b = document.createElement('div');
+    b.innerHTML = '<div class="t">' + esc(titleOf(n)) + '</div><div class="m">' + n.started + ' · ' + n.size + ' tw · ' + n.favs + ' ♥' + (n.tags && n.tags.length ? ' · ' + n.tags.map(esc).join(', ') : '') + '</div>' +
+      (touch ? '<div class="go">tap again to read →</div>' : '');
+    info.appendChild(b);
+  }
+  info.onclick = () => { if (hoverN) { openNode(hoverN.id, null); show('reader'); } };
+  /* zoom about a client-space point: what is under the cursor, or between the fingers, stays put */
+  function zoomAt(f, px, py) {
+    const r = cnv.getBoundingClientRect();
+    const sx = px - r.left - r.width / 2, sy = py - r.top - r.height / 2;
+    const wx = sx / cam.z + cam.x, wy = sy / cam.z + cam.y;
+    cam.z = Math.max(zMin, Math.min(4, cam.z * f));
+    cam.x = wx - sx / cam.z; cam.y = wy - sy / cam.z;
+  }
+  cnv.addEventListener('pointerdown', e => {
+    pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    cnv.setPointerCapture(e.pointerId);
+    if (pointers.size === 1) drag = { sx: e.clientX, sy: e.clientY, cx: cam.x, cy: cam.y, moved: false };
+    else { drag = null; pinch = pinchOf(); } // a second finger: a pinch from here on, never a tap
+  });
   cnv.addEventListener('pointermove', e => {
+    if (pointers.has(e.pointerId)) pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (pointers.size >= 2) {
+      const now = pinchOf();
+      if (pinch) { // pan by the midpoint, then zoom about it: what was between the fingers stays there
+        cam.x -= (now.mx - pinch.mx) / cam.z; cam.y -= (now.my - pinch.my) / cam.z;
+        if (pinch.d > 0) zoomAt(now.d / pinch.d, now.mx, now.my);
+      }
+      pinch = now;
+      drawWeb();
+      return;
+    }
     if (drag) {
       const dx = e.clientX - drag.sx, dy = e.clientY - drag.sy;
       if (Math.abs(dx) + Math.abs(dy) > 3) drag.moved = true;
       cam.x = drag.cx - dx / cam.z; cam.y = drag.cy - dy / cam.z; drawWeb();
-    } else {
-      hoverN = pick(e); drawWeb();
-      if (hoverN) {
-        info.style.display = 'flex';
-        info.innerHTML = '';
-        info.appendChild(fpCanvas(hoverN.id));
-        const b = document.createElement('div');
-        b.innerHTML = '<div class="t">' + esc(titleOf(hoverN)) + '</div><div class="m">' + hoverN.started + ' · ' + hoverN.size + ' tw · ' + hoverN.favs + ' ♥' + (hoverN.tags && hoverN.tags.length ? ' · ' + hoverN.tags.map(esc).join(', ') : '') + '</div>';
-        info.appendChild(b);
-      } else info.style.display = 'none';
+      return;
     }
+    if (e.pointerType === 'touch') return; // a finger that is not down does not hover
+    hoverN = pick(e); drawWeb(); showInfo(hoverN, false);
   });
-  cnv.addEventListener('pointerup', e => {
-    if (drag && !drag.moved) { const n = pick(e); if (n) { openNode(n.id, null); show('reader'); } }
-    drag = null;
-  });
+  function endPointer(e) {
+    const tap = drag && !drag.moved && pointers.size === 1;
+    pointers.delete(e.pointerId);
+    if (tap) {
+      const n = pick(e);
+      if (n && e.pointerType === 'touch' && n !== hoverN) { hoverN = n; drawWeb(); showInfo(n, true); }
+      else if (n) { openNode(n.id, null); show('reader'); }
+      else if (e.pointerType === 'touch') { hoverN = null; drawWeb(); showInfo(null); }
+    }
+    pinch = pointers.size >= 2 ? pinchOf() : null; // re-baseline on the fingers that remain, so a third finger lifting does not jump
+    if (pointers.size === 0) drag = null;
+    else if (pointers.size === 1) { // one of two fingers lifted: the other continues as a pan, not a tap
+      const p = [...pointers.values()][0];
+      drag = { sx: p.x, sy: p.y, cx: cam.x, cy: cam.y, moved: true };
+    }
+  }
+  cnv.addEventListener('pointerup', endPointer);
+  cnv.addEventListener('pointercancel', endPointer);
   cnv.addEventListener('wheel', e => {
     e.preventDefault();
-    const f = Math.exp(-e.deltaY * 0.0012);
-    cam.z = Math.max(0.15, Math.min(4, cam.z * f));
+    zoomAt(Math.exp(-e.deltaY * 0.0012), e.clientX, e.clientY);
     drawWeb();
   }, { passive: false });
   function pick(e) {
     const r = cnv.getBoundingClientRect();
     const wx = (e.clientX - r.left - r.width / 2) / cam.z + cam.x;
     const wy = (e.clientY - r.top - r.height / 2) / cam.z + cam.y;
+    const slop = (e.pointerType === 'touch' ? 18 : 4) / cam.z; // screen pixels: a fingertip is wider than a cursor
     let best = null, bd = 1e9;
     for (const n of nodes) {
       const d = Math.hypot(n.x - wx, n.y - wy);
-      if (d < Math.max(n.r, 6) + 4 && d < bd) { best = n; bd = d; }
+      if (d < Math.max(n.r, 6) + slop && d < bd) { best = n; bd = d; }
     }
     return best;
   }
