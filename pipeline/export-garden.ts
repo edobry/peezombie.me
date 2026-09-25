@@ -3,6 +3,7 @@
 // nodes = threads + standalone tweets in the quote web; edges = self-quote links.
 import fs from "node:fs";
 import path from "node:path";
+import { assignSlugs } from "./slug";
 import type {
   ConceptIndex, CorpusEntry, GardenData, GardenEdge, GardenNode, GardenTweet,
   QuotedText, TagMeta, Thread, Tweet,
@@ -64,7 +65,9 @@ function cleanText(s: string): string {
     .replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>')
     .replace(/https:\/\/t\.co\/\w+/g, m => m); // keep t.co links; UI will de-emphasize
 }
-const nodes: GardenNode[] = [];
+// Built without a slug first: a slug is unique across the SET of nodes, so it
+// cannot be minted one node at a time. `assignSlugs` below completes the type.
+const bare: Array<Omit<GardenNode, 'slug'>> = [];
 for (const n of selected) {
   const th = threadById.get(n);
   const meta = tags[n] || {};
@@ -78,7 +81,7 @@ for (const n of selected) {
         m: t.hasMedia || /https:\/\/t\.co\//.test(t.text) && false,
       };
     });
-    nodes.push({
+    bare.push({
       id: n, kind: 'thread', size: th.size, favs: th.totalFavs, started: th.started.slice(0, 10),
       span: th.spanDays, reply: th.isReplyToOther ? th.replyToScreen : null,
       title: meta.title || null, tags: meta.tags || [], type: meta.type || null, grade: meta.grade || null,
@@ -87,13 +90,16 @@ for (const n of selected) {
   } else {
     const t = byId.get(n);
     if (!t) continue;
-    nodes.push({
+    bare.push({
       id: n, kind: 'tweet', size: 1, favs: t.favs, started: t.created.slice(0, 10),
       title: meta.title || null, tags: meta.tags || [], type: meta.type || null, grade: meta.grade || null,
       tweets: [{ id: t.id, d: t.created.slice(0, 10), f: t.favs, x: cleanText(t.text), q: t.selfQuotes.filter(q => byId.has(q)) }],
     });
   }
 }
+
+// --- slugs: each node's URL (mt#5204) ---
+const nodes: GardenNode[] = assignSlugs(bare);
 
 // --- edges among selected; also tweet-level quote targets resolved to nodes ---
 const edgeList = [...edges.values()].filter(e => selected.has(e.from) && selected.has(e.to));

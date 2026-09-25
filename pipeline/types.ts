@@ -96,6 +96,8 @@ export interface GardenTweet {
 export interface GardenNode {
   id: string;
   kind: "thread" | "tweet";
+  /** URL identity, minted by slug.ts at export: the catalog title, else the root tweet's text. Unique across nodes. */
+  slug: string;
   size: number;
   favs: number;
   started: string;

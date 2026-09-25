@@ -123,6 +123,14 @@ h2.sect { font-size: 11px; font-weight: 500; letter-spacing: .18em; text-transfo
 .pane .crumb .via:hover { color: var(--acc); }
 .pane .crumb .close { margin-left: auto; background: none; border: none; color: var(--faint); font: inherit; cursor: pointer; }
 .pane .crumb .close:hover { color: var(--text); }
+.pane .crumb .link { color: var(--acc-dim); text-decoration: none; border-bottom: 1px dotted var(--acc-dim); }
+.pane .crumb .link:hover { color: var(--acc); border-bottom-color: var(--acc); }
+.pane .crumb .link.done { color: var(--acc); border-bottom-color: transparent; }
+.pane.missing h3 { color: var(--muted); }
+.pane .missing-note { font-family: var(--serif); font-size: 15.5px; line-height: 1.6; color: var(--muted); max-width: 48ch; }
+/* a tweet arrived at by address: scrolled to, then let go of */
+.tw.flash { animation: flashtw 1.8s ease-out; }
+@keyframes flashtw { 0% { box-shadow: -10px 0 0 0 color-mix(in srgb, var(--acc) 45%, transparent); } 100% { box-shadow: -10px 0 0 0 transparent; } }
 .pane .head { display: flex; gap: 14px; align-items: flex-start; margin: 16px 0 8px; }
 .pane h3 { font-family: var(--serif); font-weight: 500; font-size: 26px; line-height: 1.25; margin: 0; text-wrap: balance; flex: 1; }
 .pane .meta { color: var(--muted); font-size: 11px; letter-spacing: .05em; margin-bottom: 6px; }
@@ -295,6 +303,24 @@ function checkGarden(d) {
     throw bootFail('The garden data has no precomputed layout (node ' + unplaced.id +
       ' is unplaced) — the export step did not run.');
   }
+  /* The reader addresses nodes by slug (mt#5204); a payload without them
+     cannot be linked to. Refuse it, like a missing layout. */
+  const unslugged = d.nodes.find(n => typeof n.slug !== 'string' || !n.slug);
+  if (unslugged) {
+    throw bootFail('The garden data has no URL slugs (node ' + unslugged.id +
+      ') — it predates the slug step; rebuild.');
+  }
+  /* Two nodes at one address would route ambiguously, and the later one would
+     win the address book silently. The export guarantees uniqueness; hold the
+     payload to it here, since the two ship separately. */
+  const seen = new Set();
+  for (const n of d.nodes) {
+    if (seen.has(n.slug)) {
+      throw bootFail('The garden data has two nodes at the address “' + n.slug +
+        '” — rebuild with the current export step.');
+    }
+    seen.add(n.slug);
+  }
   return d;
 }
 </script>
@@ -310,6 +336,8 @@ for (const e of edges) {
 }
 const tweetNode = new Map();
 for (const n of nodes) for (const t of n.tweets) tweetNode.set(t.id, n.id);
+/* slug -> node: the reader's address book (mt#5204). */
+const bySlug = new Map(nodes.map(n => [n.slug, n]));
 
 const stageOf = n => n.grade >= 5 ? 'evergreen' : n.grade >= 3 ? 'budding' : (n.size >= 10 ? 'budding' : 'seedling');
 const stageGlyph = { seedling: '◦', budding: '◐', evergreen: '●' };
@@ -395,13 +423,15 @@ const views = { index: [document.getElementById('vIndex'), document.getElementBy
   reader: [document.getElementById('vReader'), document.getElementById('bReader')],
   web: [document.getElementById('vWeb'), document.getElementById('bWeb')] };
 let cur = 'index';
-function show(v) {
+/* `opts.silent`: do not write the URL — for when the URL is what is being restored from. */
+function show(v, opts) {
   cur = v;
   for (const k in views) { views[k][0].classList.toggle('on', k === v); views[k][1].classList.toggle('on', k === v); }
   if (v === 'web') initWeb();
   if (v === 'reader') requestAnimationFrame(drawThreadlines);
   const amb = views[v][0].querySelector('.bgeca');
   if (amb && !amb.dataset.drawn) { drawAmbient(amb, v); amb.dataset.drawn = '1'; }
+  if (!(opts && opts.silent)) syncUrl(true);
 }
 document.getElementById('bIndex').onclick = () => show('index');
 document.getElementById('bWeave').onclick = () => { show('weave'); renderWeave(); };
@@ -599,6 +629,7 @@ function quoteCard(qid) {
 function buildPane(n, provenance) {
   const pane = document.createElement('div');
   pane.className = 'pane';
+  pane.dataset.id = n.id; // the URL is recomputed from the panes that exist, so each pane names its node
   const inner = document.createElement('div');
   inner.className = 'inner';
   // crumb with provenance
@@ -620,10 +651,29 @@ function buildPane(n, provenance) {
     };
     crumb.appendChild(via);
   }
+  // permalink: a real <a>, so right-click → copy link and cmd/ctrl-click → new
+  // tab work natively; a plain click copies instead of navigating (mt#5204)
+  const link = document.createElement('a');
+  link.className = 'link';
+  link.href = '#t/' + n.slug;
+  link.textContent = 'link';
+  link.title = 'copy a link to this ' + (n.kind === 'thread' ? 'thread' : 'tweet');
+  link.onclick = e => {
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    e.preventDefault();
+    const url = location.origin + location.pathname + link.getAttribute('href');
+    copyText(url).then(ok => {
+      link.textContent = ok ? 'copied ✓' : 'copy failed — see the address bar';
+      link.classList.add('done');
+      if (!ok) location.hash = link.getAttribute('href');
+      setTimeout(() => { link.textContent = 'link'; link.classList.remove('done'); }, 1800);
+    });
+  };
+  crumb.appendChild(link);
   const close = document.createElement('button');
   close.className = 'close';
   close.textContent = 'close ✕';
-  close.onclick = () => { pane.remove(); cleanupPaths(); drawThreadlines(); };
+  close.onclick = () => { pane.remove(); cleanupPaths(); drawThreadlines(); syncUrl(false); };
   crumb.appendChild(close);
   inner.appendChild(crumb);
   // header: fingerprint + title
@@ -654,6 +704,7 @@ function buildPane(n, provenance) {
   for (const t of n.tweets) {
     const tw = document.createElement('div');
     tw.className = 'tw';
+    tw.dataset.id = t.id; // so a tweet id in the address can be scrolled to
     const x = document.createElement('div');
     x.className = 'x';
     x.innerHTML = renderTweetText(t);
@@ -703,10 +754,140 @@ function cleanupPaths() {
     }
   }
 }
-function openNode(id, provenance) {
+/* ============ addresses (mt#5204) ============ */
+/* The URL is a function of (view, pane trail): written on every navigation,
+   read back on load, on hashchange, and on back/forward. Fragment routes, not
+   paths — the host is a static-assets Worker that answers an unknown path with
+   a real 404 on purpose (wrangler.jsonc), and a fragment needs no server.
+     #t/<slug>[/<slug>…]   the reader, one pane per segment, left to right
+     #weave · #web         the other views; trailheads is the bare URL
+   A segment also accepts a numeric id — a node id, or any tweet id in the
+   garden, which resolves to its thread and scrolls to the tweet. */
+const BASE_TITLE = document.title;
+let lastHash = null;
+function resolveNode(key) {
+  return bySlug.get(key) || byId.get(key) || byId.get(tweetNode.get(key)) || null;
+}
+function paneNodes() {
+  return [...panesEl.querySelectorAll('.pane[data-id]')].map(p => byId.get(p.dataset.id)).filter(Boolean);
+}
+function currentHash() {
+  if (cur === 'reader') { const ns = paneNodes(); return '#t' + (ns.length ? '/' + ns.map(n => n.slug).join('/') : ''); }
+  return cur === 'index' ? '' : '#' + cur;
+}
+function applyTitle() {
+  const ns = cur === 'reader' ? paneNodes() : [];
+  document.title = ns.length ? titleOf(ns[ns.length - 1]) + ' — pee_zombie' : BASE_TITLE;
+}
+/* push: a navigation the back button should undo. replace: tidying (a closed pane). */
+function syncUrl(push) {
+  const h = currentHash();
+  if (h === lastHash) return;
+  lastHash = h;
+  applyTitle();
+  history[push ? 'pushState' : 'replaceState'](null, '', location.pathname + location.search + h);
+}
+function safeDecode(s) { try { return decodeURIComponent(s); } catch (_) { return s; } }
+function route() {
+  const h = location.hash;
+  if (h === lastHash) return;
+  lastHash = h;
+  const seg = h.replace(/^#\/?/, '').split('/').map(safeDecode).filter(Boolean);
+  const view = seg[0] === 't' ? 'reader' : seg[0] === 'weave' || seg[0] === 'web' ? seg[0] : 'index';
+  if (view !== cur) show(view, { silent: true });
+  if (view === 'reader') openTrail(seg.slice(1));
+  if (view === 'weave') renderWeave();
+  applyTitle();
+}
+/* Rebuild the reader from a trail of addresses. Each pane after the first is
+   opened through the card in the previous pane that points at it, when there is
+   one, so the provenance threadline comes back too; otherwise it is appended
+   plain — which is also what the app shows after a middle pane is closed. */
+function openTrail(keys) {
+  panesEl.querySelectorAll('.pane').forEach(p => p.remove());
+  paths.length = 0;
+  let prev = null;
+  const missing = [];
+  for (const key of keys) {
+    const n = resolveNode(key);
+    if (!n) { missing.push(key); continue; }
+    if (prev && prev.node === n) { focusTweet(prev.pane, key); continue; } // a tweet in the pane just opened: an anchor, not a pane
+    let prov = null;
+    if (prev) {
+      const card = prev.pane.querySelector('[data-go="' + n.id + '"]');
+      if (card) prov = { fromNode: prev.node.id, srcCard: card, fromPane: prev.pane };
+    }
+    const pane = openNode(n.id, prov, { keep: true, silent: true });
+    if (key !== n.slug && key !== n.id) focusTweet(pane, key);
+    prev = { node: n, pane };
+  }
+  if (missing.length) panesEl.appendChild(missingPane(missing));
+  else if (!paneCount() && nodes.length) openNode(bestDefault(), null, { silent: true });
+  // The trail just changed under the overlay; redraw even when no pane was
+  // opened (all missing), or a threadline from the previous trail lingers.
+  requestAnimationFrame(drawThreadlines);
+}
+function focusTweet(pane, tweetId) {
+  const el = pane.querySelector('.tw[data-id="' + tweetId + '"]');
+  if (!el) return;
+  // One flash at a time; the class comes off when the animation ends, and a
+  // re-flash of the same tweet restarts it rather than doing nothing.
+  pane.querySelectorAll('.tw.flash').forEach(x => x.classList.remove('flash'));
+  el.addEventListener('animationend', () => el.classList.remove('flash'), { once: true });
+  requestAnimationFrame(() => { el.scrollIntoView({ block: 'center' }); void el.offsetWidth; el.classList.add('flash'); });
+}
+/* An address nothing answers to: say so in the reader rather than show an empty
+   one. The garden is a selection, not the whole corpus, and a titled thread's
+   slug follows its title, so this is reachable in ordinary use. */
+function missingPane(keys) {
+  const pane = document.createElement('div');
+  pane.className = 'pane missing';
+  const inner = document.createElement('div');
+  inner.className = 'inner';
+  const crumb = document.createElement('div');
+  crumb.className = 'crumb';
+  const kind = document.createElement('span');
+  kind.textContent = 'not found';
+  crumb.appendChild(kind);
+  const close = document.createElement('button');
+  close.className = 'close';
+  close.textContent = 'close ✕';
+  close.onclick = () => { pane.remove(); syncUrl(false); };
+  crumb.appendChild(close);
+  inner.appendChild(crumb);
+  const head = document.createElement('div');
+  head.className = 'head';
+  const h3 = document.createElement('h3');
+  h3.textContent = 'nothing grows here';
+  head.appendChild(h3);
+  inner.appendChild(head);
+  const note = document.createElement('p');
+  note.className = 'missing-note';
+  note.textContent = 'No thread or tweet in the garden answers to ' +
+    keys.map(k => '“' + k.slice(0, 80) + '”').join(', ') + '. The garden holds the most developed ' +
+    'threads and the quote-web around them, not every tweet — or the address may have changed. ' +
+    'Try the search, or start from the trailheads.';
+  inner.appendChild(note);
+  pane.appendChild(inner);
+  return pane;
+}
+async function copyText(s) {
+  try { await navigator.clipboard.writeText(s); return true; } catch (_) { /* not allowed here; fall through */ }
+  try {
+    const ta = document.createElement('textarea');
+    ta.value = s; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    const ok = document.execCommand('copy');
+    ta.remove();
+    return ok;
+  } catch (_) { return false; }
+}
+/* `opts.keep`: add to the existing panes instead of replacing them (trail restore).
+   `opts.silent`: do not write the URL. Returns the pane. */
+function openNode(id, provenance, opts) {
   const n = byId.get(id);
-  if (!n) return;
-  if (!provenance) {
+  if (!n) return null;
+  if (!provenance && !(opts && opts.keep)) {
     panesEl.querySelectorAll('.pane').forEach(p => p.remove());
     paths.length = 0;
   }
@@ -744,6 +925,8 @@ function openNode(id, provenance) {
     document.getElementById('vReader').scrollTo({ left: 1e6, behavior: 'smooth' });
     drawThreadlines();
   });
+  if (!(opts && opts.silent)) syncUrl(true);
+  return pane;
 }
 /* the threadlines overlay: literal threads from source quote-card -> child pane */
 let hoverPath = null;
@@ -900,6 +1083,11 @@ function drawWeb() {
 renderThemes();
 renderList();
 renderChips();
+/* Last: the address the page was opened at, now that there is a garden to
+   resolve it against. With no fragment this is a no-op, so a plain load is
+   unchanged. */
+route();
+window.addEventListener('hashchange', route);
 }
 
 /* boot() is everything above: the whole page, as one function of its data. The
