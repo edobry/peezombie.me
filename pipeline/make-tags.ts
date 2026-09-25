@@ -3,10 +3,14 @@
 import fs from "node:fs";
 import path from "node:path";
 import type { CatalogTag } from "./types";
+import type { Theme } from "./lexicon";
 const DIR = import.meta.dir;
 
-// canonical themes (seeded from Eugene's own 2020 index thread + agent clusters)
-const THEMES: Record<string, string[]> = {
+// canonical themes (seeded from Eugene's own 2020 index thread + agent clusters).
+// Keys are typed against lexicon.ts's THEMES (mt#5222): a theme renamed in one
+// file and not the other fails `bun run typecheck` instead of splitting the
+// vocabulary between the trailheads and the weave.
+const THEMES: Record<Theme, string[]> = {
   'memetics & egregores': ['memetic', 'egregore', 'cognitohazard', 'infohazard', 'irony', 'propaganda', 'tulpa', 'religion', 'meme', 'antimeme', 'hyperreality', 'simulacra', 'semiotics', 'psyop', 'spectacle'],
   'cybernetics & systems': ['cybernetic', 'control theory', 'feedback', 'systems thinking', 'complexity', 'emergence', 'chaos', 'dynamical', 'singularity', 'antifragility', 'resilience', 'mechanism-design', 'forecasting', 'biology', 'optimization'],
   'computation as lens': ['computational', 'information-theory', 'information theory', 'kolmogorov', 'greebling', 'concurrency', 'annealing', 'compression', 'computer science', 'machine learning', 'simulation', 'observability', 'programming', 'debugger', 'formal joke', 'physics'],

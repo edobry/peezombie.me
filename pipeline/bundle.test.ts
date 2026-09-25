@@ -273,7 +273,7 @@ if (fs.existsSync(builtPayload)) {
       // in the template and cannot be imported, so this is what keeps the two
       // from drifting — the first version of it wrongly demanded `quoted` be an
       // array, and only a browser load caught it.
-      for (const k of ["nodes", "edges", "concepts", "corpus"]) {
+      for (const k of ["nodes", "edges", "concepts", "conceptThemes", "corpus"]) {
         expect(Array.isArray(d[k])).toBe(true);
       }
       expect(typeof d.quoted).toBe("object");
@@ -288,6 +288,8 @@ if (fs.existsSync(builtPayload)) {
       expect(d.edges.length).toBeGreaterThan(0);
       expect(d.concepts.length).toBeGreaterThan(0);
       expect(d.corpus.length).toBeGreaterThan(0);
+      // one theme per concept (mt#5222); a mismatch would group the weave wrongly
+      expect(d.conceptThemes.length).toBe(d.concepts.length);
     });
 
     test("every edge endpoint resolves to a node", () => {

@@ -10,7 +10,7 @@
      deliberate even though this is same-origin: without it the preload is a
      no-cors request, which does not match the loader's plain fetch() and would
      be downloaded twice instead of reused. -->
-<link rel="preload" href="/garden-data.ce8056ff57136daf.json" as="fetch" crossorigin>
+<link rel="preload" href="/garden-data.c55c4536a9143b77.json" as="fetch" crossorigin>
 <meta name="theme-color" content="#0b0d0b" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#f1f3ef" media="(prefers-color-scheme: light)">
 <meta property="og:type" content="website">
@@ -107,7 +107,12 @@ h2.sect { font-size: 11px; font-weight: 500; letter-spacing: .18em; text-transfo
 /* ---------- weave ---------- */
 #vWeave { overflow-y: auto; overscroll-behavior-y: contain; }
 #vWeave .wrap { position: relative; max-width: 1100px; margin: 0 auto; padding: 36px 24px 90px; }
-#chips { display: flex; flex-wrap: wrap; gap: 7px; }
+/* Chips are grouped under the trailhead theme each concept files under
+   (mt#5222): a label column and a wrapping row per group. */
+#chips { display: flex; flex-direction: column; gap: 9px; }
+.cgroup { display: grid; grid-template-columns: 172px 1fr; column-gap: 12px; align-items: start; }
+.chead { font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); padding-top: 7px; }
+.crow { display: flex; flex-wrap: wrap; gap: 7px; }
 /* On a phone the chips would run to ~50 rows before the first result, so the
    list is cut at CHIP_CUT and the rest sit behind this toggle. Desktop shows
    them all; the toggle exists only below the breakpoint. */
@@ -224,7 +229,12 @@ h2.sect { font-size: 11px; font-weight: 500; letter-spacing: .18em; text-transfo
   .trow { display: grid; grid-template-columns: auto auto 1fr; column-gap: 10px; row-gap: 3px; align-items: center; padding: 12px 2px; }
   .trow .t { font-size: 15px; }
   .trow .meta { grid-column: 3; white-space: normal; }
-  #chips.collapsed .chip.beyond { display: none; }
+  #chips.collapsed .chip.beyond, #chips.collapsed .cgroup.beyond { display: none; }
+  /* stacked: the label sits over its row, and the groups pack tighter so the
+     collapsed list still ends within about a screen and a half */
+  #chips { gap: 6px; }
+  .cgroup { grid-template-columns: 1fr; row-gap: 3px; }
+  .chead { padding-top: 0; font-size: 10px; }
   #chipsmore:not([hidden]) { display: inline-flex; }
   #related button { padding: 4px; }
   .wtw { padding: 12px 2px 12px 12px; margin-left: 2px; }
@@ -283,14 +293,17 @@ h2.sect { font-size: 11px; font-weight: 500; letter-spacing: .18em; text-transfo
     <div class="wrap">
       <div class="intro">
         <p>22,549 tweets, 2020–2025, that cite each other, rendered as the hypertext they were rather than the feed Twitter
-        showed: threads read as essays, quote-tweets are the links, concepts are the index.</p>
+        showed: threads read as essays, quote-tweets are the links, concepts are the index. mostly minds: autism as
+        information theory, memes as organisms, selves and markets as cybernetic systems, practice as engineering;
+        the rest is the scene and the job.</p>
         <p>start from the <em>trailheads</em> below: the titled threads, by theme, ranked by how developed they are (favs
         anti-correlate with quality here). the <em>reader</em> lays a thread out and opens what it quotes beside it. the
         <em>weave</em> pulls every tweet that touches a concept, or several at once; search runs over the same set. the
         <em>web</em> is the citation graph.</p>
-        <p>tweets are verbatim; titles, themes and grades are later additions. the alt was
-        <a href="https://github.com/edobry" target="_blank" rel="noopener">Eugene Dobry</a>'s; he builds
-        <a href="https://github.com/edobry/minsky" target="_blank" rel="noopener">Minsky</a> now.</p>
+        <p>the alt was <a href="https://github.com/edobry" target="_blank" rel="noopener">Eugene Dobry</a>'s; he builds
+        <a href="https://github.com/edobry/minsky" target="_blank" rel="noopener">Minsky</a> now. tweets are verbatim;
+        titles, themes and grades are later additions, except his own
+        <a href="/t/index-of-a-personal-memetic-graph" data-route>index of the graph</a>, from 2020.</p>
       </div>
       <div class="statline" id="stats"></div>
       <h2 class="sect">trailheads — by theme</h2>
@@ -303,8 +316,8 @@ h2.sect { font-size: 11px; font-weight: 500; letter-spacing: .18em; text-transfo
   <section id="vWeave" class="view">
     <canvas class="bgeca"></canvas>
     <div class="wrap">
-      <p class="intro">Every time a concept comes up, anywhere in the corpus — megathread, riff, or single stray tweet.
-      Select several to intersect: <em>cybernetics ∩ autism</em> is a real question here.</p>
+      <p class="intro">every tweet that touches a concept, down to the stray one-liner, filed under the trailheads' themes.
+      pick one; pick several to intersect. search runs over this set.</p>
       <h2 class="sect">concepts</h2>
       <div id="chips"></div>
       <button id="chipsmore" class="chip" type="button" hidden></button>
@@ -330,7 +343,7 @@ h2.sect { font-size: 11px; font-weight: 500; letter-spacing: .18em; text-transfo
    so that the corpus stays out of this repo (mt#4678). Both values below are
    stamped in by pipeline/bundle.ts; the URL carries a content hash, so a shell
    cached from an older deploy asks for a filename that is no longer there. */
-const DATA_URL = "/garden-data.ce8056ff57136daf.json";
+const DATA_URL = "/garden-data.c55c4536a9143b77.json";
 const DATA_GENERATED = "2026-07-06";
 
 const bootEl = document.getElementById('boot');
@@ -372,8 +385,12 @@ function checkGarden(d) {
     throw bootFail('Shell/data mismatch: this page was built for data generated ' +
       DATA_GENERATED + ', but the payload reports ' + d.generated + '.');
   }
-  for (const k of ['nodes', 'edges', 'concepts', 'corpus']) {
+  for (const k of ['nodes', 'edges', 'concepts', 'conceptThemes', 'corpus']) {
     if (!Array.isArray(d[k])) throw bootFail('The garden data is missing its `' + k + '` array.');
+  }
+  /* One theme per concept (mt#5222); the weave groups by it. */
+  if (d.conceptThemes.length !== d.concepts.length) {
+    throw bootFail('The garden data has ' + d.concepts.length + ' concepts but ' + d.conceptThemes.length + ' concept themes.');
   }
   /* `quoted` is a map keyed by tweet id — `quoted[qid]`, not a list. */
   if (!d.quoted || typeof d.quoted !== 'object' || Array.isArray(d.quoted)) {
@@ -410,7 +427,7 @@ function checkGarden(d) {
 <script>
 function boot(DATA) {
 const nodes = DATA.nodes, edges = DATA.edges, quoted = DATA.quoted;
-const CONCEPTS = DATA.concepts || [], CORPUS = DATA.corpus || [];
+const CONCEPTS = DATA.concepts || [], CONCEPT_THEMES = DATA.conceptThemes || [], CORPUS = DATA.corpus || [];
 const byId = new Map(nodes.map(n => [n.id, n]));
 const backlinks = new Map();
 for (const e of edges) {
@@ -571,6 +588,16 @@ document.getElementById('stats').innerHTML =
   '<b>' + nodes.filter(n => n.kind === 'thread').length + '</b> threads · <b>' + edges.length + '</b> quote-links · <b>' +
   CORPUS.length.toLocaleString() + '</b> tweets tagged with <b>' + CONCEPTS.length + '</b> concepts · largest web ~<b>3,600</b> tweets · ● evergreen ◐ budding ◦ seedling';
 
+/* In-app links in the intro (mt#5222): a plain click routes without a reload;
+   a modified click (new tab, new window) is the browser's. */
+document.querySelector('#vIndex .intro').addEventListener('click', e => {
+  const a = e.target.closest('a[data-route]');
+  if (!a || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+  e.preventDefault();
+  history.pushState(null, '', a.getAttribute('href'));
+  route();
+});
+
 /* ============ weave ============ */
 const selConcepts = new Set();
 let weaveQuery = null; // text search mode
@@ -592,25 +619,49 @@ const CHIP_CUT = 24;
 let chipsCollapsed = true;
 const chipsMore = document.getElementById('chipsmore');
 chipsMore.onclick = () => { chipsCollapsed = !chipsCollapsed; renderChips(); };
+/* Chips are grouped under the trailhead theme each concept files under, in the
+   trailheads' own theme order (mt#5222), so the two views share one vocabulary.
+   The phone cut is still by rank across all groups: the top CHIP_CUT concepts by
+   count stay visible when collapsed, and a group with none of them collapses
+   with its label. Grouping is display order only; addresses are unchanged. */
+const chipRank = new Map();
+{ let r = 0; for (const ci of conceptOrder) if (conceptCounts[ci] >= 4) chipRank.set(ci, r++); }
+const chipGroups = (() => {
+  const order = themesSorted.map(([t]) => t);
+  for (const t of CONCEPT_THEMES) if (t && !order.includes(t)) order.push(t);
+  return order.map(theme => [theme, conceptOrder.filter(ci => chipRank.has(ci) && CONCEPT_THEMES[ci] === theme)]).filter(([, m]) => m.length);
+})();
 function renderChips() {
   chipsEl.innerHTML = '';
   chipsEl.classList.toggle('collapsed', chipsCollapsed);
-  let shown = 0, beyond = 0;
-  for (const ci of conceptOrder) {
-    if (conceptCounts[ci] < 4) continue;
-    const b = document.createElement('button');
-    const sel = selConcepts.has(ci);
-    b.className = 'chip' + (sel ? ' on' : '');
-    if (shown >= CHIP_CUT && !sel) { b.classList.add('beyond'); beyond++; }
-    shown++;
-    b.innerHTML = esc(CONCEPTS[ci]) + ' <span class="n">' + conceptCounts[ci] + '</span>';
-    b.onclick = () => {
-      weaveQuery = null; document.getElementById('search').value = '';
-      selConcepts.has(ci) ? selConcepts.delete(ci) : selConcepts.add(ci);
-      renderWeave();
-      syncUrl(false);
-    };
-    chipsEl.appendChild(b);
+  let beyond = 0;
+  for (const [theme, members] of chipGroups) {
+    const group = document.createElement('div');
+    group.className = 'cgroup';
+    const head = document.createElement('div');
+    head.className = 'chead';
+    head.textContent = theme;
+    const row = document.createElement('div');
+    row.className = 'crow';
+    let visible = 0;
+    for (const ci of members) {
+      const b = document.createElement('button');
+      const sel = selConcepts.has(ci);
+      b.className = 'chip' + (sel ? ' on' : '');
+      if (chipRank.get(ci) >= CHIP_CUT && !sel) { b.classList.add('beyond'); beyond++; } else visible++;
+      b.innerHTML = esc(CONCEPTS[ci]) + ' <span class="n">' + conceptCounts[ci] + '</span>';
+      b.onclick = () => {
+        weaveQuery = null; document.getElementById('search').value = '';
+        selConcepts.has(ci) ? selConcepts.delete(ci) : selConcepts.add(ci);
+        renderWeave();
+        syncUrl(false);
+      };
+      row.appendChild(b);
+    }
+    if (!visible) group.classList.add('beyond');
+    group.appendChild(head);
+    group.appendChild(row);
+    chipsEl.appendChild(group);
   }
   chipsMore.hidden = beyond === 0;
   chipsMore.textContent = chipsCollapsed ? '+ ' + beyond + ' more concepts' : 'fewer concepts';
