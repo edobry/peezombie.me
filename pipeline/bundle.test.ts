@@ -211,8 +211,9 @@ describe("the shell is addressable (mt#5204)", () => {
     expect(html).toContain("'#t'");
   });
 
-  test("the loader refuses a payload with no slugs", () => {
+  test("the loader refuses a payload with no slugs, or with two nodes at one address", () => {
     expect(html).toContain("no URL slugs");
+    expect(html).toContain("two nodes at the address");
   });
 
   test("every pane carries a permalink built from its slug", () => {

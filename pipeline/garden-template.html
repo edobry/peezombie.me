@@ -310,6 +310,17 @@ function checkGarden(d) {
     throw bootFail('The garden data has no URL slugs (node ' + unslugged.id +
       ') — it predates the slug step; rebuild.');
   }
+  /* Two nodes at one address would route ambiguously, and the later one would
+     win the address book silently. The export guarantees uniqueness; hold the
+     payload to it here, since the two ship separately. */
+  const seen = new Set();
+  for (const n of d.nodes) {
+    if (seen.has(n.slug)) {
+      throw bootFail('The garden data has two nodes at the address “' + n.slug +
+        '” — rebuild with the current export step.');
+    }
+    seen.add(n.slug);
+  }
   return d;
 }
 </script>
@@ -819,7 +830,11 @@ function openTrail(keys) {
 function focusTweet(pane, tweetId) {
   const el = pane.querySelector('.tw[data-id="' + tweetId + '"]');
   if (!el) return;
-  requestAnimationFrame(() => { el.scrollIntoView({ block: 'center' }); el.classList.add('flash'); });
+  // One flash at a time; the class comes off when the animation ends, and a
+  // re-flash of the same tweet restarts it rather than doing nothing.
+  pane.querySelectorAll('.tw.flash').forEach(x => x.classList.remove('flash'));
+  el.addEventListener('animationend', () => el.classList.remove('flash'), { once: true });
+  requestAnimationFrame(() => { el.scrollIntoView({ block: 'center' }); void el.offsetWidth; el.classList.add('flash'); });
 }
 /* An address nothing answers to: say so in the reader rather than show an empty
    one. The garden is a selection, not the whole corpus, and a titled thread's
