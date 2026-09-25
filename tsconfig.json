@@ -17,5 +17,5 @@
 
     "types": ["bun"]
   },
-  "include": ["pipeline/**/*.ts", "worker/meta.ts", "worker/meta.test.ts"]
+  "include": ["pipeline/**/*.ts", "worker/meta.ts", "worker/meta.test.ts", "worker/respond.ts", "worker/respond.test.ts"]
 }

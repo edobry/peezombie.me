@@ -19,5 +19,5 @@
 
     "types": ["@cloudflare/workers-types"]
   },
-  "include": ["index.ts", "meta.ts", "../pipeline/og.ts", "../pipeline/types.ts"]
+  "include": ["index.ts", "meta.ts", "respond.ts", "../pipeline/og.ts", "../pipeline/types.ts"]
 }

@@ -15,6 +15,7 @@
 // of titles and root-tweet excerpts that bundle.ts writes beside the payload.
 import type { OgIndex } from "../pipeline/og";
 import { decide, type ThreadMeta } from "./meta";
+import { respond } from "./respond";
 
 export interface Env {
   ASSETS: Fetcher;
@@ -77,7 +78,7 @@ export default {
     // headers would validate against the unrewritten shell's ETag and hand a
     // 304 back for a body this script was about to change.
     const shell = await env.ASSETS.fetch(new Request(`${url.origin}/`));
-    if (!THREAD_ROUTE.test(url.pathname)) return shell;
+    if (!THREAD_ROUTE.test(url.pathname)) return respond(request.method, shell, shell.status, false);
 
     let index: OgIndex = {};
     try {
@@ -86,11 +87,7 @@ export default {
       console.error("preview index unavailable; serving generic meta", err);
     }
     const d = decide(url.pathname, index, url.origin);
-    if (!d.meta && d.status === shell.status) return shell;
-
     const out = d.meta ? rewriteHead(shell, d.meta) : shell;
-    const headers = new Headers(out.headers);
-    headers.delete("etag"); // the body no longer matches the asset's validator
-    return new Response(out.body, { status: d.status, headers });
+    return respond(request.method, out, d.status, d.meta !== undefined);
   },
 } satisfies ExportedHandler<Env>;

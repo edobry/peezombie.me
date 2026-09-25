@@ -786,7 +786,8 @@ function syncUrl(push) {
   if (p === lastPath) return;
   lastPath = p;
   applyTitle();
-  history[push ? 'pushState' : 'replaceState'](null, '', p);
+  // the query string is not ours; whatever brought it here stays on the address
+  history[push ? 'pushState' : 'replaceState'](null, '', p + location.search);
 }
 function safeDecode(s) { try { return decodeURIComponent(s); } catch (_) { return s; } }
 /* A fragment address from before the Worker existed, as the path it now means. */
