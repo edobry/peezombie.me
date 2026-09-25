@@ -1,10 +1,12 @@
 {
+  // The Worker's own program: workers-types and bun-types both declare the
+  // fetch globals and disagree, so the script cannot share the root tsconfig.
+  // meta.ts is in both programs on purpose — it uses neither.
   "compilerOptions": {
     "lib": ["ESNext"],
     "target": "ESNext",
     "module": "ESNext",
     "moduleResolution": "bundler",
-    "moduleDetection": "force",
     "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": true,
     "noEmit": true,
@@ -15,7 +17,7 @@
     "noUnusedParameters": true,
     "skipLibCheck": true,
 
-    "types": ["bun"]
+    "types": ["@cloudflare/workers-types"]
   },
-  "include": ["pipeline/**/*.ts", "worker/meta.ts", "worker/meta.test.ts", "worker/respond.ts", "worker/respond.test.ts"]
+  "include": ["index.ts", "meta.ts", "respond.ts", "../pipeline/og.ts", "../pipeline/types.ts"]
 }

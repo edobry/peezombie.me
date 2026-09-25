@@ -1,23 +1,31 @@
 {
-  // Assets-only Worker: site/ is uploaded and served directly, with no Worker
-  // script. `main` and `assets.binding` are deliberately absent — both are only
-  // valid alongside a script, and adding either would make this a code deploy.
-  // https://developers.cloudflare.com/workers/static-assets/
+  // Static assets with a small Worker script in front (mt#5216).
   //
-  // This is the whole reason the payload can be gitignored: `wrangler deploy`
-  // UPLOADS site/, so the corpus reaches production without ever being committed.
-  // A git-driven host (Railway today, or a gh-pages branch) cannot do that — it
-  // builds from the repo, so a gitignored payload would simply never arrive.
+  // Assets are served FIRST: a path that matches a file in site/ never reaches
+  // the script, so `/` keeps its generic meta and every _headers rule. The
+  // script runs only for paths with no asset. For app routes (/t/*, /weave*,
+  // /search*, /trailheads*, /web) it serves the shell — with that thread's
+  // Open Graph meta rewritten in for /t/<slug>, which is the whole reason the
+  // script exists: a fragment never reaches a server, so per-thread previews
+  // need a path, and a path needs something to answer it. Everything else it
+  // hands back to the assets binding unchanged.
+  //
+  // `not_found_handling` is deliberately left at its default, which returns a
+  // real 404 for an unmatched path. That is load-bearing: a shell cached from an
+  // older deploy asks for a payload filename that no longer exists, and the
+  // loader reports the 404. Under "single-page-application" the same request
+  // would return index.html with a 200 and the page would fail on a confusing
+  // JSON parse error instead. The script preserves this by construction — it
+  // only ever answers app routes itself.
+  //
+  // `wrangler deploy` UPLOADS site/, which is why the payload and og.json can be
+  // gitignored: the corpus reaches production without ever being committed. A
+  // git-driven host builds from the repo and could never receive them.
   "name": "peezombie-me",
+  "main": "worker/index.ts",
   "compatibility_date": "2026-09-01",
   "assets": {
-    "directory": "./site"
-
-    // `not_found_handling` is deliberately left at its default, which returns a
-    // real 404 for an unmatched path. That is load-bearing: a shell cached from
-    // an older deploy asks for a payload filename that no longer exists, and the
-    // loader reports the 404. Under "single-page-application" the same request
-    // would return index.html with a 200 and the page would fail on a confusing
-    // JSON parse error instead.
+    "directory": "./site",
+    "binding": "ASSETS"
   }
 }

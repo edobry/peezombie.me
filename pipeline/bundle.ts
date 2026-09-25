@@ -20,6 +20,7 @@
 import { createHash } from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
+import { buildOgIndex } from "./og";
 
 export const DATA_URL_PLACEHOLDER = "/*__DATA_URL__*/";
 export const DATA_GENERATED_PLACEHOLDER = "/*__DATA_GENERATED__*/";
@@ -209,6 +210,12 @@ if (import.meta.main) {
 
   // Payload first: index.html is only correct once the file it names exists.
   fs.writeFileSync(path.join(SITE, ref.file), data);
+  // The preview index the Worker reads (mt#5216): derived from the same payload,
+  // written beside it, gitignored like it — it carries an excerpt of every root
+  // tweet — and it reaches production by the same upload.
+  const og = buildOgIndex(JSON.parse(data));
+  fs.writeFileSync(path.join(SITE, "og.json"), JSON.stringify(og));
+  console.log(`preview index -> site/og.json (${Object.keys(og).length} entries)`);
   fs.writeFileSync(path.join(SITE, "index.html"), out);
   fs.writeFileSync(path.join(DIR, "data-ref.json"), `${JSON.stringify(ref, null, 2)}\n`);
 

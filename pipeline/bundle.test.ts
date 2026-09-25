@@ -202,13 +202,17 @@ describe("the shell fails loudly rather than rendering empty", () => {
   });
 });
 
-describe("the shell is addressable (mt#5204)", () => {
+describe("the shell is addressable (mt#5204, paths since mt#5216)", () => {
   // Routing is inline in the template and cannot be imported; like the loader
   // checks above, these confirm the wiring survived into the built shell. The
   // behaviour itself is exercised in a browser against the built site.
-  test("fragment routes are wired and named", () => {
-    expect(html).toContain("addEventListener('hashchange', route)");
-    expect(html).toContain("'#t'");
+  test("path routes are wired and named", () => {
+    expect(html).toContain("addEventListener('popstate', route)");
+    expect(html).toContain("'/t'");
+  });
+
+  test("the fragment form mt#5204 shipped is still read", () => {
+    expect(html).toContain("function legacyPath()");
   });
 
   test("the loader refuses a payload with no slugs, or with two nodes at one address", () => {
@@ -216,8 +220,8 @@ describe("the shell is addressable (mt#5204)", () => {
     expect(html).toContain("two nodes at the address");
   });
 
-  test("every pane carries a permalink built from its slug", () => {
-    expect(html).toContain("link.href = '#t/' + n.slug");
+  test("every pane carries a permalink built from its slug, as a path", () => {
+    expect(html).toContain("link.href = '/t/' + n.slug");
   });
 });
 

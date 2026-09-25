@@ -22,6 +22,10 @@ pipeline/tags.json
 # pipeline/data-ref.json is committed on purpose: it records WHICH payload the
 # committed shell asks for, without containing any of it.
 site/garden-data.*.json
+# The preview index the Worker reads to answer /t/<slug> with the thread's Open
+# Graph meta (mt#5216): an excerpt of every root tweet, so corpus text, so the
+# payload's rule — uploaded at deploy, never committed.
+site/og.json
 
 # wrangler's local state.
 .wrangler/
