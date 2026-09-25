@@ -56,7 +56,9 @@ canvas.fp { image-rendering: pixelated; flex: 0 0 auto; }
 
 #top { display: flex; align-items: center; gap: 16px; padding: 0 16px; height: 52px; border-bottom: 1px solid var(--line); background: var(--surface); position: relative; z-index: 6; flex: 0 0 auto; }
 #eca { position: absolute; left: 0; top: 0; width: 100%; height: 100%; opacity: .22; pointer-events: none; }
-#top h1 { font-size: 13px; font-weight: 500; margin: 0; letter-spacing: .08em; z-index: 1; white-space: nowrap; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+/* The title never wraps. It can truncate with an ellipsis, but only once the search box has
+   shrunk to its minimum: the 3px of slack absorbs the sub-pixel share it gets before then. */
+#top h1 { font-size: 13px; font-weight: 500; margin: 0; letter-spacing: .08em; z-index: 1; white-space: nowrap; min-width: 0; overflow: hidden; text-overflow: ellipsis; padding-right: 3px; }
 #top h1 .pz { color: var(--acc); }
 #top .sub { color: var(--muted); font-size: 11px; z-index: 1; }
 nav { display: flex; gap: 2px; z-index: 1; margin-left: auto; flex-shrink: 0; }
@@ -64,7 +66,9 @@ nav button { font: inherit; background: none; border: 1px solid transparent; col
 nav button:hover { color: var(--text); }
 nav button.on { color: var(--acc); border-color: var(--line); background: var(--bg); }
 nav button:focus-visible, a:focus-visible, .qcard:focus-visible, .chip:focus-visible { outline: 1px solid var(--acc); outline-offset: 2px; }
-#search { z-index: 1; background: var(--bg); border: 1px solid var(--line); color: var(--text); font: inherit; padding: 5px 10px; width: 210px; }
+/* flex-shrink 1000: when the header is short of room the search gives way first, down to
+   its minimum, before the title has to truncate */
+#search { z-index: 1; background: var(--bg); border: 1px solid var(--line); color: var(--text); font: inherit; padding: 5px 10px; width: 210px; flex: 0 1000 auto; min-width: 130px; }
 #search::placeholder { color: var(--faint); }
 
 #views { position: relative; flex: 1 1 auto; min-height: 0; }
@@ -192,7 +196,6 @@ h2.sect { font-size: 11px; font-weight: 500; letter-spacing: .18em; text-transfo
    phone width the header becomes two rows and every view takes its phone layout. */
 @media (max-width: 1150px) {
   #top .sub { display: none; }
-  #search { width: auto; flex: 0 1 210px; min-width: 130px; }
 }
 @media (max-width: 800px) {
   #top h1 .cg { display: none; }
