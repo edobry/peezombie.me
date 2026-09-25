@@ -13,9 +13,10 @@
     "analysis": "cd pipeline && bun export.ts",
     "build": "bun run parse && bun run concepts && bun run tags && bun run export && bun run bundle",
     "deploy": "bun run build && bunx wrangler deploy",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit && tsc --noEmit -p worker"
   },
   "devDependencies": {
+    "@cloudflare/workers-types": "^5.20260925.1",
     "@types/bun": "^1.4.0",
     "typescript": "^7.0.2"
   },

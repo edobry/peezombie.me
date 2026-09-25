@@ -23,6 +23,8 @@ and every CI step already assumes it; match them when you run anything ad-hoc.
 | `site/index.html` | The built **shell** (~45 KB). Committed, and served — but it carries no corpus. |
 | `site/garden-data.<hash>.json` | The corpus payload the shell fetches at load. **Never committed** — gitignored, uploaded at deploy. |
 | `pipeline/data-ref.json` | Committed pin recording which payload the committed shell expects. Carries no corpus. |
+| `site/og.json` | Per-thread preview index the Worker reads: title and a root-tweet excerpt per slug. **Never committed** — corpus text; gitignored, uploaded at deploy. |
+| `worker/` | The Worker script in front of the assets (mt#5216): serves app routes as the shell, with per-thread Open Graph meta for `/t/<slug>`. Corpus-free. |
 
 `parse.ts` and `graph.ts` are fully mechanical: to change what the site says, edit
 `analysis/corpus-catalog.md` and rebuild.
@@ -69,7 +71,9 @@ unzip twitter-*.zip 'data/tweets*.js' 'data/note-tweet.js' -d .
 `site/garden-data.<hash>.json` is derived, not raw — but it carries all 8,197 corpus tweets in full
 text, so committing it puts the corpus back in git exactly as `data/` would. It is gitignored
 (`site/garden-data.*.json`), and mt#4678 exists because a derived copy walked back in through the
-build once already. `site/index.html` IS committed and that is fine: it is a corpus-free shell.
+build once already. So is `site/og.json` (mt#5216): a root-tweet excerpt per node is corpus text
+too, and it is gitignored the same way. `site/index.html` IS committed and that is fine: it is a
+corpus-free shell.
 
 ## Licensing
 
@@ -82,16 +86,20 @@ MIT when reusing or publishing content.
 **Merging to `main` does NOT ship the site.** It did until 2026-09-02; that changed with mt#4678 and
 this is the single most important thing to un-learn about this repo.
 
-The live site is a **Cloudflare Worker** serving static assets, on the apex `peezombie.me`.
-Publishing is an UPLOAD, not a commit:
+The live site is a **Cloudflare Worker** serving static assets, on the apex `peezombie.me`, with a
+small script in front (`worker/index.ts`, mt#5216): assets are served first, and the script runs
+only for paths no asset matches — serving the app's path routes as the shell, with per-thread
+Open Graph meta for `/t/<slug>`, and handing everything else back to the assets binding so an
+unknown path is still a real 404. Publishing is an UPLOAD, not a commit:
 
 ```sh
 bun run deploy     # bun run build && bunx wrangler deploy
 ```
 
 That is the whole publish step. It rebuilds, then uploads all of `site/` — the shell, the hashed
-payload, `_headers`, and the static assets — as one Worker deployment. It needs the corpus in
-`data/` to rebuild, so it runs from a machine that has the archive. It is an operator action.
+payload, `og.json`, `_headers`, and the static assets — together with the bundled script, as one
+Worker deployment. It needs the corpus in `data/` to rebuild, so it runs from a machine that has
+the archive. It is an operator action.
 
 **Why upload and not commit:** the payload carries the corpus, so it is gitignored. A host that
 builds from the git repo can never receive it. That is the same fact from both ends — it is why the
