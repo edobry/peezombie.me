@@ -157,7 +157,7 @@ for (let iter = 0; iter < 600; iter++) {
 for (let i = 0; i < N; i++) { const nd = nodes[i]!; nd.x = Math.round(px[i]); nd.y = Math.round(py[i]); nd.r = Math.round(mass[i] * 10) / 10; }
 
 // --- concept weave: all own tweets matching the concept lexicon ---
-const weave: { concepts: string[]; corpus: CorpusEntry[] } = { concepts: [], corpus: [] };
+const weave: { concepts: string[]; themes: string[]; corpus: CorpusEntry[] } = { concepts: [], themes: [], corpus: [] };
 {
   // Hard-fail rather than skip. This block used to be wrapped in a try/catch that
   // logged 'no concept index, skipping weave' and continued, so a run that skipped
@@ -175,6 +175,16 @@ const weave: { concepts: string[]; corpus: CorpusEntry[] } = { concepts: [], cor
   const ci: ConceptIndex = JSON.parse(fs.readFileSync(ciPath, 'utf8'));
   const tweetById = new Map<string, Tweet>(tweets.map(t => [t.id, t]));
   weave.concepts = ci.concepts;
+  // One theme per concept, parallel to `concepts` (mt#5222). A concept-index.json
+  // from before themes existed would render the weave ungrouped and look fine;
+  // refuse it instead.
+  if (!Array.isArray(ci.themes) || ci.themes.length !== ci.concepts.length) {
+    throw new Error(
+      `concept-index.json carries ${ci.concepts.length} concepts but ` +
+      `${Array.isArray(ci.themes) ? ci.themes.length : 'no'} themes; re-run \`bun run concepts\`.`
+    );
+  }
+  weave.themes = ci.themes;
   for (const [id, cidx] of Object.entries(ci.perTweet)) {
     const t = tweetById.get(id);
     if (!t) continue;
@@ -189,7 +199,7 @@ const weave: { concepts: string[]; corpus: CorpusEntry[] } = { concepts: [], cor
   weave.corpus.sort((a, b) => a.d.localeCompare(b.d));
 }
 
-const out: GardenData = { generated: '2026-07-06', account: 'pee_zombie', nodes, edges: edgeList, quoted: quotedTexts, concepts: weave.concepts, corpus: weave.corpus };
+const out: GardenData = { generated: '2026-07-06', account: 'pee_zombie', nodes, edges: edgeList, quoted: quotedTexts, concepts: weave.concepts, conceptThemes: weave.themes, corpus: weave.corpus };
 fs.writeFileSync(path.join(DIR, 'garden-data.json'), JSON.stringify(out));
 console.log('weave: concepts:', weave.concepts.length, '| corpus tweets:', weave.corpus.length);
 console.log('nodes:', nodes.length, '(threads:', nodes.filter(n => n.kind === 'thread').length + ')', '| edges:', edgeList.length, '| quoted refs:', Object.keys(quotedTexts).length);

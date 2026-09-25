@@ -1,20 +1,21 @@
 {
-  "file": "garden-data.ce8056ff57136daf.json",
-  "sha256": "ce8056ff57136daf8da13158064e4e1d369192330711b5b55ef2553da7497c84",
+  "file": "garden-data.c55c4536a9143b77.json",
+  "sha256": "c55c4536a9143b7701e931758f5263a4ac7db9b8fdb4577a748429beb7043f40",
   "generated": "2026-07-06",
-  "bytes": 4262730,
+  "bytes": 4264853,
   "inputs": {
     "analysis/corpus-catalog.md": "600f7fe980cc7140dcd975767cf0590e853edfcb5cbfa161295d9a29472ff268",
     "pipeline/bundle.ts": "173143cc4d5954bbb4d4e303f1bdbe4d84cc21fbd0d17fec840b6b612bedd114",
-    "pipeline/concepts.ts": "96d4d43ca289a73a744c5ff0a428606580b6de02de64c54a9c287672efb432e4",
-    "pipeline/export-garden.ts": "ec2a143a35d8c99c028f53a3d10ab00e74f9fac4c056ab07b2e9551d72b8ca42",
+    "pipeline/concepts.ts": "98702ee0348f91388bbd641c0f47b58220050fe85168dfb220c1af51d84bc8e6",
+    "pipeline/export-garden.ts": "5ec65c99fcbbd08e084a8756909160f2f7778e4e875d62e88910d2839963472d",
     "pipeline/export.ts": "726cbcf8ee37e52e2e3c6d98fc955e5bcf199622372dcf974e3c12dd9dc3dc3a",
-    "pipeline/garden-template.html": "62aab6e8d1c9822892f7c516c8a983de977feced7b15300f7c58725e6e9eb821",
+    "pipeline/garden-template.html": "e36da678a5df67b12125d7ec3c008c4b455e137abd0f8478d1938c60e47ef4ac",
     "pipeline/graph.ts": "a9884b87843e14986d92fd15022fcf34ccc126cbb5eff936dc14c69ab867b892",
-    "pipeline/make-tags.ts": "6200dc5cbf1e090c1bc552c6f0cfb2ddc3a35e5d14fd9b9962a2caeebc5ff952",
+    "pipeline/lexicon.ts": "a7f52352cb4ddfa1df09a500d6e36fd80259a35ba3280a918b62f18f4f06c7cb",
+    "pipeline/make-tags.ts": "5bb4213eb0a006fceee317aabcad32ea5851179dc9f96cf6e9feb57d4b9eb55c",
     "pipeline/og.ts": "95178f24a82a9a2f450f3f674894f9d513f4689ef5ee6f1414abc897f314f9c8",
     "pipeline/parse.ts": "c0e1080ddf82a44a10a83d3f2f32267074a376df22fea41232c3d65d92c012d7",
     "pipeline/slug.ts": "d330640324803c76d75ebf02c0bd8eeb0a0af39e77421ca02d5952cef827fe58",
-    "pipeline/types.ts": "9dc5e2b6d762216cedce174c065e21fac158c2296417d7a49b44e8015e9b05d8"
+    "pipeline/types.ts": "25f5bf6b3a1b29a64bdda8c2a5dc9d742bcca9dc74b2ec450fab99db93a92d33"
   }
 }

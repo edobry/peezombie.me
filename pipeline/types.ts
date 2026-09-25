@@ -127,9 +127,10 @@ export interface QuotedText {
   inNode: boolean;
 }
 
-/** Output of concepts.ts. */
+/** Output of concepts.ts. `themes[i]` is the trailhead theme `concepts[i]` files under (mt#5222). */
 export interface ConceptIndex {
   concepts: string[];
+  themes: string[];
   perTweet: Record<string, number[]>;
 }
 
@@ -152,6 +153,8 @@ export interface GardenData {
   edges: GardenEdge[];
   quoted: Record<string, QuotedText>;
   concepts: string[];
+  /** Per concept, the trailhead theme it files under; the weave groups by it (mt#5222). */
+  conceptThemes: string[];
   corpus: CorpusEntry[];
 }
 

@@ -144,6 +144,12 @@ the float math, so a Node run produces different node coordinates. Neither is mo
 `parse.ts` and `graph.ts` are fully mechanical. Editorial judgment lives in
 `analysis/corpus-catalog.md` — edit it line by line, then re-run `bun run build`.
 
+Concepts are the finer grain. Each of the 96 in `pipeline/lexicon.ts` carries a regex and the
+trailhead theme it files under; the weave groups its chips by that theme, in the trailheads'
+order, so the two views share one vocabulary at two grains (mt#5222). The theme names are typed
+against `make-tags.ts`, so a rename that reaches only one file fails `bun run typecheck`, and
+`lexicon.test.ts` fails on a concept without a theme. Correct a line and rebuild.
+
 **Renaming a titled thread changes its URL.** A thread's slug is minted from its catalog title
 (see [Addresses](#addresses)), so a rename orphans links shared before it. Untitled threads
 slug from immutable tweet text, and numeric-id links always resolve.
