@@ -655,17 +655,17 @@ function buildPane(n, provenance) {
   // tab work natively; a plain click copies instead of navigating (mt#5204)
   const link = document.createElement('a');
   link.className = 'link';
-  link.href = '#t/' + n.slug;
+  link.href = '/t/' + n.slug;
   link.textContent = 'link';
   link.title = 'copy a link to this ' + (n.kind === 'thread' ? 'thread' : 'tweet');
   link.onclick = e => {
     if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
     e.preventDefault();
-    const url = location.origin + location.pathname + link.getAttribute('href');
+    const url = location.origin + link.getAttribute('href');
     copyText(url).then(ok => {
       link.textContent = ok ? 'copied ✓' : 'copy failed — see the address bar';
       link.classList.add('done');
-      if (!ok) location.hash = link.getAttribute('href');
+      if (!ok) { history.pushState(null, '', link.getAttribute('href')); route(); }
       setTimeout(() => { link.textContent = 'link'; link.classList.remove('done'); }, 1800);
     });
   };
@@ -754,26 +754,27 @@ function cleanupPaths() {
     }
   }
 }
-/* ============ addresses (mt#5204) ============ */
+/* ============ addresses (mt#5204; paths since mt#5216) ============ */
 /* The URL is a function of (view, pane trail): written on every navigation,
-   read back on load, on hashchange, and on back/forward. Fragment routes, not
-   paths — the host is a static-assets Worker that answers an unknown path with
-   a real 404 on purpose (wrangler.jsonc), and a fragment needs no server.
-     #t/<slug>[/<slug>…]   the reader, one pane per segment, left to right
-     #weave · #web         the other views; trailheads is the bare URL
+   read back on load and on back/forward. Paths, answered by the Worker in
+   front of the assets (worker/index.ts) — which also serves /t/<slug> with
+   that thread's preview meta, the reason these are paths and not fragments.
+     /t/<slug>[/<slug>…]   the reader, one pane per segment, left to right
+     /weave · /web         the other views; trailheads is /
    A segment also accepts a numeric id — a node id, or any tweet id in the
-   garden, which resolves to its thread and scrolls to the tweet. */
+   garden, which resolves to its thread and scrolls to the tweet. The fragment
+   form mt#5204 shipped (#t/…) is still read, and rewritten to the path. */
 const BASE_TITLE = document.title;
-let lastHash = null;
+let lastPath = null;
 function resolveNode(key) {
   return bySlug.get(key) || byId.get(key) || byId.get(tweetNode.get(key)) || null;
 }
 function paneNodes() {
   return [...panesEl.querySelectorAll('.pane[data-id]')].map(p => byId.get(p.dataset.id)).filter(Boolean);
 }
-function currentHash() {
-  if (cur === 'reader') { const ns = paneNodes(); return '#t' + (ns.length ? '/' + ns.map(n => n.slug).join('/') : ''); }
-  return cur === 'index' ? '' : '#' + cur;
+function currentPath() {
+  if (cur === 'reader') { const ns = paneNodes(); return '/t' + (ns.length ? '/' + ns.map(n => n.slug).join('/') : ''); }
+  return cur === 'index' ? '/' : '/' + cur;
 }
 function applyTitle() {
   const ns = cur === 'reader' ? paneNodes() : [];
@@ -781,18 +782,25 @@ function applyTitle() {
 }
 /* push: a navigation the back button should undo. replace: tidying (a closed pane). */
 function syncUrl(push) {
-  const h = currentHash();
-  if (h === lastHash) return;
-  lastHash = h;
+  const p = currentPath();
+  if (p === lastPath) return;
+  lastPath = p;
   applyTitle();
-  history[push ? 'pushState' : 'replaceState'](null, '', location.pathname + location.search + h);
+  history[push ? 'pushState' : 'replaceState'](null, '', p);
 }
 function safeDecode(s) { try { return decodeURIComponent(s); } catch (_) { return s; } }
+/* A fragment address from before the Worker existed, as the path it now means. */
+function legacyPath() {
+  const m = location.hash.match(/^#\/?(t|weave|web)(\/.*)?$/);
+  return m ? '/' + m[1] + (m[2] || '') : null;
+}
 function route() {
-  const h = location.hash;
-  if (h === lastHash) return;
-  lastHash = h;
-  const seg = h.replace(/^#\/?/, '').split('/').map(safeDecode).filter(Boolean);
+  const legacy = location.pathname === '/' && legacyPath();
+  if (legacy) history.replaceState(null, '', legacy);
+  const p = location.pathname;
+  if (p === lastPath) return;
+  lastPath = p;
+  const seg = p.split('/').map(safeDecode).filter(Boolean);
   const view = seg[0] === 't' ? 'reader' : seg[0] === 'weave' || seg[0] === 'web' ? seg[0] : 'index';
   if (view !== cur) show(view, { silent: true });
   if (view === 'reader') openTrail(seg.slice(1));
@@ -1084,10 +1092,11 @@ renderThemes();
 renderList();
 renderChips();
 /* Last: the address the page was opened at, now that there is a garden to
-   resolve it against. With no fragment this is a no-op, so a plain load is
-   unchanged. */
+   resolve it against. At `/` this is a no-op, so a plain load is unchanged.
+   popstate covers back/forward; pushState never fires it, which is what lets
+   syncUrl write the address without re-routing. */
 route();
-window.addEventListener('hashchange', route);
+window.addEventListener('popstate', route);
 }
 
 /* boot() is everything above: the whole page, as one function of its data. The
